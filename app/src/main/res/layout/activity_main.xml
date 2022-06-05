@@ -8,7 +8,7 @@
 
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/fragment_container_view"
-        android:name="com.vinsonb.password.manager.kotlin.fragments.LoginFragment"
+        android:name="com.vinsonb.password.manager.kotlin.fragments.CreateLoginFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layout_constraintBottom_toBottomOf="parent"

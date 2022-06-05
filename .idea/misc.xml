@@ -5,6 +5,7 @@
       <map>
         <entry key="..\:/Dev/Work/password-manager-kotlin-rewrite/app/src/main/res/drawable/ic_undraw_secure_login_pdn4.xml" value="0.304" />
         <entry key="..\:/Dev/Work/password-manager-kotlin-rewrite/app/src/main/res/layout/activity_main.xml" value="0.28940217391304346" />
+        <entry key="..\:/Dev/Work/password-manager-kotlin-rewrite/app/src/main/res/layout/fragment_create_login.xml" value="0.33" />
         <entry key="..\:/Dev/Work/password-manager-kotlin-rewrite/app/src/main/res/layout/fragment_login.xml" value="0.33" />
       </map>
     </option>
