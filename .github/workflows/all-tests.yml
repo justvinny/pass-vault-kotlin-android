@@ -14,7 +14,6 @@ jobs:
     strategy:
       matrix:
         api-level: [23, 29]
-        target: [default, google_apis]
     steps:
       - name: checkout
         uses: actions/checkout@v3
@@ -26,4 +25,6 @@ jobs:
           target: ${{ matrix.target }}
           arch: x86_64
           profile: Nexus 6
-          script: ./gradlew connectedCheck
+          script: |
+            chmod rwx ./gradlew
+            ./gradlew connectedCheck
