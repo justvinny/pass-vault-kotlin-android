@@ -1,16 +1,21 @@
 package com.vinsonb.password.manager.kotlin.fragments
 
-import android.os.Build
+import android.content.Context
+import android.content.SharedPreferences
 import android.os.Bundle
-import android.util.Log.d
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ImageView
-import androidx.annotation.RequiresApi
+import android.widget.Toast
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
+import androidx.navigation.findNavController
+import com.vinsonb.password.manager.kotlin.Constants.Companion.Password.PASSCODE_MAX_LENGTH
+import com.vinsonb.password.manager.kotlin.Constants.Companion.Password.SharedPreferenceKeys.AUTHENTICATED_KEY
+import com.vinsonb.password.manager.kotlin.Constants.Companion.Password.SharedPreferenceKeys.PASSCODE_KEY
+import com.vinsonb.password.manager.kotlin.Constants.Companion.Password.SharedPreferenceKeys.SECRET_ANSWER_KEY
+import com.vinsonb.password.manager.kotlin.Constants.Companion.Password.SharedPreferenceKeys.SECRET_QUESTION_KEY
 import com.vinsonb.password.manager.kotlin.R
 import com.vinsonb.password.manager.kotlin.databinding.FragmentLoginBinding
 import com.vinsonb.password.manager.kotlin.viewmodels.LoginViewModel
@@ -56,13 +61,44 @@ class LoginFragment : Fragment(R.layout.fragment_login) {
         // TODO - Forgot password button
 
         // ImageViews 5 circles
+        val sharedPreferences = activity?.getPreferences(Context.MODE_PRIVATE)
         populateCircleList()
-        setCircleIcon()
+        viewModel.getPassword().observe(viewLifecycleOwner) {
+            setCircleIcon(it)
+
+            // Try to login when passcode reaches 5 digits.
+            if (it.size == PASSCODE_MAX_LENGTH) {
+                if (login(it, sharedPreferences)) {
+                    viewModel.clearAllDigits()
+                    view.findNavController()
+                        .navigate(R.id.action_loginFragment_to_viewAccountsFragment)
+                } else {
+                    Toast.makeText(view.context, R.string.error_wrong_passcode, Toast.LENGTH_SHORT)
+                        .show()
+                }
+            }
+        }
+
+        if (isAccountNotCreated(sharedPreferences)) {
+            view.findNavController().navigate(R.id.action_loginFragment_to_createLoginFragment2)
+        }
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+
+    /**
+     * Check if account is not already created by checking SharedPreferences if
+     * values: passcode, secret question, and secret answer exist.
+     */
+    private fun isAccountNotCreated(sharedPreferences: SharedPreferences?): Boolean {
+        val passcode = sharedPreferences?.getString(PASSCODE_KEY, "")
+        val secretQuestion =
+            sharedPreferences?.getString(SECRET_QUESTION_KEY, "")
+        val secretAnswer = sharedPreferences?.getString(SECRET_ANSWER_KEY, "")
+        return passcode.isNullOrBlank() && secretQuestion.isNullOrBlank() && secretAnswer.isNullOrBlank()
     }
 
     /**
@@ -103,15 +139,29 @@ class LoginFragment : Fragment(R.layout.fragment_login) {
     /**
      * Dynamically fill / un-fill circle icons depending on number press and clear.
      */
-    private fun setCircleIcon() {
-        viewModel.getPassword().observe(viewLifecycleOwner) {
-            for (i in 0 until 5) {
-                if (i < it.size) {
-                    circleList[i].setImageResource(R.drawable.ic_circle_filled)
-                } else {
-                    circleList[i].setImageResource(R.drawable.ic_circle_outlined)
-                }
+    private fun setCircleIcon(passcode: ArrayDeque<Int>) {
+        for (i in 0 until PASSCODE_MAX_LENGTH) {
+            if (i < passcode.size) {
+                circleList[i].setImageResource(R.drawable.ic_circle_filled)
+            } else {
+                circleList[i].setImageResource(R.drawable.ic_circle_outlined)
             }
         }
+    }
+
+    /**
+     * Logs in the user by changing the authentication value in SharedPreferences to true if
+     * the passcode entered matches the value stored.
+     */
+    private fun login(passcode: ArrayDeque<Int>, sharedPreferences: SharedPreferences?): Boolean {
+        val savedPasscode = sharedPreferences?.getString(PASSCODE_KEY, "")
+        val enteredPasscode = passcode.joinToString(separator = "")
+        if (savedPasscode == enteredPasscode) {
+            with(sharedPreferences.edit()) {
+                putBoolean(AUTHENTICATED_KEY, true)
+                return (commit())
+            }
+        }
+        return false
     }
 }

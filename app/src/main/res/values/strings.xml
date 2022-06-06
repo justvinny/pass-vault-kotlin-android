@@ -23,4 +23,6 @@
     <string name="error_passcode_length">Passcode must be 5 digits</string>
     <string name="error_passcode_must_match">Passcode must match</string>
     <string name="error_text_empty">Text must not be empty</string>
+    <string name="logout">Logout</string>
+    <string name="error_wrong_passcode">Passcode entered does not match</string>
 </resources>
