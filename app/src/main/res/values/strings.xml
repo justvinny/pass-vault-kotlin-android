@@ -1,3 +1,28 @@
 <resources>
-    <string name="app_name">Password Manager Kotlin Rewrite</string>
+    <string name="app_name">Pass Vault</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="button_1">1</string>
+    <string name="button_2">2</string>
+    <string name="button_3">3</string>
+    <string name="button_4">4</string>
+    <string name="button_5">5</string>
+    <string name="button_6">6</string>
+    <string name="button_8">8</string>
+    <string name="button_9">9</string>
+    <string name="button_7">7</string>
+    <string name="button_clear">x</string>
+    <string name="button_0">0</string>
+    <string name="button_forgot_password">Forgot?</string>
+    <string name="button_create_login">Create Login</string>
+    <string name="hint_secret_answer">Enter your secret answer</string>
+    <string name="hint_secret_question">Enter a secret question</string>
+    <string name="hint_passcode_2">Re-enter 5 digit passcode</string>
+    <string name="hint_passcode">Enter 5 digit passcode</string>
+    <string name="error_passcode_not_saved">Not saved. Please enter valid data and fill required fields.</string>
+    <string name="error_passcode_length">Passcode must be 5 digits</string>
+    <string name="error_passcode_must_match">Passcode must match</string>
+    <string name="error_text_empty">Text must not be empty</string>
+    <string name="logout">Logout</string>
+    <string name="error_wrong_passcode">Passcode entered does not match</string>
 </resources>
