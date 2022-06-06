@@ -22,6 +22,7 @@
         app:endIconMode="password_toggle">
 
         <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/passcode_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:inputType="numberPassword"
@@ -48,6 +49,7 @@
         app:endIconMode="password_toggle" >
 
         <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/passcode_2_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:inputType="numberPassword"
@@ -72,6 +74,7 @@
         app:layout_constraintTop_toBottomOf="@id/passcode_2">
 
         <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/secret_question_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textColorHint="#757575"
@@ -93,6 +96,7 @@
         app:layout_constraintTop_toBottomOf="@id/secret_question">
 
         <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/secret_answer_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textColorHint="#757575"
