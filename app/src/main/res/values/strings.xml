@@ -25,4 +25,7 @@
     <string name="error_text_empty">Text must not be empty</string>
     <string name="logout">Logout</string>
     <string name="error_wrong_passcode">Passcode entered does not match</string>
+    <string name="menu_item_view">View</string>
+    <string name="menu_item_save">Save</string>
+    <string name="menu_item_generate_pass">Generator</string>
 </resources>

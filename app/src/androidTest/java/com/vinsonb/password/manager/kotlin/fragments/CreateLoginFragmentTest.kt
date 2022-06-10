@@ -99,7 +99,7 @@ class CreateLoginFragmentTest {
         val navController = TestNavHostController(ApplicationProvider.getApplicationContext())
         scenario.onFragment {
             navController.setGraph(R.navigation.nav_graph)
-            navController.setCurrentDestination(R.id.createLoginFragment)
+            navController.setCurrentDestination(R.id.create_login_fragment)
             Navigation.setViewNavController(it.requireView(), navController)
         }
 
@@ -120,7 +120,7 @@ class CreateLoginFragmentTest {
         onView(withId(R.id.button_create_login))
             .perform(click())
 
-        Assert.assertEquals(navController.currentDestination?.id, R.id.loginFragment)
+        Assert.assertEquals(navController.currentDestination?.id, R.id.login_fragment)
     }
 
     private fun hasTextInputLayoutHintText(expectedErrorText: String): Matcher<View> =
