@@ -50,7 +50,7 @@ class LoginFragmentTest {
         val navController = TestNavHostController(ApplicationProvider.getApplicationContext())
         scenario.onFragment {
             navController.setGraph(R.navigation.nav_graph)
-            navController.setCurrentDestination(R.id.loginFragment)
+            navController.setCurrentDestination(R.id.login_fragment)
             Navigation.setViewNavController(it.requireView(), navController)
         }
 
@@ -59,7 +59,7 @@ class LoginFragmentTest {
                 .perform(ViewActions.click())
         }
 
-        Assert.assertEquals(navController.currentDestination?.id, R.id.viewAccountsFragment)
+        Assert.assertEquals(navController.currentDestination?.id, R.id.view_accounts_fragment)
 
         with(preferences.edit()) {
             clear()
