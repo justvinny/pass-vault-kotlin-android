@@ -43,37 +43,37 @@ class CreateLoginFragment : Fragment(R.layout.fragment_create_login) {
         enableAllErrorText()
 
         // Text Input Listeners
-        binding.passcode.editText?.addTextChangedListener(object : TextWatcher {
+        binding.inputPasscode.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
             override fun afterTextChanged(p0: Editable?) {}
             override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-                checkPasscodeLength(binding.passcode)
+                checkPasscodeLength(binding.layoutPasscode)
             }
         })
 
-        binding.passcode2.editText?.addTextChangedListener(object : TextWatcher {
+        binding.inputRepeatPasscode.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
             override fun afterTextChanged(p0: Editable?) {}
             override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-                if (checkPasscodeLength(binding.passcode2)) {
+                if (checkPasscodeLength(binding.layoutRepeatPasscode)) {
                     checkPasscodeMatches()
                 }
             }
         })
 
-        binding.secretQuestion.editText?.addTextChangedListener(object : TextWatcher {
+        binding.inputSecretQuestion.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
             override fun afterTextChanged(p0: Editable?) {}
             override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-                checkInputNotEmpty(binding.secretQuestion)
+                checkInputNotEmpty(binding.layoutSecretQuestion)
             }
         })
 
-        binding.secretAnswer.editText?.addTextChangedListener(object : TextWatcher {
+        binding.inputSecretAnswer.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
             override fun afterTextChanged(p0: Editable?) {}
             override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-                checkInputNotEmpty(binding.secretAnswer)
+                checkInputNotEmpty(binding.layoutSecretAnswer)
             }
         })
 
@@ -96,14 +96,14 @@ class CreateLoginFragment : Fragment(R.layout.fragment_create_login) {
      * Sets all Text Input to error enabled along with their error message.
      */
     private fun enableAllErrorText() {
-        binding.passcode.isErrorEnabled = true
-        binding.passcode2.isErrorEnabled = true
-        binding.secretQuestion.isErrorEnabled = true
-        binding.secretAnswer.isErrorEnabled = true
-        binding.passcode.error = getString(R.string.error_passcode_length)
-        binding.passcode2.error = getString(R.string.error_passcode_length)
-        binding.secretQuestion.error = getString(R.string.error_text_empty)
-        binding.secretAnswer.error = getString(R.string.error_text_empty)
+        binding.layoutPasscode.isErrorEnabled = true
+        binding.layoutRepeatPasscode.isErrorEnabled = true
+        binding.layoutSecretQuestion.isErrorEnabled = true
+        binding.layoutSecretAnswer.isErrorEnabled = true
+        binding.layoutPasscode.error = getString(R.string.error_passcode_length)
+        binding.layoutRepeatPasscode.error = getString(R.string.error_passcode_length)
+        binding.layoutSecretQuestion.error = getString(R.string.error_text_empty)
+        binding.layoutSecretAnswer.error = getString(R.string.error_text_empty)
     }
 
     /**
@@ -112,6 +112,7 @@ class CreateLoginFragment : Fragment(R.layout.fragment_create_login) {
      */
     private fun checkPasscodeLength(passcode: TextInputLayout): Boolean {
         val passcodeText = passcode.editText?.text.toString()
+
         if (passcodeText.length < PASSCODE_MAX_LENGTH) {
             passcode.isErrorEnabled = true
             passcode.error = getString(R.string.error_passcode_length)
@@ -126,13 +127,14 @@ class CreateLoginFragment : Fragment(R.layout.fragment_create_login) {
      * Otherwise, display appropriate error message on the Text Input.
      */
     private fun checkPasscodeMatches() {
-        val passcode = binding.passcode.editText?.text.toString()
-        val passcode2 = binding.passcode2.editText?.text.toString()
+        val passcode = binding.inputPasscode.text.toString()
+        val passcode2 = binding.inputRepeatPasscode.text.toString()
+
         if (passcode != passcode2) {
-            binding.passcode2.isErrorEnabled = true
-            binding.passcode2.error = getString(R.string.error_passcode_must_match)
+            binding.layoutRepeatPasscode.isErrorEnabled = true
+            binding.layoutRepeatPasscode.error = getString(R.string.error_passcode_must_match)
         } else {
-            binding.passcode2.isErrorEnabled = false
+            binding.layoutRepeatPasscode.isErrorEnabled = false
         }
     }
 
@@ -142,6 +144,7 @@ class CreateLoginFragment : Fragment(R.layout.fragment_create_login) {
      */
     private fun checkInputNotEmpty(textInputLayout: TextInputLayout) {
         val text = textInputLayout.editText?.text.toString()
+
         if (text.isEmpty()) {
             textInputLayout.isErrorEnabled = true
             textInputLayout.error = getString(R.string.error_text_empty)
@@ -156,9 +159,9 @@ class CreateLoginFragment : Fragment(R.layout.fragment_create_login) {
      * Otherwise, display appropriate error message as a Toast.
      */
     private fun saveData(view: View): Boolean {
-        val passcode = binding.passcode.editText?.text.toString()
-        val secretQuestion = binding.secretQuestion.editText?.text.toString()
-        val secretAnswer = binding.secretAnswer.editText?.text.toString()
+        val passcode = binding.inputPasscode.text.toString()
+        val secretQuestion = binding.inputSecretQuestion.text.toString()
+        val secretAnswer = binding.inputSecretAnswer.text.toString()
 
         if (passcode.isNotBlank() && secretQuestion.isNotBlank() && secretAnswer.isNotBlank()) {
             val sharedPreferences = activity?.getPreferences(Context.MODE_PRIVATE) ?: return false
@@ -169,6 +172,7 @@ class CreateLoginFragment : Fragment(R.layout.fragment_create_login) {
                 return commit()
             }
         }
+
         Toast.makeText(
             view.context,
             getString(R.string.error_passcode_not_saved),

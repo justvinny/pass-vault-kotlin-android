@@ -4,8 +4,10 @@
     <option name="filePathToZoomLevelMap">
       <map>
         <entry key="..\:/Dev/Work/android/pass-vault-kotlin-android/app/src/main/res/layout/activity_main.xml" value="0.2921195652173913" />
+        <entry key="..\:/Dev/Work/android/pass-vault-kotlin-android/app/src/main/res/layout/fragment_create_login.xml" value="0.33" />
         <entry key="..\:/Dev/Work/android/pass-vault-kotlin-android/app/src/main/res/layout/fragment_generate_password.xml" value="0.25" />
-        <entry key="..\:/Dev/Work/android/pass-vault-kotlin-android/app/src/main/res/layout/fragment_save_account.xml" value="0.18541666666666667" />
+        <entry key="..\:/Dev/Work/android/pass-vault-kotlin-android/app/src/main/res/layout/fragment_login.xml" value="0.2921195652173913" />
+        <entry key="..\:/Dev/Work/android/pass-vault-kotlin-android/app/src/main/res/layout/fragment_save_account.xml" value="0.33" />
         <entry key="..\:/Dev/Work/android/pass-vault-kotlin-android/app/src/main/res/menu/bottom_navigation_menu.xml" value="0.3614583333333333" />
         <entry key="..\:/Dev/Work/password-manager-kotlin-rewrite/app/src/main/res/drawable/ic_undraw_secure_login_pdn4.xml" value="0.304" />
         <entry key="..\:/Dev/Work/password-manager-kotlin-rewrite/app/src/main/res/layout/activity_main.xml" value="0.28940217391304346" />

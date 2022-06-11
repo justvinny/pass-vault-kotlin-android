@@ -17,7 +17,7 @@
     <string name="button_create_login">Create Login</string>
     <string name="hint_secret_answer">Enter your secret answer</string>
     <string name="hint_secret_question">Enter a secret question</string>
-    <string name="hint_passcode_2">Re-enter 5 digit passcode</string>
+    <string name="hint_repeat_passcode">Re-enter 5 digit passcode</string>
     <string name="hint_passcode">Enter 5 digit passcode</string>
     <string name="error_passcode_not_saved">Not saved. Please enter valid data and fill required fields.</string>
     <string name="error_passcode_length">Passcode must be 5 digits</string>
@@ -28,4 +28,9 @@
     <string name="menu_item_view">View</string>
     <string name="menu_item_save">Save</string>
     <string name="menu_item_generate_pass">Generator</string>
+    <string name="hint_platform">Account Platform</string>
+    <string name="hint_username">Username</string>
+    <string name="hint_password">Password</string>
+    <string name="hint_repeat_password">Repeat Password</string>
+    <string name="button_save_account">Save Account</string>
 </resources>
