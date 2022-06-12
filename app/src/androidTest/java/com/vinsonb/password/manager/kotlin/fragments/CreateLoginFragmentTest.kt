@@ -49,49 +49,71 @@ class CreateLoginFragmentTest {
 
     @Test
     fun passcode_textInput_given5DigitsEntered_showsNoError() {
-        onView(withId(R.id.passcode_text))
+        onView(withId(R.id.input_passcode))
             .perform(typeText("55555"))
 
         Espresso.closeSoftKeyboard()
 
-        onView(withId(R.id.passcode))
+        onView(withId(R.id.layout_passcode))
             .check(matches(not(hasTextInputLayoutHintText(targetContext.resources.getString(R.string.error_passcode_length)))))
     }
 
     @Test
     fun passcode2_textInput_givenMatchingPasscode_showsNoError() {
-        onView(withId(R.id.passcode_text))
+        onView(withId(R.id.input_passcode))
             .perform(typeText("55555"))
 
-        onView(withId(R.id.passcode_2_text))
+        onView(withId(R.id.input_repeat_passcode))
             .perform(typeText("55555"))
 
         Espresso.closeSoftKeyboard()
 
-        onView(withId(R.id.passcode_2))
+        onView(withId(R.id.layout_repeat_passcode))
             .check(matches(not(hasTextInputLayoutHintText(targetContext.resources.getString(R.string.error_passcode_must_match)))))
     }
 
     @Test
     fun secretQuestion_textInput_givenText_showsNoError() {
-        onView(withId(R.id.secret_question_text))
+        onView(withId(R.id.input_secret_question))
             .perform(typeText("Question"))
 
         Espresso.closeSoftKeyboard()
 
-        onView(withId(R.id.secret_question))
-            .check(matches(not(hasTextInputLayoutHintText(targetContext.resources.getString(R.string.error_text_empty)))))
+        onView(withId(R.id.layout_secret_question))
+            .check(
+                matches(
+                    not(
+                        hasTextInputLayoutHintText(
+                            targetContext.resources.getString(
+                                R.string.error_text_empty,
+                                R.string.hint_secret_question
+                            )
+                        )
+                    )
+                )
+            )
     }
 
     @Test
     fun secretAnswer_textInput_givenText_showsNoError() {
-        onView(withId(R.id.secret_answer_text))
+        onView(withId(R.id.input_secret_answer))
             .perform(typeText("Answer"))
 
         Espresso.closeSoftKeyboard()
 
-        onView(withId(R.id.secret_answer))
-            .check(matches(not(hasTextInputLayoutHintText(targetContext.resources.getString(R.string.error_text_empty)))))
+        onView(withId(R.id.layout_secret_answer))
+            .check(
+                matches(
+                    not(
+                        hasTextInputLayoutHintText(
+                            targetContext.resources.getString(
+                                R.string.error_text_empty,
+                                R.string.hint_secret_answer
+                            )
+                        )
+                    )
+                )
+            )
     }
 
     @Test
@@ -103,16 +125,16 @@ class CreateLoginFragmentTest {
             Navigation.setViewNavController(it.requireView(), navController)
         }
 
-        onView(withId(R.id.passcode_text))
+        onView(withId(R.id.input_passcode))
             .perform(typeText("55555"))
 
-        onView(withId(R.id.passcode_2_text))
+        onView(withId(R.id.input_repeat_passcode))
             .perform(typeText("55555"))
 
-        onView(withId(R.id.secret_question_text))
+        onView(withId(R.id.input_secret_question))
             .perform(typeText("Question"))
 
-        onView(withId(R.id.secret_answer_text))
+        onView(withId(R.id.input_secret_answer))
             .perform(typeText("Answer"))
 
         Espresso.closeSoftKeyboard()

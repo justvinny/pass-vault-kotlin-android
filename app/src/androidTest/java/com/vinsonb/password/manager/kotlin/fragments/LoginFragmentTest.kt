@@ -13,8 +13,8 @@ import androidx.test.espresso.Espresso
 import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.platform.app.InstrumentationRegistry
-import com.vinsonb.password.manager.kotlin.Constants
 import com.vinsonb.password.manager.kotlin.R
+import com.vinsonb.password.manager.kotlin.utilities.Constants
 import org.junit.After
 import org.junit.Assert
 import org.junit.Before

@@ -11,13 +11,13 @@ import android.widget.ImageView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
-import com.vinsonb.password.manager.kotlin.Constants.Companion.Password.PASSCODE_MAX_LENGTH
-import com.vinsonb.password.manager.kotlin.Constants.Companion.Password.SharedPreferenceKeys.AUTHENTICATED_KEY
-import com.vinsonb.password.manager.kotlin.Constants.Companion.Password.SharedPreferenceKeys.PASSCODE_KEY
-import com.vinsonb.password.manager.kotlin.Constants.Companion.Password.SharedPreferenceKeys.SECRET_ANSWER_KEY
-import com.vinsonb.password.manager.kotlin.Constants.Companion.Password.SharedPreferenceKeys.SECRET_QUESTION_KEY
 import com.vinsonb.password.manager.kotlin.R
 import com.vinsonb.password.manager.kotlin.databinding.FragmentLoginBinding
+import com.vinsonb.password.manager.kotlin.utilities.Constants.Companion.Password.PASSCODE_MAX_LENGTH
+import com.vinsonb.password.manager.kotlin.utilities.Constants.Companion.Password.SharedPreferenceKeys.AUTHENTICATED_KEY
+import com.vinsonb.password.manager.kotlin.utilities.Constants.Companion.Password.SharedPreferenceKeys.PASSCODE_KEY
+import com.vinsonb.password.manager.kotlin.utilities.Constants.Companion.Password.SharedPreferenceKeys.SECRET_ANSWER_KEY
+import com.vinsonb.password.manager.kotlin.utilities.Constants.Companion.Password.SharedPreferenceKeys.SECRET_QUESTION_KEY
 import com.vinsonb.password.manager.kotlin.viewmodels.LoginViewModel
 
 private const val TAG = "LoginFragment"
@@ -152,6 +152,8 @@ class LoginFragment : Fragment(R.layout.fragment_login) {
     /**
      * Logs in the user by changing the authentication value in SharedPreferences to true if
      * the passcode entered matches the value stored.
+     *
+     * returns whether the user successfully logged in or not.
      */
     private fun login(passcode: ArrayDeque<Int>, sharedPreferences: SharedPreferences?): Boolean {
         val savedPasscode = sharedPreferences?.getString(PASSCODE_KEY, "")
