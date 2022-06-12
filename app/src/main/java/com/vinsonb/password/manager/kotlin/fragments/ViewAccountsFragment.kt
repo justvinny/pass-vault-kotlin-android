@@ -8,9 +8,9 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
-import com.vinsonb.password.manager.kotlin.Constants.Companion.Password.SharedPreferenceKeys.AUTHENTICATED_KEY
 import com.vinsonb.password.manager.kotlin.R
 import com.vinsonb.password.manager.kotlin.databinding.FragmentViewAccountsBinding
+import com.vinsonb.password.manager.kotlin.utilities.Constants.Companion.Password.SharedPreferenceKeys.AUTHENTICATED_KEY
 
 private const val TAG = "ViewAccountsFragment"
 
@@ -62,6 +62,8 @@ class ViewAccountsFragment : Fragment(R.layout.fragment_view_accounts) {
 
     /**
      * Change authentication value to false in SharedPreferences.
+     *
+     * returns whether logout was successful or not.
      */
     private fun logout(sharedPreferences: SharedPreferences): Boolean {
         with(sharedPreferences.edit()) {

@@ -80,7 +80,18 @@ class CreateLoginFragmentTest {
         Espresso.closeSoftKeyboard()
 
         onView(withId(R.id.layout_secret_question))
-            .check(matches(not(hasTextInputLayoutHintText(targetContext.resources.getString(R.string.error_text_empty)))))
+            .check(
+                matches(
+                    not(
+                        hasTextInputLayoutHintText(
+                            targetContext.resources.getString(
+                                R.string.error_text_empty,
+                                R.string.hint_secret_question
+                            )
+                        )
+                    )
+                )
+            )
     }
 
     @Test
@@ -91,7 +102,18 @@ class CreateLoginFragmentTest {
         Espresso.closeSoftKeyboard()
 
         onView(withId(R.id.layout_secret_answer))
-            .check(matches(not(hasTextInputLayoutHintText(targetContext.resources.getString(R.string.error_text_empty)))))
+            .check(
+                matches(
+                    not(
+                        hasTextInputLayoutHintText(
+                            targetContext.resources.getString(
+                                R.string.error_text_empty,
+                                R.string.hint_secret_answer
+                            )
+                        )
+                    )
+                )
+            )
     }
 
     @Test

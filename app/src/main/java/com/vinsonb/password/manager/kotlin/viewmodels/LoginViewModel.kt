@@ -3,7 +3,7 @@ package com.vinsonb.password.manager.kotlin.viewmodels
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.vinsonb.password.manager.kotlin.Constants.Companion.Password.PASSCODE_MAX_LENGTH
+import com.vinsonb.password.manager.kotlin.utilities.Constants.Companion.Password.PASSCODE_MAX_LENGTH
 
 class LoginViewModel: ViewModel() {
     private val _password: ArrayDeque<Int> = ArrayDeque()

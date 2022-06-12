@@ -1,4 +1,4 @@
-package com.vinsonb.password.manager.kotlin
+package com.vinsonb.password.manager.kotlin.utilities
 
 class Constants {
     companion object {
@@ -11,6 +11,10 @@ class Constants {
                 const val SECRET_ANSWER_KEY = "secret answer"
                 const val AUTHENTICATED_KEY = "authenticated"
             }
+        }
+
+        object Database {
+            const val DATABASE_NAME = "pass-vault"
         }
     }
 }

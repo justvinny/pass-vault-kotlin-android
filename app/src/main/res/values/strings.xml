@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">Pass Vault</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    <!-- Button Labels   -->
     <string name="button_1">1</string>
     <string name="button_2">2</string>
     <string name="button_3">3</string>
@@ -15,22 +15,30 @@
     <string name="button_0">0</string>
     <string name="button_forgot_password">Forgot?</string>
     <string name="button_create_login">Create Login</string>
-    <string name="hint_secret_answer">Enter your secret answer</string>
-    <string name="hint_secret_question">Enter a secret question</string>
-    <string name="hint_repeat_passcode">Re-enter 5 digit passcode</string>
-    <string name="hint_passcode">Enter 5 digit passcode</string>
-    <string name="error_passcode_not_saved">Not saved. Please enter valid data and fill required fields.</string>
-    <string name="error_passcode_length">Passcode must be 5 digits</string>
-    <string name="error_passcode_must_match">Passcode must match</string>
-    <string name="error_text_empty">Text must not be empty</string>
+    <string name="button_save_account">Save Account</string>
     <string name="logout">Logout</string>
-    <string name="error_wrong_passcode">Passcode entered does not match</string>
-    <string name="menu_item_view">View</string>
-    <string name="menu_item_save">Save</string>
-    <string name="menu_item_generate_pass">Generator</string>
+
+    <!-- Hints for EditText -->
+    <string name="hint_secret_answer">Secret answer</string>
+    <string name="hint_secret_question">Secret question</string>
+    <string name="hint_repeat_passcode">Repeat 5 digit passcode</string>
+    <string name="hint_passcode">5 digit passcode</string>
     <string name="hint_platform">Account Platform</string>
     <string name="hint_username">Username</string>
     <string name="hint_password">Password</string>
     <string name="hint_repeat_password">Repeat Password</string>
-    <string name="button_save_account">Save Account</string>
+
+    <!-- Toast Messages -->
+    <string name="success_save_account">%1$s account with username %2$s has been saved!</string>
+    <string name="error_save_unsuccessful">Not saved. Please enter valid data and fill required fields.</string>
+    <string name="error_passcode_length">Passcode must be 5 digits</string>
+    <string name="error_passcode_must_match">Passcode must match</string>
+    <string name="error_text_empty">%1$s must not be empty</string>
+    <string name="error_password_must_match">Password must match</string>
+    <string name="error_wrong_passcode">Passcode entered does not match</string>
+
+    <!-- Bottom Navigation Menu Item Labels   -->
+    <string name="menu_item_view">View</string>
+    <string name="menu_item_save">Save</string>
+    <string name="menu_item_generate_pass">Generator</string>
 </resources>
