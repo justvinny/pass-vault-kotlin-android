@@ -15,11 +15,8 @@ jobs:
         run: |
           chmod +x ./gradlew
           sudo ./gradlew test
-  android_tests:
+  android_test:
     runs-on: macos-latest
-    strategy:
-      matrix:
-        api-level: [23, 29]
     steps:
       - name: checkout
         uses: actions/checkout@v3
@@ -31,9 +28,7 @@ jobs:
       - name: run tests
         uses: reactivecircus/android-emulator-runner@v2
         with:
-          api-level: ${{ matrix.api-level }}
-          arch: x86_64
-          profile: Nexus 6
+          api-level: 26
           script: |
             chmod 755 ./gradlew
             ./gradlew connectedCheck
