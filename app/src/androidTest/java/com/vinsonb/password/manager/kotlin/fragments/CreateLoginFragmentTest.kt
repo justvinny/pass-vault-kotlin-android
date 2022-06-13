@@ -1,7 +1,6 @@
 package com.vinsonb.password.manager.kotlin.fragments
 
 import android.content.Context
-import android.view.View
 import androidx.fragment.app.testing.FragmentScenario
 import androidx.fragment.app.testing.launchFragmentInContainer
 import androidx.lifecycle.Lifecycle
@@ -16,12 +15,9 @@ import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
-import com.google.android.material.textfield.TextInputLayout
 import com.vinsonb.password.manager.kotlin.R
+import com.vinsonb.password.manager.kotlin.matchers.TextInputLayoutMatchers.Companion.withTextInputLayoutErrorText
 import org.hamcrest.CoreMatchers.not
-import org.hamcrest.Description
-import org.hamcrest.Matcher
-import org.hamcrest.TypeSafeMatcher
 import org.junit.After
 import org.junit.Assert
 import org.junit.Before
@@ -55,7 +51,7 @@ class CreateLoginFragmentTest {
         Espresso.closeSoftKeyboard()
 
         onView(withId(R.id.layout_passcode))
-            .check(matches(not(hasTextInputLayoutHintText(targetContext.resources.getString(R.string.error_passcode_length)))))
+            .check(matches(not(withTextInputLayoutErrorText(targetContext.resources.getString(R.string.error_passcode_length)))))
     }
 
     @Test
@@ -69,7 +65,7 @@ class CreateLoginFragmentTest {
         Espresso.closeSoftKeyboard()
 
         onView(withId(R.id.layout_repeat_passcode))
-            .check(matches(not(hasTextInputLayoutHintText(targetContext.resources.getString(R.string.error_passcode_must_match)))))
+            .check(matches(not(withTextInputLayoutErrorText(targetContext.resources.getString(R.string.error_passcode_must_match)))))
     }
 
     @Test
@@ -83,7 +79,7 @@ class CreateLoginFragmentTest {
             .check(
                 matches(
                     not(
-                        hasTextInputLayoutHintText(
+                        withTextInputLayoutErrorText(
                             targetContext.resources.getString(
                                 R.string.error_text_empty,
                                 R.string.hint_secret_question
@@ -105,7 +101,7 @@ class CreateLoginFragmentTest {
             .check(
                 matches(
                     not(
-                        hasTextInputLayoutHintText(
+                        withTextInputLayoutErrorText(
                             targetContext.resources.getString(
                                 R.string.error_text_empty,
                                 R.string.hint_secret_answer
@@ -144,16 +140,4 @@ class CreateLoginFragmentTest {
 
         Assert.assertEquals(navController.currentDestination?.id, R.id.login_fragment)
     }
-
-    private fun hasTextInputLayoutHintText(expectedErrorText: String): Matcher<View> =
-        object : TypeSafeMatcher<View>() {
-            override fun describeTo(description: Description?) {}
-
-            override fun matchesSafely(item: View?): Boolean {
-                if (item !is TextInputLayout) return false
-                val error = item.hint ?: return false
-                val hint = error.toString()
-                return expectedErrorText == hint
-            }
-        }
 }

@@ -9,7 +9,8 @@ import android.widget.Toast
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import com.vinsonb.password.manager.kotlin.R
-import com.vinsonb.password.manager.kotlin.activities.MainActivity
+import com.vinsonb.password.manager.kotlin.database.AccountLocalDatabase
+import com.vinsonb.password.manager.kotlin.database.AccountRepository
 import com.vinsonb.password.manager.kotlin.database.enitities.Account
 import com.vinsonb.password.manager.kotlin.databinding.FragmentSaveAccountBinding
 import com.vinsonb.password.manager.kotlin.utilities.TextInputUtilities.Companion.checkInputNotEmpty
@@ -43,7 +44,9 @@ class SaveAccountFragment : Fragment(R.layout.fragment_save_account) {
         super.onViewCreated(view, savedInstanceState)
 
         // Init
-        viewModel = (activity as MainActivity).getAccountViewModel()
+        val accountLocalDatabase = AccountLocalDatabase.getDatabase(view.context)
+        val accountRepository = AccountRepository(accountLocalDatabase)
+        viewModel = AccountViewModel(accountRepository)
         enableAllErrorText()
 
         // Observer
