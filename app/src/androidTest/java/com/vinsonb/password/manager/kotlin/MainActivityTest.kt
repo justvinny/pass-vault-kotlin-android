@@ -9,12 +9,19 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.vinsonb.password.manager.kotlin.activities.MainActivity
 import com.vinsonb.password.manager.kotlin.utilities.Constants.Companion.Password.SharedPreferenceKeys.AUTHENTICATED_KEY
+import dagger.hilt.android.testing.HiltAndroidRule
+import dagger.hilt.android.testing.HiltAndroidTest
 import org.junit.*
 import org.junit.runner.RunWith
 
+@HiltAndroidTest
 @RunWith(AndroidJUnit4::class)
 class MainActivityTest {
-    @get:Rule
+
+    @get:Rule(order = 0)
+    var hiltRule = HiltAndroidRule(this)
+
+    @get:Rule(order = 1)
     var activityScenarioRule = ActivityScenarioRule(MainActivity::class.java)
     private lateinit var scenario: ActivityScenario<MainActivity>
     private lateinit var bottomNavigationView: BottomNavigationView

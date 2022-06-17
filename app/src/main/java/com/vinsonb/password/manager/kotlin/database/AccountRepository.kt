@@ -4,7 +4,6 @@ import com.vinsonb.password.manager.kotlin.database.dao.AccountDao
 import com.vinsonb.password.manager.kotlin.database.enitities.Account
 import kotlinx.coroutines.flow.Flow
 
-// TODO Use Hilt for DI and inject repository
 class AccountRepository(
     private val localDatabase: AccountLocalDatabase,
     private val accountDao: AccountDao = localDatabase.accountDao()
