@@ -8,15 +8,15 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import com.vinsonb.password.manager.kotlin.R
-import com.vinsonb.password.manager.kotlin.database.AccountLocalDatabase
-import com.vinsonb.password.manager.kotlin.database.AccountRepository
 import com.vinsonb.password.manager.kotlin.database.enitities.Account
 import com.vinsonb.password.manager.kotlin.databinding.FragmentSaveAccountBinding
 import com.vinsonb.password.manager.kotlin.utilities.TextInputUtilities.Companion.checkInputNotEmpty
 import com.vinsonb.password.manager.kotlin.utilities.TextInputUtilities.Companion.checkInputTextMatches
 import com.vinsonb.password.manager.kotlin.utilities.TextInputUtilities.Companion.isNoneTextInputLayoutErrorEnabled
 import com.vinsonb.password.manager.kotlin.viewmodels.AccountViewModel
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.Dispatchers.Main
@@ -25,11 +25,12 @@ import kotlinx.coroutines.withContext
 
 private const val TAG = "SaveAccountFragment"
 
+@AndroidEntryPoint
 class SaveAccountFragment : Fragment(R.layout.fragment_save_account) {
-    private lateinit var viewModel: AccountViewModel
-
     private var _binding: FragmentSaveAccountBinding? = null
     private val binding get() = _binding!!
+
+    private val viewModel: AccountViewModel by viewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -44,9 +45,6 @@ class SaveAccountFragment : Fragment(R.layout.fragment_save_account) {
         super.onViewCreated(view, savedInstanceState)
 
         // Init
-        val accountLocalDatabase = AccountLocalDatabase.getDatabase(view.context)
-        val accountRepository = AccountRepository(accountLocalDatabase)
-        viewModel = AccountViewModel(accountRepository)
         enableAllErrorText()
 
         // Observer
