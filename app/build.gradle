@@ -16,7 +16,7 @@ android {
         versionCode 1
         versionName "1.0"
 
-        testInstrumentationRunner "com.vinsonb.password.manager.kotlin.CustomTestRunner"
+        testInstrumentationRunner "com.vinsonb.password.manager.kotlin.di.CustomTestRunner"
     }
 
     buildTypes {
