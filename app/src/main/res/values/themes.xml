@@ -12,6 +12,7 @@
         <!-- Status bar color. -->
         <item name="android:statusBarColor">?attr/colorPrimaryVariant</item>
         <!-- Customize your theme here. -->
+        <item name="android:textColor">@color/black</item>
     </style>
 
     <style name="Widget.MaterialComponents.Button.OutlinedButton.Circular" parent="@style/Widget.MaterialComponents.Button.OutlinedButton">
@@ -19,5 +20,9 @@
         <item name="android:layout_height">60dp</item>
         <item name="android:inset">0dp</item>
         <item name="cornerRadius">30dp</item>
+    </style>
+
+    <style name="Widget.AppCompat.TextView.CustomTextView" parent="Widget.AppCompat.TextView">
+        <item name="borderWidth">1dp</item>
     </style>
 </resources>

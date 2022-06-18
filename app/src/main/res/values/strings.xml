@@ -17,6 +17,13 @@
     <string name="button_create_login">Create Login</string>
     <string name="button_save_account">Save Account</string>
     <string name="logout">Logout</string>
+    <string name="button_generate_password">Generate Password</string>
+
+    <!-- Switches -->
+    <string name="switch_uppercase">Uppercase</string>
+    <string name="switch_lowercase">Lowercase</string>
+    <string name="switch_numbers">Numbers</string>
+    <string name="switch_special_symbols">Special Symbols</string>
 
     <!-- Hints for EditText -->
     <string name="hint_secret_answer">Secret answer</string>
@@ -30,6 +37,7 @@
 
     <!-- Toast Messages -->
     <string name="success_save_account">%1$s account with username %2$s has been saved!</string>
+    <string name="success_copied_to_clipboard">Successfully copied to clipboard!</string>
     <string name="error_save_unsuccessful">Not saved. Please enter valid data and fill required fields.</string>
     <string name="error_passcode_length">Passcode must be 5 digits</string>
     <string name="error_passcode_must_match">Passcode must match</string>
@@ -41,4 +49,8 @@
     <string name="menu_item_view">View</string>
     <string name="menu_item_save">Save</string>
     <string name="menu_item_generate_pass">Generator</string>
+
+    <!-- Accessibility Text    -->
+    <string name="content_image_copy">Copy generated password icon button.</string>
+    <string name="default_password_length">20</string>
 </resources>
