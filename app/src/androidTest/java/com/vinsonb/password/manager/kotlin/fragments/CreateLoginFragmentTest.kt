@@ -16,7 +16,7 @@ import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import com.vinsonb.password.manager.kotlin.R
-import com.vinsonb.password.manager.kotlin.matchers.TextInputLayoutMatchers.Companion.withTextInputLayoutErrorText
+import com.vinsonb.password.manager.kotlin.matchers.TextInputLayoutMatchers.withTextInputLayoutErrorText
 import org.hamcrest.CoreMatchers.not
 import org.junit.After
 import org.junit.Assert
@@ -44,7 +44,7 @@ class CreateLoginFragmentTest {
     }
 
     @Test
-    fun passcode_textInput_given5DigitsEntered_showsNoError() {
+    fun inputPasscode_given5DigitsEntered_showsNoError() {
         onView(withId(R.id.input_passcode))
             .perform(typeText("55555"))
 
@@ -55,7 +55,7 @@ class CreateLoginFragmentTest {
     }
 
     @Test
-    fun passcode2_textInput_givenMatchingPasscode_showsNoError() {
+    fun inputRepeatPasscode_givenMatchingPasscode_showsNoError() {
         onView(withId(R.id.input_passcode))
             .perform(typeText("55555"))
 
@@ -69,7 +69,7 @@ class CreateLoginFragmentTest {
     }
 
     @Test
-    fun secretQuestion_textInput_givenText_showsNoError() {
+    fun inputSecretQuestion_givenText_showsNoError() {
         onView(withId(R.id.input_secret_question))
             .perform(typeText("Question"))
 
@@ -91,7 +91,7 @@ class CreateLoginFragmentTest {
     }
 
     @Test
-    fun secretAnswer_textInput_givenText_showsNoError() {
+    fun inputSecretAnswer_givenText_showsNoError() {
         onView(withId(R.id.input_secret_answer))
             .perform(typeText("Answer"))
 
@@ -113,7 +113,7 @@ class CreateLoginFragmentTest {
     }
 
     @Test
-    fun buttonCreateLogin_clickEvent_givenValidData_navigatesToLoginFragment() {
+    fun buttonCreateLogin_clicked_givenValidData_navigatesToLoginFragment() {
         val navController = TestNavHostController(ApplicationProvider.getApplicationContext())
         scenario.onFragment {
             navController.setGraph(R.navigation.nav_graph)

@@ -12,9 +12,9 @@ import androidx.fragment.app.viewModels
 import com.vinsonb.password.manager.kotlin.R
 import com.vinsonb.password.manager.kotlin.database.enitities.Account
 import com.vinsonb.password.manager.kotlin.databinding.FragmentSaveAccountBinding
-import com.vinsonb.password.manager.kotlin.utilities.TextInputUtilities.Companion.checkInputNotEmpty
-import com.vinsonb.password.manager.kotlin.utilities.TextInputUtilities.Companion.checkInputTextMatches
-import com.vinsonb.password.manager.kotlin.utilities.TextInputUtilities.Companion.isNoneTextInputLayoutErrorEnabled
+import com.vinsonb.password.manager.kotlin.utilities.TextInputUtilities.checkInputNotEmpty
+import com.vinsonb.password.manager.kotlin.utilities.TextInputUtilities.checkInputTextMatches
+import com.vinsonb.password.manager.kotlin.utilities.TextInputUtilities.isNoneTextInputLayoutErrorEnabled
 import com.vinsonb.password.manager.kotlin.viewmodels.AccountViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope

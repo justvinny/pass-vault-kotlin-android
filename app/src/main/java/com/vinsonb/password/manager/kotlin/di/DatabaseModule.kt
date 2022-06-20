@@ -21,7 +21,7 @@ object DatabaseModule {
         Room
             .databaseBuilder(
                 context, AccountLocalDatabase::class.java,
-                Constants.Companion.Database.DATABASE_NAME
+                Constants.Database.DATABASE_NAME
             )
             .fallbackToDestructiveMigration()
             .build()

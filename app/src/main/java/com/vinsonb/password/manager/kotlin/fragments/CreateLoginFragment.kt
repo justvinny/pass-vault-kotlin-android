@@ -14,13 +14,13 @@ import androidx.preference.PreferenceManager
 import com.google.android.material.textfield.TextInputLayout
 import com.vinsonb.password.manager.kotlin.R
 import com.vinsonb.password.manager.kotlin.databinding.FragmentCreateLoginBinding
-import com.vinsonb.password.manager.kotlin.utilities.Constants.Companion.Password.PASSCODE_MAX_LENGTH
-import com.vinsonb.password.manager.kotlin.utilities.Constants.Companion.Password.SharedPreferenceKeys.PASSCODE_KEY
-import com.vinsonb.password.manager.kotlin.utilities.Constants.Companion.Password.SharedPreferenceKeys.SECRET_ANSWER_KEY
-import com.vinsonb.password.manager.kotlin.utilities.Constants.Companion.Password.SharedPreferenceKeys.SECRET_QUESTION_KEY
-import com.vinsonb.password.manager.kotlin.utilities.TextInputUtilities.Companion.checkInputNotEmpty
-import com.vinsonb.password.manager.kotlin.utilities.TextInputUtilities.Companion.checkInputTextMatches
-import com.vinsonb.password.manager.kotlin.utilities.TextInputUtilities.Companion.isNoneTextInputLayoutErrorEnabled
+import com.vinsonb.password.manager.kotlin.utilities.Constants.Password.PASSCODE_MAX_LENGTH
+import com.vinsonb.password.manager.kotlin.utilities.Constants.Password.SharedPreferenceKeys.PASSCODE_KEY
+import com.vinsonb.password.manager.kotlin.utilities.Constants.Password.SharedPreferenceKeys.SECRET_ANSWER_KEY
+import com.vinsonb.password.manager.kotlin.utilities.Constants.Password.SharedPreferenceKeys.SECRET_QUESTION_KEY
+import com.vinsonb.password.manager.kotlin.utilities.TextInputUtilities.checkInputNotEmpty
+import com.vinsonb.password.manager.kotlin.utilities.TextInputUtilities.checkInputTextMatches
+import com.vinsonb.password.manager.kotlin.utilities.TextInputUtilities.isNoneTextInputLayoutErrorEnabled
 
 private const val TAG = "CreateLoginFragment"
 
