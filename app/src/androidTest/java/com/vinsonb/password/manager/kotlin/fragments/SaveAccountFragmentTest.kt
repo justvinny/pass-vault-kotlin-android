@@ -11,9 +11,9 @@ import androidx.test.ext.junit.rules.ActivityScenarioRule
 import com.vinsonb.password.manager.kotlin.HiltTestActivity
 import com.vinsonb.password.manager.kotlin.R
 import com.vinsonb.password.manager.kotlin.di.launchFragmentInHiltContainer
-import com.vinsonb.password.manager.kotlin.matchers.TextInputLayoutMatchers.Companion.containsTextInputLayoutErrorText
-import com.vinsonb.password.manager.kotlin.matchers.TextInputLayoutMatchers.Companion.withTextInputLayoutErrorText
-import com.vinsonb.password.manager.kotlin.matchers.TextInputLayoutMatchers.Companion.withTextInputLayoutIsErrorEnabled
+import com.vinsonb.password.manager.kotlin.matchers.TextInputLayoutMatchers.containsTextInputLayoutErrorText
+import com.vinsonb.password.manager.kotlin.matchers.TextInputLayoutMatchers.withTextInputLayoutErrorText
+import com.vinsonb.password.manager.kotlin.matchers.TextInputLayoutMatchers.withTextInputLayoutIsErrorEnabled
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import org.junit.Before
@@ -39,7 +39,7 @@ class SaveAccountFragmentTest {
     }
 
     @Test
-    fun allTextInput_haveErrorEnabledByDefault() {
+    fun allInput_haveErrorEnabledByDefault() {
         val expectedIsErrorEnabled = true
 
         onView(withId(R.id.layout_platform)).check(
@@ -76,7 +76,7 @@ class SaveAccountFragmentTest {
     }
 
     @Test
-    fun allTextInput_givenBlankInput_haveAppropriateErrorMessage() {
+    fun allInput_givenBlankInput_haveAppropriateErrorMessage() {
         val expectedPlatformErrorMsg = "not be empty"
 
         onView(withId(R.id.layout_platform)).check(
@@ -113,7 +113,7 @@ class SaveAccountFragmentTest {
     }
 
     @Test
-    fun textInputPlatform_givenString_hasErrorDisabled() {
+    fun inputPlatform_givenString_hasErrorDisabled() {
         val expectedIsErrorEnabled = false
         val dummyPlatform = "Amazon"
 
@@ -125,7 +125,7 @@ class SaveAccountFragmentTest {
     }
 
     @Test
-    fun textInputUsername_givenString_hasErrorDisabled() {
+    fun inputUsername_givenString_hasErrorDisabled() {
         val expectedIsErrorEnabled = false
         val dummyUsername = "john.doe"
 
@@ -137,7 +137,7 @@ class SaveAccountFragmentTest {
     }
 
     @Test
-    fun textInputPassword_givenString_hasErrorDisabled() {
+    fun inputPassword_givenString_hasErrorDisabled() {
         val expectedIsErrorEnabled = false
         val dummyPassword = "test.password"
 
@@ -149,7 +149,7 @@ class SaveAccountFragmentTest {
     }
 
     @Test
-    fun textInputRepeatPassword_givenStringAndMatchingPassword_hasErrorDisabled() {
+    fun inputRepeatPassword_givenStringAndMatchingPassword_hasErrorDisabled() {
         val expectedIsErrorEnabled = false
         val dummyPassword = "test.password"
 
@@ -167,7 +167,7 @@ class SaveAccountFragmentTest {
     }
 
     @Test
-    fun textInputRepeatPassword_givenNotMatchingPassword_hasErrorEnabledAndShowsAppropriateMessage() {
+    fun inputRepeatPassword_givenNotMatchingPassword_hasErrorEnabledAndShowsAppropriateMessage() {
         val expectedIsErrorEnabled = true
         val expectedErrorMessage = context.resources.getString(R.string.error_password_must_match)
         val dummyPassword = "test.password"
@@ -187,7 +187,7 @@ class SaveAccountFragmentTest {
     }
 
     @Test
-    fun buttonSaveAccount_givenValidDataFromForm_clearsAllFields() {
+    fun buttonSaveAccount_clicked_givenValidDataFromForm_clearsAllFields() {
         val fakePlatform = "Amazon"
         val fakeUsername = "john.doe"
         val fakePassword = "good.password"

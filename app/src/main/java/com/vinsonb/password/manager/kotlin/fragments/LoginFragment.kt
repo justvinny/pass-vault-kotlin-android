@@ -13,11 +13,11 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
 import com.vinsonb.password.manager.kotlin.R
 import com.vinsonb.password.manager.kotlin.databinding.FragmentLoginBinding
-import com.vinsonb.password.manager.kotlin.utilities.Constants.Companion.Password.PASSCODE_MAX_LENGTH
-import com.vinsonb.password.manager.kotlin.utilities.Constants.Companion.Password.SharedPreferenceKeys.AUTHENTICATED_KEY
-import com.vinsonb.password.manager.kotlin.utilities.Constants.Companion.Password.SharedPreferenceKeys.PASSCODE_KEY
-import com.vinsonb.password.manager.kotlin.utilities.Constants.Companion.Password.SharedPreferenceKeys.SECRET_ANSWER_KEY
-import com.vinsonb.password.manager.kotlin.utilities.Constants.Companion.Password.SharedPreferenceKeys.SECRET_QUESTION_KEY
+import com.vinsonb.password.manager.kotlin.utilities.Constants.Password.PASSCODE_MAX_LENGTH
+import com.vinsonb.password.manager.kotlin.utilities.Constants.Password.SharedPreferenceKeys.AUTHENTICATED_KEY
+import com.vinsonb.password.manager.kotlin.utilities.Constants.Password.SharedPreferenceKeys.PASSCODE_KEY
+import com.vinsonb.password.manager.kotlin.utilities.Constants.Password.SharedPreferenceKeys.SECRET_ANSWER_KEY
+import com.vinsonb.password.manager.kotlin.utilities.Constants.Password.SharedPreferenceKeys.SECRET_QUESTION_KEY
 import com.vinsonb.password.manager.kotlin.viewmodels.LoginViewModel
 
 private const val TAG = "LoginFragment"

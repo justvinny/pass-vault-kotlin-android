@@ -43,7 +43,7 @@ class LoginFragmentTest {
     @Test
     fun validPassword_entered_navigateToHomeFragment() {
         with(preferences.edit()) {
-            putString(Constants.Companion.Password.SharedPreferenceKeys.PASSCODE_KEY, "55555")
+            putString(Constants.Password.SharedPreferenceKeys.PASSCODE_KEY, "55555")
             apply()
         }
 

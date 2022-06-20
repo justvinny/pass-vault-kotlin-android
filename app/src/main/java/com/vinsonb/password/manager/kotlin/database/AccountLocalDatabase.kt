@@ -6,7 +6,7 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import com.vinsonb.password.manager.kotlin.database.dao.AccountDao
 import com.vinsonb.password.manager.kotlin.database.enitities.Account
-import com.vinsonb.password.manager.kotlin.utilities.Constants.Companion.Database.DATABASE_NAME
+import com.vinsonb.password.manager.kotlin.utilities.Constants.Database.DATABASE_NAME
 
 @Database(entities = [Account::class], version = 1)
 abstract class AccountLocalDatabase : RoomDatabase() {
