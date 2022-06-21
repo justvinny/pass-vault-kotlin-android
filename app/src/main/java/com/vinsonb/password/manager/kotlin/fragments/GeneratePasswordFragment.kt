@@ -1,24 +1,21 @@
 package com.vinsonb.password.manager.kotlin.fragments
 
-import android.content.ClipData
-import android.content.ClipboardManager
-import android.content.Context
 import android.os.Bundle
 import android.text.Editable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import com.vinsonb.password.manager.kotlin.R
 import com.vinsonb.password.manager.kotlin.databinding.FragmentGeneratePasswordBinding
+import com.vinsonb.password.manager.kotlin.utilities.ClipboardUtilities.copyToClipboard
 import com.vinsonb.password.manager.kotlin.utilities.PasswordGenerator.MAX_LENGTH
 import com.vinsonb.password.manager.kotlin.viewmodels.GeneratePasswordViewModel
 
 private const val TAG = "GeneratePasswordFragment"
-private const val CLIP_LABEL = "Password Length"
+private const val CLIP_LABEL = "Generated Password"
 
 class GeneratePasswordFragment : Fragment(R.layout.fragment_generate_password) {
     private var _binding: FragmentGeneratePasswordBinding? = null
@@ -44,7 +41,7 @@ class GeneratePasswordFragment : Fragment(R.layout.fragment_generate_password) {
 
         // Button listeners
         binding.imageCopy.setOnClickListener {
-            copyToClipboard(view.context)
+            copyToClipboard(view.context, CLIP_LABEL, viewModel.generatedPassword.value.toString())
         }
 
         binding.buttonGeneratePassword.setOnClickListener {
@@ -70,18 +67,6 @@ class GeneratePasswordFragment : Fragment(R.layout.fragment_generate_password) {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
-    }
-
-    /**
-     * Copies the [GeneratePasswordViewModel.passwordLength] from [viewModel]
-     * to the clipboard and notify user when successful.
-     */
-    private fun copyToClipboard(context: Context) {
-        val clipboard = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-        val clip = ClipData.newPlainText(CLIP_LABEL, viewModel.generatedPassword.value.toString())
-        clipboard.setPrimaryClip(clip)
-        Toast.makeText(context, getString(R.string.success_copied_to_clipboard), Toast.LENGTH_SHORT)
-            .show()
     }
 
     /**

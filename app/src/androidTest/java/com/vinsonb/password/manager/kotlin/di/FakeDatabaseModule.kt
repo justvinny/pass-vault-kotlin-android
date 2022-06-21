@@ -17,15 +17,28 @@ import javax.inject.Singleton
     replaces = [DatabaseModule::class]
 )
 object FakeDatabaseModule {
+    private lateinit var accountLocalDatabase: AccountLocalDatabase
+
     @Singleton
     @Provides
     fun providesFakeAccountLocalDatabase(@ApplicationContext context: Context): AccountLocalDatabase =
         Room
             .inMemoryDatabaseBuilder(context, AccountLocalDatabase::class.java)
             .build()
+            .also {
+                accountLocalDatabase = it
+            }
 
     @Singleton
     @Provides
     fun providesFakeAccountRepository(database: AccountLocalDatabase): AccountRepository =
         AccountRepository(database)
+
+    suspend fun populateFakeData() {
+        if (this::accountLocalDatabase.isInitialized) {
+            FakeData.FAKE_ACCOUNTS.forEach {
+                accountLocalDatabase.accountDao().insertAccount(it)
+            }
+        }
+    }
 }

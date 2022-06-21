@@ -1,6 +1,5 @@
 package com.vinsonb.password.manager.kotlin.fragments
 
-import android.content.Context
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -11,6 +10,7 @@ import android.widget.ImageView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
+import androidx.preference.PreferenceManager
 import com.vinsonb.password.manager.kotlin.R
 import com.vinsonb.password.manager.kotlin.databinding.FragmentLoginBinding
 import com.vinsonb.password.manager.kotlin.utilities.Constants.Password.PASSCODE_MAX_LENGTH
@@ -61,7 +61,7 @@ class LoginFragment : Fragment(R.layout.fragment_login) {
         // TODO - Forgot password button
 
         // ImageViews 5 circles
-        val sharedPreferences = activity?.getPreferences(Context.MODE_PRIVATE)
+        val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(view.context)
         populateCircleList()
         viewModel.getPassword().observe(viewLifecycleOwner) {
             setCircleIcon(it)

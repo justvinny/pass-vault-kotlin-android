@@ -4,7 +4,6 @@ import android.content.ClipboardManager
 import android.content.Context
 import androidx.fragment.app.testing.FragmentScenario
 import androidx.fragment.app.testing.launchFragmentInContainer
-import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.*
 import androidx.test.espresso.assertion.ViewAssertions.matches
@@ -15,7 +14,6 @@ import com.vinsonb.password.manager.kotlin.matchers.SliderMatchers.setSliderValu
 import com.vinsonb.password.manager.kotlin.matchers.SliderMatchers.withSliderValue
 import com.vinsonb.password.manager.kotlin.matchers.TextViewMatchers.withStringLength
 import com.vinsonb.password.manager.kotlin.utilities.PasswordGenerator.DEFAULT_LENGTH
-import org.junit.After
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -23,17 +21,11 @@ import org.junit.runner.RunWith
 @RunWith(AndroidJUnit4::class)
 class GeneratePasswordFragmentTest {
     private lateinit var scenario: FragmentScenario<GeneratePasswordFragment>
-    private var targetContext: Context = ApplicationProvider.getApplicationContext()
 
     @Before
     fun setup() {
         scenario =
             launchFragmentInContainer(themeResId = R.style.Theme_PasswordManagerKotlinRewrite)
-    }
-
-    @After()
-    fun teardown() {
-        scenario.close()
     }
 
     @Test

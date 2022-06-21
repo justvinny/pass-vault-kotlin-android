@@ -1,6 +1,5 @@
 package com.vinsonb.password.manager.kotlin.fragments
 
-import android.content.Context
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -141,7 +140,6 @@ class CreateLoginFragment : Fragment(R.layout.fragment_create_login) {
                 binding.layoutPasscode
             )
         ) {
-            val sharedPreferences = activity?.getPreferences(Context.MODE_PRIVATE) ?: return false
             with(sharedPreferences.edit()) {
                 putString(PASSCODE_KEY, passcode)
                 putString(SECRET_QUESTION_KEY, secretQuestion)
