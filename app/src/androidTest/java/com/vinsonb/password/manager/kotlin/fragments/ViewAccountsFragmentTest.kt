@@ -5,19 +5,23 @@ import androidx.navigation.Navigation
 import androidx.navigation.testing.TestNavHostController
 import androidx.preference.PreferenceManager
 import androidx.test.core.app.ApplicationProvider
-import androidx.test.espresso.Espresso.onView
-import androidx.test.espresso.assertion.ViewAssertions.matches
-import androidx.test.espresso.matcher.ViewMatchers.*
+import androidx.test.espresso.Espresso
+import androidx.test.espresso.assertion.ViewAssertions
+import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.vinsonb.password.manager.kotlin.R
-import com.vinsonb.password.manager.kotlin.di.FakeData.FAKE_ACCOUNTS
+import com.vinsonb.password.manager.kotlin.di.FakeData
 import com.vinsonb.password.manager.kotlin.di.FakeDatabaseModule
 import com.vinsonb.password.manager.kotlin.di.launchFragmentInHiltContainer
-import com.vinsonb.password.manager.kotlin.matchers.RecyclerViewMatchers.withPositionMatchesAccount
+import com.vinsonb.password.manager.kotlin.matchers.RecyclerViewMatchers
 import com.vinsonb.password.manager.kotlin.utilities.Constants.Password.SharedPreferenceKeys.AUTHENTICATED_KEY
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers.IO
+import kotlinx.coroutines.Dispatchers.Main
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -60,28 +64,30 @@ class ViewAccountsFragmentTest {
 
     @Test
     fun recyclerView_populatedWithFakeData_displaysAllFakeData() {
-        runBlocking {
+        CoroutineScope(IO).launch {
             FakeDatabaseModule.populateFakeData()
-        }
 
-        FAKE_ACCOUNTS.forEachIndexed { index, account ->
-            onView(withId(R.id.recycler_view_accounts))
-                .check(
-                    matches(
-                        withPositionMatchesAccount(
-                            index,
-                            hasDescendant(withText(account.platform))
+            withContext(Main) {
+                FakeData.FAKE_ACCOUNTS.forEachIndexed { index, account ->
+                    Espresso.onView(ViewMatchers.withId(R.id.recycler_view_accounts))
+                        .check(
+                            ViewAssertions.matches(
+                                RecyclerViewMatchers.withPositionMatchesAccount(
+                                    index,
+                                    ViewMatchers.hasDescendant(ViewMatchers.withText(account.platform))
+                                )
+                            )
                         )
-                    )
-                )
-                .check(
-                    matches(
-                        withPositionMatchesAccount(
-                            index,
-                            hasDescendant(withText(account.username))
+                        .check(
+                            ViewAssertions.matches(
+                                RecyclerViewMatchers.withPositionMatchesAccount(
+                                    index,
+                                    ViewMatchers.hasDescendant(ViewMatchers.withText(account.username))
+                                )
+                            )
                         )
-                    )
-                )
+                }
+            }
         }
     }
 }

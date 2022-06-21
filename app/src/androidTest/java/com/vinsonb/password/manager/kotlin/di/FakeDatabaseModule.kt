@@ -9,9 +9,6 @@ import dagger.Provides
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import dagger.hilt.testing.TestInstallIn
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import javax.inject.Singleton
 
 @Module
@@ -37,12 +34,10 @@ object FakeDatabaseModule {
     fun providesFakeAccountRepository(database: AccountLocalDatabase): AccountRepository =
         AccountRepository(database)
 
-    fun populateFakeData() {
+    suspend fun populateFakeData() {
         if (this::accountLocalDatabase.isInitialized) {
-            CoroutineScope(Dispatchers.IO).launch {
-                FakeData.FAKE_ACCOUNTS.forEach {
-                    accountLocalDatabase.accountDao().insertAccount(it)
-                }
+            FakeData.FAKE_ACCOUNTS.forEach {
+                accountLocalDatabase.accountDao().insertAccount(it)
             }
         }
     }
