@@ -5,9 +5,14 @@ import androidx.navigation.Navigation
 import androidx.navigation.testing.TestNavHostController
 import androidx.preference.PreferenceManager
 import androidx.test.core.app.ApplicationProvider
+import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.assertion.ViewAssertions.matches
+import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.vinsonb.password.manager.kotlin.R
+import com.vinsonb.password.manager.kotlin.di.FakeData.FAKE_ACCOUNTS
 import com.vinsonb.password.manager.kotlin.di.launchFragmentInHiltContainer
+import com.vinsonb.password.manager.kotlin.matchers.RecyclerViewMatchers.withPositionMatchesAccount
 import com.vinsonb.password.manager.kotlin.utilities.Constants.Password.SharedPreferenceKeys.AUTHENTICATED_KEY
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
@@ -30,7 +35,7 @@ class ViewAccountsFragmentTest {
     fun setup() {
         hiltRule.inject()
 
-        with (preferences.edit()) {
+        with(preferences.edit()) {
             putBoolean(AUTHENTICATED_KEY, true)
             apply()
         }
@@ -45,15 +50,32 @@ class ViewAccountsFragmentTest {
 
     @After
     fun teardown() {
-        with (preferences.edit()) {
+        with(preferences.edit()) {
             clear()
             apply()
         }
     }
 
     @Test
-    fun test() {
-        assert(true)
-        Thread.sleep(1000L)
+    fun recyclerView_populatedWithFakeData_displaysAllFakeData() {
+        FAKE_ACCOUNTS.forEachIndexed { index, account ->
+            onView(withId(R.id.recycler_view_accounts))
+                .check(
+                    matches(
+                        withPositionMatchesAccount(
+                            index,
+                            hasDescendant(withText(account.platform))
+                        )
+                    )
+                )
+                .check(
+                    matches(
+                        withPositionMatchesAccount(
+                            index,
+                            hasDescendant(withText(account.username))
+                        )
+                    )
+                )
+        }
     }
 }
