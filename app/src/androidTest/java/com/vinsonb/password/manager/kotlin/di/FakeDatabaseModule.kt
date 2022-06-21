@@ -4,14 +4,13 @@ import android.content.Context
 import androidx.room.Room
 import com.vinsonb.password.manager.kotlin.database.AccountLocalDatabase
 import com.vinsonb.password.manager.kotlin.database.AccountRepository
-import com.vinsonb.password.manager.kotlin.di.FakeData.FAKE_ACCOUNTS
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import dagger.hilt.testing.TestInstallIn
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers.IO
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import javax.inject.Singleton
 
@@ -21,21 +20,30 @@ import javax.inject.Singleton
     replaces = [DatabaseModule::class]
 )
 object FakeDatabaseModule {
+    private lateinit var accountLocalDatabase: AccountLocalDatabase
+
     @Singleton
     @Provides
     fun providesFakeAccountLocalDatabase(@ApplicationContext context: Context): AccountLocalDatabase =
         Room
             .inMemoryDatabaseBuilder(context, AccountLocalDatabase::class.java)
-            .build().apply {
-                CoroutineScope(IO).launch {
-                    FAKE_ACCOUNTS.forEach {
-                        accountDao().insertAccount(it)
-                    }
-                }
+            .build()
+            .also {
+                accountLocalDatabase = it
             }
 
     @Singleton
     @Provides
     fun providesFakeAccountRepository(database: AccountLocalDatabase): AccountRepository =
         AccountRepository(database)
+
+    fun populateFakeData() {
+        if (this::accountLocalDatabase.isInitialized) {
+            CoroutineScope(Dispatchers.IO).launch {
+                FakeData.FAKE_ACCOUNTS.forEach {
+                    accountLocalDatabase.accountDao().insertAccount(it)
+                }
+            }
+        }
+    }
 }

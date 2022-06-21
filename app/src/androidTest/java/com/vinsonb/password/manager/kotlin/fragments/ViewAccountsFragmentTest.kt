@@ -11,6 +11,7 @@ import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.vinsonb.password.manager.kotlin.R
 import com.vinsonb.password.manager.kotlin.di.FakeData.FAKE_ACCOUNTS
+import com.vinsonb.password.manager.kotlin.di.FakeDatabaseModule
 import com.vinsonb.password.manager.kotlin.di.launchFragmentInHiltContainer
 import com.vinsonb.password.manager.kotlin.matchers.RecyclerViewMatchers.withPositionMatchesAccount
 import com.vinsonb.password.manager.kotlin.utilities.Constants.Password.SharedPreferenceKeys.AUTHENTICATED_KEY
@@ -58,6 +59,8 @@ class ViewAccountsFragmentTest {
 
     @Test
     fun recyclerView_populatedWithFakeData_displaysAllFakeData() {
+        FakeDatabaseModule.populateFakeData()
+
         FAKE_ACCOUNTS.forEachIndexed { index, account ->
             onView(withId(R.id.recycler_view_accounts))
                 .check(
