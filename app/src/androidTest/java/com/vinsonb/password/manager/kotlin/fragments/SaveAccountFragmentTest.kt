@@ -7,8 +7,6 @@ import androidx.test.espresso.action.ViewActions.*
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
-import androidx.test.ext.junit.rules.ActivityScenarioRule
-import com.vinsonb.password.manager.kotlin.HiltTestActivity
 import com.vinsonb.password.manager.kotlin.R
 import com.vinsonb.password.manager.kotlin.di.launchFragmentInHiltContainer
 import com.vinsonb.password.manager.kotlin.matchers.TextInputLayoutMatchers.containsTextInputLayoutErrorText
@@ -23,14 +21,10 @@ import org.junit.Test
 @HiltAndroidTest
 class SaveAccountFragmentTest {
 
-    @get:Rule(order = 0)
+    @get:Rule
     var hiltRule = HiltAndroidRule(this)
 
-    @get:Rule(order = 1)
-    var activityRule: ActivityScenarioRule<HiltTestActivity> =
-        ActivityScenarioRule(HiltTestActivity::class.java)
-
-    private var context: Context = ApplicationProvider.getApplicationContext()
+    private var targetContext: Context = ApplicationProvider.getApplicationContext()
 
     @Before
     fun setup() {
@@ -169,7 +163,7 @@ class SaveAccountFragmentTest {
     @Test
     fun inputRepeatPassword_givenNotMatchingPassword_hasErrorEnabledAndShowsAppropriateMessage() {
         val expectedIsErrorEnabled = true
-        val expectedErrorMessage = context.resources.getString(R.string.error_password_must_match)
+        val expectedErrorMessage = targetContext.resources.getString(R.string.error_password_must_match)
         val dummyPassword = "test.password"
         val dummyRepeatPassword = "test_password"
 

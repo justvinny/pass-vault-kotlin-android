@@ -12,7 +12,6 @@ import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso
 import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.matcher.ViewMatchers
-import androidx.test.platform.app.InstrumentationRegistry
 import com.vinsonb.password.manager.kotlin.R
 import com.vinsonb.password.manager.kotlin.utilities.Constants
 import org.junit.After
@@ -22,31 +21,35 @@ import org.junit.Test
 
 class LoginFragmentTest {
     private lateinit var scenario: FragmentScenario<LoginFragment>
-    private lateinit var targetContext: Context
-    private lateinit var preferences: SharedPreferences
+
+    private val targetContext: Context = ApplicationProvider.getApplicationContext()
+    private val preferences: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(targetContext)
 
     @Before
     fun setup() {
+        with(preferences.edit()) {
+            putString(Constants.Password.SharedPreferenceKeys.PASSCODE_KEY, "55555")
+            apply()
+        }
+
         scenario =
             launchFragmentInContainer(themeResId = R.style.Theme_PasswordManagerKotlinRewrite)
         scenario.moveToState(Lifecycle.State.STARTED)
-        targetContext = InstrumentationRegistry.getInstrumentation().targetContext
-        preferences = PreferenceManager.getDefaultSharedPreferences(targetContext)
     }
 
     @After()
     fun teardown() {
+        with(preferences.edit()) {
+            clear()
+            apply()
+        }
+
         scenario.moveToState(Lifecycle.State.DESTROYED)
         scenario.close()
     }
 
     @Test
     fun validPassword_entered_navigateToHomeFragment() {
-        with(preferences.edit()) {
-            putString(Constants.Password.SharedPreferenceKeys.PASSCODE_KEY, "55555")
-            apply()
-        }
-
         val navController = TestNavHostController(ApplicationProvider.getApplicationContext())
         scenario.onFragment {
             navController.setGraph(R.navigation.nav_graph)
@@ -60,10 +63,5 @@ class LoginFragmentTest {
         }
 
         Assert.assertEquals(navController.currentDestination?.id, R.id.view_accounts_fragment)
-
-        with(preferences.edit()) {
-            clear()
-            apply()
-        }
     }
 }

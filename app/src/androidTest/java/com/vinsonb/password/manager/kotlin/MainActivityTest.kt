@@ -1,8 +1,8 @@
 package com.vinsonb.password.manager.kotlin
 
 
-import android.content.Context
 import android.view.Menu
+import androidx.preference.PreferenceManager
 import androidx.test.core.app.ActivityScenario
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -32,7 +32,7 @@ class MainActivityTest {
     fun setup() {
         scenario = activityScenarioRule.scenario
         scenario.onActivity {
-            val preferences = it.getPreferences(Context.MODE_PRIVATE)
+            val preferences = PreferenceManager.getDefaultSharedPreferences(it)
             with(preferences.edit()) {
                 putBoolean(AUTHENTICATED_KEY, true)
                 apply()
@@ -54,7 +54,7 @@ class MainActivityTest {
     @After
     fun teardown() {
         scenario.onActivity {
-            val preferences = it.getPreferences(Context.MODE_PRIVATE)
+            val preferences = PreferenceManager.getDefaultSharedPreferences(it)
             with(preferences.edit()) {
                 putBoolean(AUTHENTICATED_KEY, false)
                 apply()

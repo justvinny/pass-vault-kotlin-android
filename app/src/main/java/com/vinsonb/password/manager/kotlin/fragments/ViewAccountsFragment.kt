@@ -1,6 +1,5 @@
 package com.vinsonb.password.manager.kotlin.fragments
 
-import android.content.Context
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -9,6 +8,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.findNavController
+import androidx.preference.PreferenceManager
 import com.vinsonb.password.manager.kotlin.R
 import com.vinsonb.password.manager.kotlin.adapter.AccountAdapter
 import com.vinsonb.password.manager.kotlin.databinding.FragmentViewAccountsBinding
@@ -38,7 +38,7 @@ class ViewAccountsFragment : Fragment(R.layout.fragment_view_accounts) {
         super.onViewCreated(view, savedInstanceState)
 
         // Check if user is authenticated
-        val sharedPreferences = activity?.getPreferences(Context.MODE_PRIVATE)
+        val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(view.context)
         if (sharedPreferences != null) {
             validateAuthentication(view, sharedPreferences)
         }

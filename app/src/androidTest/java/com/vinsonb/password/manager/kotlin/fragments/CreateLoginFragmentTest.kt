@@ -14,7 +14,6 @@ import androidx.test.espresso.action.ViewActions.typeText
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import androidx.test.platform.app.InstrumentationRegistry
 import com.vinsonb.password.manager.kotlin.R
 import com.vinsonb.password.manager.kotlin.matchers.TextInputLayoutMatchers.withTextInputLayoutErrorText
 import org.hamcrest.CoreMatchers.not
@@ -27,14 +26,14 @@ import org.junit.runner.RunWith
 @RunWith(AndroidJUnit4::class)
 class CreateLoginFragmentTest {
     private lateinit var scenario: FragmentScenario<CreateLoginFragment>
-    private lateinit var targetContext: Context
+
+    private val targetContext: Context = ApplicationProvider.getApplicationContext()
 
     @Before
     fun setup() {
         scenario =
             launchFragmentInContainer(themeResId = R.style.Theme_PasswordManagerKotlinRewrite)
         scenario.moveToState(Lifecycle.State.STARTED)
-        targetContext = InstrumentationRegistry.getInstrumentation().targetContext
     }
 
     @After()
