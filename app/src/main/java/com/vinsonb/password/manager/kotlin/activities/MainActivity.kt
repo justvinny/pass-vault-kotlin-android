@@ -1,5 +1,6 @@
 package com.vinsonb.password.manager.kotlin.activities
 
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
@@ -7,6 +8,7 @@ import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
 import com.vinsonb.password.manager.kotlin.R
 import com.vinsonb.password.manager.kotlin.databinding.ActivityMainBinding
+import com.vinsonb.password.manager.kotlin.utilities.Constants
 import dagger.hilt.android.AndroidEntryPoint
 
 private const val TAG = "MainActivity"
@@ -35,6 +37,20 @@ class MainActivity : AppCompatActivity() {
                 }
                 else -> binding.bottomNavigation.visibility = View.VISIBLE
             }
+        }
+    }
+
+    /**
+     * TODO - Needs to implement logout as menu action on Top App Bar Burger Menu
+     *
+     * Change authentication value to false in SharedPreferences.
+     *
+     * returns whether logout was successful or not.
+     */
+    private fun logout(sharedPreferences: SharedPreferences): Boolean {
+        with(sharedPreferences.edit()) {
+            this?.putBoolean(Constants.Password.SharedPreferenceKeys.AUTHENTICATED_KEY, false)
+            return commit()
         }
     }
 }

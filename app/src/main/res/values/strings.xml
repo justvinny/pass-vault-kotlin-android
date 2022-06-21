@@ -37,7 +37,7 @@
 
     <!-- Toast Messages -->
     <string name="success_save_account">%1$s account with username %2$s has been saved!</string>
-    <string name="success_copied_to_clipboard">Successfully copied to clipboard!</string>
+    <string name="success_copied_to_clipboard">Successfully copied%1$sto clipboard!</string>
     <string name="error_save_unsuccessful">Not saved. Please enter valid data and fill required fields.</string>
     <string name="error_passcode_length">Passcode must be 5 digits</string>
     <string name="error_passcode_must_match">Passcode must match</string>
@@ -51,6 +51,11 @@
     <string name="menu_item_generate_pass">Generator</string>
 
     <!-- Accessibility Text    -->
-    <string name="content_image_copy">Copy generated password icon button.</string>
+    <string name="content_copy_password">Copy password icon</string>
+    <string name="content_maximize_account">Maximize account icon</string>
+    <string name="content_platform_icon">Platform icon</string>
+    <string name="content_username_icon">Username icon</string>
+
+    <!-- Others -->
     <string name="default_password_length">20</string>
 </resources>

@@ -14,7 +14,6 @@ import javax.inject.Inject
 class AccountViewModel @Inject constructor(
     private val accountRepository: AccountRepository
 ) : ViewModel() {
-    // TODO in View Accounts Ticket
     val accounts: LiveData<List<Account>> = accountRepository.getAll().asLiveData()
 
     suspend fun insertAccount(account: Account) {
