@@ -8,6 +8,7 @@ import android.widget.Toast
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import com.vinsonb.password.manager.kotlin.R
 import com.vinsonb.password.manager.kotlin.database.enitities.Account
 import com.vinsonb.password.manager.kotlin.databinding.FragmentSaveAccountBinding
@@ -16,11 +17,8 @@ import com.vinsonb.password.manager.kotlin.utilities.TextInputUtilities.checkInp
 import com.vinsonb.password.manager.kotlin.utilities.TextInputUtilities.isNoneTextInputLayoutErrorEnabled
 import com.vinsonb.password.manager.kotlin.viewmodels.AccountViewModel
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.Dispatchers.Main
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 private const val TAG = "SaveAccountFragment"
 
@@ -131,17 +129,14 @@ class SaveAccountFragment : Fragment(R.layout.fragment_save_account) {
             )
         ) {
             val account = Account(platform, username, password)
-
-            CoroutineScope(IO).launch {
+            lifecycleScope.launch(Main) {
                 viewModel.insertAccount(account)
-                withContext(Main) {
-                    clearFields()
-                    Toast.makeText(
-                        context,
-                        getString(R.string.success_save_account, platform, username),
-                        Toast.LENGTH_SHORT
-                    ).show()
-                }
+                clearFields()
+                Toast.makeText(
+                    context,
+                    getString(R.string.success_save_account, platform, username),
+                    Toast.LENGTH_SHORT
+                ).show()
             }
         } else {
             Toast.makeText(context, getString(R.string.error_save_unsuccessful), Toast.LENGTH_SHORT)

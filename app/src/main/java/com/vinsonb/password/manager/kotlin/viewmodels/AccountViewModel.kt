@@ -16,8 +16,10 @@ class AccountViewModel @Inject constructor(
 ) : ViewModel() {
     val accounts: LiveData<List<Account>> = accountRepository.getAll().asLiveData()
 
-    suspend fun insertAccount(account: Account) {
-        accountRepository.insertAccount(account)
+    fun insertAccount(account: Account) {
+        viewModelScope.launch {
+            accountRepository.insertAccount(account)
+        }
     }
 
     // TODO in Update Account Ticket
