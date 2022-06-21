@@ -1,7 +1,6 @@
 package com.vinsonb.password.manager.kotlin.fragments
 
 import android.os.Bundle
-import android.util.Log.d
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -46,11 +45,6 @@ class SaveAccountFragment : Fragment(R.layout.fragment_save_account) {
 
         // Init
         enableAllErrorText()
-
-        // Observer
-        viewModel.accounts.observe(viewLifecycleOwner) {
-            d(TAG, it.toString())
-        }
 
         // Input Text Change
         binding.inputPlatform.addTextChangedListener {
