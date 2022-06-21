@@ -17,6 +17,7 @@ import com.vinsonb.password.manager.kotlin.matchers.RecyclerViewMatchers.withPos
 import com.vinsonb.password.manager.kotlin.utilities.Constants.Password.SharedPreferenceKeys.AUTHENTICATED_KEY
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
+import kotlinx.coroutines.runBlocking
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -59,7 +60,9 @@ class ViewAccountsFragmentTest {
 
     @Test
     fun recyclerView_populatedWithFakeData_displaysAllFakeData() {
-        FakeDatabaseModule.populateFakeData()
+        runBlocking {
+            FakeDatabaseModule.populateFakeData()
+        }
 
         FAKE_ACCOUNTS.forEachIndexed { index, account ->
             onView(withId(R.id.recycler_view_accounts))
