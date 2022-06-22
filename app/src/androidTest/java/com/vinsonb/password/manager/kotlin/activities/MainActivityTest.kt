@@ -80,7 +80,7 @@ class MainActivityTest {
 
         // 2 cases since the CI test will go to the CreateLoginFragment as there is no existing passcode
         val expectedDestination1 = NavDestination.getDisplayName(targetContext, R.id.login_fragment)
-        val expectedDestination2 = NavDestination.getDisplayName(targetContext, R.id.login_fragment)
+        val expectedDestination2 = NavDestination.getDisplayName(targetContext, R.id.create_login_fragment)
         lateinit var navController: NavController
         scenario.onActivity {
             navController = it.findNavController(R.id.nav_host_fragment)
