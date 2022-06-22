@@ -1,4 +1,4 @@
-package com.vinsonb.password.manager.kotlin.matchers
+package com.vinsonb.password.manager.kotlin.utilities
 
 import android.view.View
 import com.google.android.material.textfield.TextInputLayout

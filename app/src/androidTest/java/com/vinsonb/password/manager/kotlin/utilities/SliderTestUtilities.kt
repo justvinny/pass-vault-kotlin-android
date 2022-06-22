@@ -1,4 +1,4 @@
-package com.vinsonb.password.manager.kotlin.matchers
+package com.vinsonb.password.manager.kotlin.utilities
 
 import android.view.View
 import androidx.test.espresso.UiController
@@ -9,7 +9,7 @@ import org.hamcrest.Description
 import org.hamcrest.Matcher
 import org.hamcrest.TypeSafeMatcher
 
-object SliderMatchers {
+object SliderTestUtilities {
     fun withSliderValue(expectedValue: Float): Matcher<View> = object : TypeSafeMatcher<View>() {
         override fun describeTo(description: Description?) {
             description?.appendText("expected: $expectedValue")
@@ -35,6 +35,5 @@ object SliderMatchers {
                 view.value = value
             }
         }
-
     }
 }

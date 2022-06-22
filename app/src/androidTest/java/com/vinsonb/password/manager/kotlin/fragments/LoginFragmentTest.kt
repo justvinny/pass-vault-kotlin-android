@@ -14,6 +14,7 @@ import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.matcher.ViewMatchers
 import com.vinsonb.password.manager.kotlin.R
 import com.vinsonb.password.manager.kotlin.utilities.Constants
+import com.vinsonb.password.manager.kotlin.utilities.Constants.Password.SharedPreferenceKeys.AUTHENTICATED_KEY
 import org.junit.After
 import org.junit.Assert
 import org.junit.Before
@@ -28,7 +29,7 @@ class LoginFragmentTest {
     @Before
     fun setup() {
         with(preferences.edit()) {
-            putString(Constants.Password.SharedPreferenceKeys.PASSCODE_KEY, "55555")
+            putString(Constants.Password.SharedPreferenceKeys.PASSCODE_KEY, "11111")
             apply()
         }
 
@@ -40,7 +41,7 @@ class LoginFragmentTest {
     @After()
     fun teardown() {
         with(preferences.edit()) {
-            clear()
+            putBoolean(AUTHENTICATED_KEY, false)
             apply()
         }
 
@@ -58,7 +59,7 @@ class LoginFragmentTest {
         }
 
         repeat(5) {
-            Espresso.onView(ViewMatchers.withId(R.id.button_5))
+            Espresso.onView(ViewMatchers.withId(R.id.button_1))
                 .perform(ViewActions.click())
         }
 

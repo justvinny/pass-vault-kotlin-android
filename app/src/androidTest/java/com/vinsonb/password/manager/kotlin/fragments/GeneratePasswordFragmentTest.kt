@@ -10,9 +10,9 @@ import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.vinsonb.password.manager.kotlin.R
-import com.vinsonb.password.manager.kotlin.matchers.SliderMatchers.setSliderValue
-import com.vinsonb.password.manager.kotlin.matchers.SliderMatchers.withSliderValue
-import com.vinsonb.password.manager.kotlin.matchers.TextViewMatchers.withStringLength
+import com.vinsonb.password.manager.kotlin.utilities.SliderTestUtilities.setSliderValue
+import com.vinsonb.password.manager.kotlin.utilities.SliderTestUtilities.withSliderValue
+import com.vinsonb.password.manager.kotlin.utilities.TextViewMatchers.withStringLength
 import com.vinsonb.password.manager.kotlin.utilities.PasswordGenerator.DEFAULT_LENGTH
 import org.junit.Before
 import org.junit.Test
