@@ -5,6 +5,7 @@ import android.content.Context
 import android.view.Menu
 import android.view.MenuItem
 import androidx.navigation.NavController
+import androidx.navigation.NavDestination
 import androidx.navigation.findNavController
 import androidx.preference.PreferenceManager
 import androidx.test.core.app.ActivityScenario
@@ -74,12 +75,12 @@ class MainActivityTest {
         onView(withText(targetContext.getString(R.string.menu_item_logout)))
             .perform(click())
 
-        val expectedDestination = R.id.login_fragment
+        val expectedDestination = NavDestination.getDisplayName(targetContext, R.id.login_fragment)
         lateinit var navController: NavController
         scenario.onActivity {
             navController = it.findNavController(R.id.nav_host_fragment)
         }
-        val actualDestination = navController.currentDestination?.id
+        val actualDestination = navController.currentDestination?.displayName
 
         assertEquals(expectedDestination, actualDestination)
     }
