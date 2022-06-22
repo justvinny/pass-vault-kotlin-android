@@ -3,23 +3,22 @@ package com.vinsonb.password.manager.kotlin.activities
 
 import android.content.Context
 import android.view.Menu
+import android.view.MenuItem
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
 import androidx.preference.PreferenceManager
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
-import androidx.test.espresso.Espresso.openActionBarOverflowOrOptionsMenu
 import androidx.test.espresso.action.ViewActions.click
-import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.vinsonb.password.manager.kotlin.R
 import com.vinsonb.password.manager.kotlin.utilities.Constants.Password.SharedPreferenceKeys.AUTHENTICATED_KEY
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
-import org.hamcrest.Matchers.anyOf
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Rule
@@ -65,18 +64,14 @@ class MainActivityTest {
     @Test
     fun menuItemLogout_clicked_navigatesToLoginFragment() {
         val scenario = ActivityScenario.launch(MainActivity::class.java)
+        scenario.onActivity {
+            val menuItem = it.findViewById<MaterialToolbar>(R.id.top_navigation)
+                .menu.findItem(R.id.menu_item_logout)
+            // Remove Logout from Overflow Menu and show it on the app bar for this test.
+            menuItem.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS)
+        }
 
-        openActionBarOverflowOrOptionsMenu(targetContext)
-        onView(
-            anyOf(
-                withText(
-                    targetContext.getString(
-                        R.string.menu_item_logout,
-                        withId(R.id.menu_item_logout)
-                    )
-                )
-            )
-        )
+        onView(withText(targetContext.getString(R.string.menu_item_logout)))
             .perform(click())
 
         val expectedDestination = R.id.login_fragment

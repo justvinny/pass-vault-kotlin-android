@@ -9,9 +9,9 @@ import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import com.vinsonb.password.manager.kotlin.R
 import com.vinsonb.password.manager.kotlin.di.launchFragmentInHiltContainer
-import com.vinsonb.password.manager.kotlin.matchers.TextInputLayoutMatchers.containsTextInputLayoutErrorText
-import com.vinsonb.password.manager.kotlin.matchers.TextInputLayoutMatchers.withTextInputLayoutErrorText
-import com.vinsonb.password.manager.kotlin.matchers.TextInputLayoutMatchers.withTextInputLayoutIsErrorEnabled
+import com.vinsonb.password.manager.kotlin.utilities.TextInputLayoutMatchers.containsTextInputLayoutErrorText
+import com.vinsonb.password.manager.kotlin.utilities.TextInputLayoutMatchers.withTextInputLayoutErrorText
+import com.vinsonb.password.manager.kotlin.utilities.TextInputLayoutMatchers.withTextInputLayoutIsErrorEnabled
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import org.junit.Before

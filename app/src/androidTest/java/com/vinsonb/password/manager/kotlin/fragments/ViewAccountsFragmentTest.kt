@@ -14,7 +14,7 @@ import com.vinsonb.password.manager.kotlin.R
 import com.vinsonb.password.manager.kotlin.di.FakeData
 import com.vinsonb.password.manager.kotlin.di.FakeDatabaseModule
 import com.vinsonb.password.manager.kotlin.di.launchFragmentInHiltContainer
-import com.vinsonb.password.manager.kotlin.matchers.RecyclerViewMatchers
+import com.vinsonb.password.manager.kotlin.utilities.RecyclerViewMatchers
 import com.vinsonb.password.manager.kotlin.utilities.Constants.Password.SharedPreferenceKeys.AUTHENTICATED_KEY
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
