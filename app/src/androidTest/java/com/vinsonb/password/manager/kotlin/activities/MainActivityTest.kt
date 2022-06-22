@@ -12,6 +12,7 @@ import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
+import androidx.test.espresso.matcher.ViewMatchers.assertThat
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.android.material.appbar.MaterialToolbar
@@ -20,6 +21,8 @@ import com.vinsonb.password.manager.kotlin.R
 import com.vinsonb.password.manager.kotlin.utilities.Constants.Password.SharedPreferenceKeys.AUTHENTICATED_KEY
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
+import org.hamcrest.CoreMatchers.`is`
+import org.hamcrest.CoreMatchers.anyOf
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Rule
@@ -75,14 +78,16 @@ class MainActivityTest {
         onView(withText(targetContext.getString(R.string.menu_item_logout)))
             .perform(click())
 
-        val expectedDestination = NavDestination.getDisplayName(targetContext, R.id.login_fragment)
+        // 2 cases since the CI test will go to the CreateLoginFragment as there is no existing passcode
+        val expectedDestination1 = NavDestination.getDisplayName(targetContext, R.id.login_fragment)
+        val expectedDestination2 = NavDestination.getDisplayName(targetContext, R.id.login_fragment)
         lateinit var navController: NavController
         scenario.onActivity {
             navController = it.findNavController(R.id.nav_host_fragment)
         }
         val actualDestination = navController.currentDestination?.displayName
 
-        assertEquals(expectedDestination, actualDestination)
+        assertThat(actualDestination, anyOf(`is`(expectedDestination1), `is`(expectedDestination2)))
     }
 
     companion object {
