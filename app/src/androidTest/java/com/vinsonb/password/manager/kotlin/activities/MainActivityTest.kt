@@ -11,6 +11,7 @@ import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.Espresso.openActionBarOverflowOrOptionsMenu
 import androidx.test.espresso.action.ViewActions.click
+import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.android.material.bottomnavigation.BottomNavigationView
@@ -18,6 +19,7 @@ import com.vinsonb.password.manager.kotlin.R
 import com.vinsonb.password.manager.kotlin.utilities.Constants.Password.SharedPreferenceKeys.AUTHENTICATED_KEY
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
+import org.hamcrest.Matchers.anyOf
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Rule
@@ -65,7 +67,16 @@ class MainActivityTest {
         val scenario = ActivityScenario.launch(MainActivity::class.java)
 
         openActionBarOverflowOrOptionsMenu(targetContext)
-        onView(withText(targetContext.getString(R.string.menu_item_logout)))
+        onView(
+            anyOf(
+                withText(
+                    targetContext.getString(
+                        R.string.menu_item_logout,
+                        withId(R.id.menu_item_logout)
+                    )
+                )
+            )
+        )
             .perform(click())
 
         val expectedDestination = R.id.login_fragment
