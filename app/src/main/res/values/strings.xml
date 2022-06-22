@@ -16,7 +16,6 @@
     <string name="button_forgot_password">Forgot?</string>
     <string name="button_create_login">Create Login</string>
     <string name="button_save_account">Save Account</string>
-    <string name="logout">Logout</string>
     <string name="button_generate_password">Generate Password</string>
 
     <!-- Switches -->
@@ -49,12 +48,16 @@
     <string name="menu_item_view">View</string>
     <string name="menu_item_save">Save</string>
     <string name="menu_item_generate_pass">Generator</string>
+    <string name="menu_item_logout">Logout</string>
+    <string name="menu_item_credits">Credits</string>
 
     <!-- Accessibility Text    -->
     <string name="content_copy_password">Copy password icon</string>
     <string name="content_maximize_account">Maximize account icon</string>
     <string name="content_platform_icon">Platform icon</string>
     <string name="content_username_icon">Username icon</string>
+    <string name="content_menu_item_logout">Logout menu item</string>
+    <string name="content_menu_item_credits">Credits menu item</string>
 
     <!-- Others -->
     <string name="default_password_length">20</string>

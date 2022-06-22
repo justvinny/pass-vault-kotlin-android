@@ -5,9 +5,10 @@ import androidx.navigation.Navigation
 import androidx.navigation.testing.TestNavHostController
 import androidx.preference.PreferenceManager
 import androidx.test.core.app.ApplicationProvider
-import androidx.test.espresso.Espresso
+import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.assertion.ViewAssertions
 import androidx.test.espresso.matcher.ViewMatchers
+import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.vinsonb.password.manager.kotlin.R
 import com.vinsonb.password.manager.kotlin.di.FakeData
@@ -17,11 +18,7 @@ import com.vinsonb.password.manager.kotlin.matchers.RecyclerViewMatchers
 import com.vinsonb.password.manager.kotlin.utilities.Constants.Password.SharedPreferenceKeys.AUTHENTICATED_KEY
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers.IO
-import kotlinx.coroutines.Dispatchers.Main
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.runBlocking
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -36,6 +33,7 @@ class ViewAccountsFragmentTest {
 
     private var targetContext: Context = ApplicationProvider.getApplicationContext()
     private var preferences = PreferenceManager.getDefaultSharedPreferences(targetContext)
+    private lateinit var navController: TestNavHostController
 
     @Before
     fun setup() {
@@ -46,7 +44,7 @@ class ViewAccountsFragmentTest {
             apply()
         }
 
-        val navController = TestNavHostController(targetContext)
+        navController = TestNavHostController(targetContext)
         launchFragmentInHiltContainer<ViewAccountsFragment> {
             navController.setGraph(R.navigation.nav_graph)
             navController.setCurrentDestination(R.id.view_accounts_fragment)
@@ -57,36 +55,34 @@ class ViewAccountsFragmentTest {
     @After
     fun teardown() {
         with(preferences.edit()) {
-            clear()
+            putBoolean(AUTHENTICATED_KEY, false)
             apply()
         }
     }
 
     @Test
     fun recyclerView_populatedWithFakeData_displaysAllFakeData() {
-        CoroutineScope(IO).launch {
+        runBlocking {
             FakeDatabaseModule.populateFakeData()
 
-            withContext(Main) {
-                FakeData.FAKE_ACCOUNTS.forEachIndexed { index, account ->
-                    Espresso.onView(ViewMatchers.withId(R.id.recycler_view_accounts))
-                        .check(
-                            ViewAssertions.matches(
-                                RecyclerViewMatchers.withPositionMatchesAccount(
-                                    index,
-                                    ViewMatchers.hasDescendant(ViewMatchers.withText(account.platform))
-                                )
+            FakeData.FAKE_ACCOUNTS.forEachIndexed { index, account ->
+                onView(ViewMatchers.withId(R.id.recycler_view_accounts))
+                    .check(
+                        ViewAssertions.matches(
+                            RecyclerViewMatchers.withPositionMatchesAccount(
+                                index,
+                                ViewMatchers.hasDescendant(withText(account.platform))
                             )
                         )
-                        .check(
-                            ViewAssertions.matches(
-                                RecyclerViewMatchers.withPositionMatchesAccount(
-                                    index,
-                                    ViewMatchers.hasDescendant(ViewMatchers.withText(account.username))
-                                )
+                    )
+                    .check(
+                        ViewAssertions.matches(
+                            RecyclerViewMatchers.withPositionMatchesAccount(
+                                index,
+                                ViewMatchers.hasDescendant(withText(account.username))
                             )
                         )
-                }
+                    )
             }
         }
     }
