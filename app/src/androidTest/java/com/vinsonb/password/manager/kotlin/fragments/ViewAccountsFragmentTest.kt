@@ -69,7 +69,7 @@ class ViewAccountsFragmentTest {
                 onView(ViewMatchers.withId(R.id.recycler_view_accounts))
                     .check(
                         ViewAssertions.matches(
-                            RecyclerViewMatchers.withPositionMatchesAccount(
+                            RecyclerViewMatchers.withPositionMatchesText(
                                 index,
                                 ViewMatchers.hasDescendant(withText(account.platform))
                             )
@@ -77,7 +77,7 @@ class ViewAccountsFragmentTest {
                     )
                     .check(
                         ViewAssertions.matches(
-                            RecyclerViewMatchers.withPositionMatchesAccount(
+                            RecyclerViewMatchers.withPositionMatchesText(
                                 index,
                                 ViewMatchers.hasDescendant(withText(account.username))
                             )

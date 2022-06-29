@@ -23,13 +23,8 @@ object Constants {
         const val DATABASE_NAME = "pass-vault"
     }
 
-    // TODO Add page for credits.
     object Credits {
         val CREDITS = listOf(
-            Credit(
-                title = "Expand icon created by mavadee - Flaticon",
-                url = "https://www.flaticon.com/free-icons/expand"
-            ),
             Credit(
                 title = "Platform icon created by Freepik - Flaticon",
                 url = "https://www.flaticon.com/free-icons/platform"

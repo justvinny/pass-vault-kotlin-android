@@ -17,6 +17,7 @@
     <string name="button_create_login">Create Login</string>
     <string name="button_save_account">Save Account</string>
     <string name="button_generate_password">Generate Password</string>
+    <string name="button_close">Close</string>
 
     <!-- Switches -->
     <string name="switch_uppercase">Uppercase</string>
@@ -58,6 +59,7 @@
     <string name="content_username_icon">Username icon</string>
     <string name="content_menu_item_logout">Logout menu item</string>
     <string name="content_menu_item_credits">Credits menu item</string>
+    <string name="content_open_link">Open link</string>
 
     <!-- Others -->
     <string name="default_password_length">20</string>

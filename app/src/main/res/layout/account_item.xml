@@ -51,30 +51,30 @@
 
     <ImageView
         android:id="@+id/icon_maximize_account"
-        android:layout_width="24dp"
-        android:layout_height="24dp"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
         android:layout_marginEnd="16dp"
         android:contentDescription="@string/content_maximize_account"
         app:layout_constraintBottom_toBottomOf="@id/icon_platform"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@id/icon_platform"
-        app:srcCompat="@drawable/ic_maximize_account"
+        app:srcCompat="@drawable/ic_fullscreen"
         app:tint="?colorPrimary" />
 
     <ImageView
         android:id="@+id/icon_copy_password"
         android:layout_width="24dp"
         android:layout_height="24dp"
-        android:layout_marginEnd="16dp"
         android:contentDescription="@string/content_copy_password"
         app:layout_constraintBottom_toBottomOf="@id/icon_username"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/icon_maximize_account"
+        app:layout_constraintStart_toStartOf="@+id/icon_maximize_account"
         app:layout_constraintTop_toTopOf="@id/icon_username"
         app:srcCompat="@drawable/ic_copy"
         app:tint="?colorPrimary" />
 
     <ImageView
-        android:id="@+id/imageView2"
+        android:id="@+id/horizontal_line"
         android:layout_width="0dp"
         android:layout_height="5dp"
         android:layout_marginTop="16dp"
