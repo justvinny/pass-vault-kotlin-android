@@ -7,9 +7,8 @@
     android:orientation="vertical"
     android:padding="16dp">
 
-
     <TextView
-        android:id="@+id/text_dialog_platform"
+        android:id="@+id/text_accounts_dialog_platform"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="16dp"
@@ -27,9 +26,9 @@
         android:layout_width="24dp"
         android:layout_height="24dp"
         android:importantForAccessibility="no"
-        app:layout_constraintBottom_toBottomOf="@id/text_dialog_platform"
+        app:layout_constraintBottom_toBottomOf="@id/text_accounts_dialog_platform"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@id/text_dialog_platform"
+        app:layout_constraintTop_toTopOf="@id/text_accounts_dialog_platform"
         app:srcCompat="@drawable/ic_delete"
         app:tint="@color/dark_red" />
 
@@ -40,12 +39,12 @@
         android:layout_marginTop="8dp"
         android:importantForAccessibility="no"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/text_dialog_platform"
+        app:layout_constraintTop_toBottomOf="@id/text_accounts_dialog_platform"
         app:srcCompat="@drawable/ic_user"
         app:tint="?colorPrimary" />
 
     <TextView
-        android:id="@+id/text_dialog_username"
+        android:id="@+id/text_accounts_dialog_username"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
@@ -62,9 +61,9 @@
         android:layout_width="24dp"
         android:layout_height="24dp"
         android:importantForAccessibility="no"
-        app:layout_constraintBottom_toBottomOf="@id/text_dialog_username"
+        app:layout_constraintBottom_toBottomOf="@id/text_accounts_dialog_username"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@id/text_dialog_username"
+        app:layout_constraintTop_toTopOf="@id/text_accounts_dialog_username"
         app:srcCompat="@drawable/ic_copy"
         app:tint="?colorPrimary" />
 
@@ -73,14 +72,14 @@
         android:layout_width="24dp"
         android:layout_height="24dp"
         android:importantForAccessibility="no"
-        app:layout_constraintBottom_toBottomOf="@id/input_dialog_password"
+        app:layout_constraintBottom_toBottomOf="@id/input_accounts_dialog_password"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@id/input_dialog_password"
+        app:layout_constraintTop_toTopOf="@id/input_accounts_dialog_password"
         app:srcCompat="@drawable/ic_password"
         app:tint="?colorPrimary" />
 
     <EditText
-        android:id="@+id/input_dialog_password"
+        android:id="@+id/input_accounts_dialog_password"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
@@ -94,7 +93,7 @@
         app:layout_constraintEnd_toStartOf="@id/icon_accounts_dialog_see_passcode"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toEndOf="@id/icon_accounts_dialog_password"
-        app:layout_constraintTop_toBottomOf="@id/text_dialog_username"
+        app:layout_constraintTop_toBottomOf="@id/text_accounts_dialog_username"
         tools:text="good.password412412341" />
 
     <ImageView
@@ -103,9 +102,9 @@
         android:layout_height="24dp"
         android:layout_marginEnd="8dp"
         android:importantForAccessibility="no"
-        app:layout_constraintBottom_toBottomOf="@id/input_dialog_password"
+        app:layout_constraintBottom_toBottomOf="@id/input_accounts_dialog_password"
         app:layout_constraintEnd_toStartOf="@id/icon_accounts_dialog_edit"
-        app:layout_constraintTop_toTopOf="@id/input_dialog_password"
+        app:layout_constraintTop_toTopOf="@id/input_accounts_dialog_password"
         app:srcCompat="@drawable/ic_see_passcode"
         app:tint="?colorPrimary" />
 
@@ -115,9 +114,9 @@
         android:layout_height="24dp"
         android:layout_marginEnd="8dp"
         android:importantForAccessibility="no"
-        app:layout_constraintBottom_toBottomOf="@id/input_dialog_password"
+        app:layout_constraintBottom_toBottomOf="@id/input_accounts_dialog_password"
         app:layout_constraintEnd_toStartOf="@id/icon_accounts_dialog_copy_password"
-        app:layout_constraintTop_toTopOf="@id/input_dialog_password"
+        app:layout_constraintTop_toTopOf="@id/input_accounts_dialog_password"
         app:srcCompat="@drawable/ic_edit"
         app:tint="?colorPrimary" />
 
@@ -126,9 +125,9 @@
         android:layout_width="24dp"
         android:layout_height="24dp"
         android:importantForAccessibility="no"
-        app:layout_constraintBottom_toBottomOf="@id/input_dialog_password"
+        app:layout_constraintBottom_toBottomOf="@id/input_accounts_dialog_password"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@id/input_dialog_password"
+        app:layout_constraintTop_toTopOf="@id/input_accounts_dialog_password"
         app:srcCompat="@drawable/ic_copy"
         app:tint="?colorPrimary" />
 
@@ -140,6 +139,6 @@
         android:text="@string/button_close"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/input_dialog_password"
+        app:layout_constraintTop_toBottomOf="@id/input_accounts_dialog_password"
         app:strokeColor="?colorPrimary" />
 </androidx.constraintlayout.widget.ConstraintLayout>

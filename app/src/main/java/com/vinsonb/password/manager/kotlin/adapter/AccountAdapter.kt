@@ -39,13 +39,13 @@ class AccountAdapter(
         holder.textViewUsername.text = accountList[position].username
 
         holder.iconMaximizeAccount.setOnClickListener {
-            val textViewPlatform = accountsDialog.findViewById<TextView>(R.id.text_dialog_platform)
+            val textViewPlatform = accountsDialog.findViewById<TextView>(R.id.text_accounts_dialog_platform)
             textViewPlatform.text = accountList[position].platform
 
-            val textViewUsername = accountsDialog.findViewById<TextView>(R.id.text_dialog_username)
+            val textViewUsername = accountsDialog.findViewById<TextView>(R.id.text_accounts_dialog_username)
             textViewUsername.text = accountList[position].username
 
-            val inputPassword = accountsDialog.findViewById<EditText>(R.id.input_dialog_password)
+            val inputPassword = accountsDialog.findViewById<EditText>(R.id.input_accounts_dialog_password)
             inputPassword.setText(accountList[position].password)
             inputPassword.setSelection(accountList[position].password.length)
 
