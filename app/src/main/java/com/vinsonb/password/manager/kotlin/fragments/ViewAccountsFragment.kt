@@ -43,7 +43,7 @@ class ViewAccountsFragment : Fragment(R.layout.fragment_view_accounts) {
             validateAuthentication(view, sharedPreferences)
         }
 
-        binding.recyclerViewAccounts.adapter = AccountAdapter()
+        binding.recyclerViewAccounts.adapter = AccountAdapter(view.context)
 
         viewModel.accounts.observe(viewLifecycleOwner) {
             (binding.recyclerViewAccounts.adapter as AccountAdapter).updateAccountList(it)

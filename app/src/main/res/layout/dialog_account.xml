@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+
+    <TextView
+        android:id="@+id/text_dialog_platform"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
+        android:textColor="?colorPrimary"
+        android:textSize="32sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toStartOf="@+id/icon_accounts_dialog_delete"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="Amazon" />
+
+    <ImageView
+        android:id="@+id/icon_accounts_dialog_delete"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:importantForAccessibility="no"
+        app:layout_constraintBottom_toBottomOf="@id/text_dialog_platform"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/text_dialog_platform"
+        app:srcCompat="@drawable/ic_delete"
+        app:tint="@color/dark_red" />
+
+    <ImageView
+        android:id="@+id/icon_accounts_dialog_user"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_marginTop="8dp"
+        android:importantForAccessibility="no"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/text_dialog_platform"
+        app:srcCompat="@drawable/ic_user"
+        app:tint="?colorPrimary" />
+
+    <TextView
+        android:id="@+id/text_dialog_username"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="16dp"
+        app:layout_constraintBottom_toBottomOf="@id/icon_accounts_dialog_user"
+        app:layout_constraintEnd_toStartOf="@id/icon_accounts_dialog_copy_username"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toEndOf="@id/icon_accounts_dialog_user"
+        app:layout_constraintTop_toTopOf="@id/icon_accounts_dialog_user"
+        tools:text="test.username@test.com" />
+
+    <ImageView
+        android:id="@+id/icon_accounts_dialog_copy_username"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:importantForAccessibility="no"
+        app:layout_constraintBottom_toBottomOf="@id/text_dialog_username"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/text_dialog_username"
+        app:srcCompat="@drawable/ic_copy"
+        app:tint="?colorPrimary" />
+
+    <ImageView
+        android:id="@+id/icon_accounts_dialog_password"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:importantForAccessibility="no"
+        app:layout_constraintBottom_toBottomOf="@id/input_dialog_password"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/input_dialog_password"
+        app:srcCompat="@drawable/ic_password"
+        app:tint="?colorPrimary" />
+
+    <EditText
+        android:id="@+id/input_dialog_password"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="16dp"
+        android:enabled="false"
+        android:hint="@string/hint_password"
+        android:importantForAutofill="no"
+        android:inputType="textPassword"
+        android:minWidth="150dp"
+        app:layout_constraintEnd_toStartOf="@id/icon_accounts_dialog_see_passcode"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toEndOf="@id/icon_accounts_dialog_password"
+        app:layout_constraintTop_toBottomOf="@id/text_dialog_username"
+        tools:text="good.password412412341" />
+
+    <ImageView
+        android:id="@+id/icon_accounts_dialog_see_passcode"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_marginEnd="8dp"
+        android:importantForAccessibility="no"
+        app:layout_constraintBottom_toBottomOf="@id/input_dialog_password"
+        app:layout_constraintEnd_toStartOf="@id/icon_accounts_dialog_edit"
+        app:layout_constraintTop_toTopOf="@id/input_dialog_password"
+        app:srcCompat="@drawable/ic_see_passcode"
+        app:tint="?colorPrimary" />
+
+    <ImageView
+        android:id="@+id/icon_accounts_dialog_edit"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_marginEnd="8dp"
+        android:importantForAccessibility="no"
+        app:layout_constraintBottom_toBottomOf="@id/input_dialog_password"
+        app:layout_constraintEnd_toStartOf="@id/icon_accounts_dialog_copy_password"
+        app:layout_constraintTop_toTopOf="@id/input_dialog_password"
+        app:srcCompat="@drawable/ic_edit"
+        app:tint="?colorPrimary" />
+
+    <ImageView
+        android:id="@+id/icon_accounts_dialog_copy_password"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:importantForAccessibility="no"
+        app:layout_constraintBottom_toBottomOf="@id/input_dialog_password"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/input_dialog_password"
+        app:srcCompat="@drawable/ic_copy"
+        app:tint="?colorPrimary" />
+
+    <Button
+        android:id="@+id/button_accounts_dialog_close"
+        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="@string/button_close"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/input_dialog_password"
+        app:strokeColor="?colorPrimary" />
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -8,4 +8,7 @@
     <color name="custom_purple_dark">#00000f</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+    <color name="dark_red">#D11A2A</color>
+    <color name="light_red">#FF8886</color>
+    <color name="gray">#808080</color>
 </resources>
