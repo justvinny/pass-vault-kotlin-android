@@ -70,8 +70,7 @@ class MainActivity : AppCompatActivity() {
 
         // Setup for Credits Dialog
         creditsDialog = Dialog(this)
-        creditsDialog.requestWindowFeature(Window.FEATURE_ACTION_BAR)
-        creditsDialog.setTitle(R.string.menu_item_credits)
+        creditsDialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
         creditsDialog.setContentView(R.layout.dialog_credits)
 
         val recyclerViewCredits =
