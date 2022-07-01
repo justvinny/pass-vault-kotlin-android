@@ -130,15 +130,4 @@
         app:layout_constraintTop_toTopOf="@id/input_accounts_dialog_password"
         app:srcCompat="@drawable/ic_copy"
         app:tint="?colorPrimary" />
-
-    <Button
-        android:id="@+id/button_accounts_dialog_close"
-        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:text="@string/button_close"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/input_accounts_dialog_password"
-        app:strokeColor="?colorPrimary" />
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,32 +1,23 @@
 package com.vinsonb.password.manager.kotlin.adapter
 
-import android.app.Dialog
-import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.Window
-import android.widget.Button
-import android.widget.EditText
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.RecyclerView
 import com.vinsonb.password.manager.kotlin.R
 import com.vinsonb.password.manager.kotlin.database.enitities.Account
+import com.vinsonb.password.manager.kotlin.fragments.dialogs.AccountDialog
 import com.vinsonb.password.manager.kotlin.utilities.ClipboardUtilities.copyToClipboard
 
 private const val CLIP_LABEL = "Account Password"
 
 class AccountAdapter(
-    private val context: Context,
-    private val accountsDialog: Dialog = Dialog(context),
+    private val fragmentManager: FragmentManager,
     private var accountList: MutableList<Account> = mutableListOf()
 ) : RecyclerView.Adapter<AccountAdapter.ViewHolder>() {
-
-    init {
-        accountsDialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
-        accountsDialog.setContentView(R.layout.dialog_account)
-    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent.context)
@@ -39,22 +30,12 @@ class AccountAdapter(
         holder.textViewUsername.text = accountList[position].username
 
         holder.iconMaximizeAccount.setOnClickListener {
-            val textViewPlatform = accountsDialog.findViewById<TextView>(R.id.text_accounts_dialog_platform)
-            textViewPlatform.text = accountList[position].platform
-
-            val textViewUsername = accountsDialog.findViewById<TextView>(R.id.text_accounts_dialog_username)
-            textViewUsername.text = accountList[position].username
-
-            val inputPassword = accountsDialog.findViewById<EditText>(R.id.input_accounts_dialog_password)
-            inputPassword.setText(accountList[position].password)
-            inputPassword.setSelection(accountList[position].password.length)
-
-            val buttonClose = accountsDialog.findViewById<Button>(R.id.button_accounts_dialog_close)
-            buttonClose.setOnClickListener {
-                accountsDialog.dismiss()
-            }
-
-            accountsDialog.show()
+            val dialog = AccountDialog(
+                accountList[position].platform,
+                accountList[position].username,
+                accountList[position].password
+            )
+            dialog.show(fragmentManager, AccountDialog.TAG)
         }
 
         holder.iconCopy.setOnClickListener {

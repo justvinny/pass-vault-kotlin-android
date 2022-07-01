@@ -2,7 +2,7 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="wrap_content"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
     <ImageView
@@ -19,12 +19,14 @@
 
     <TextView
         android:id="@+id/text_credit_title"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:paddingHorizontal="8dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginStart="8dp"
         app:layout_constraintBottom_toBottomOf="@id/icon_open_link"
         app:layout_constraintStart_toEndOf="@id/icon_open_link"
         app:layout_constraintTop_toTopOf="@id/icon_open_link"
+        android:layout_marginEnd="8dp"
         tools:text="Platform icon created by Freepik - Flaticon" />
 
     <ImageView
