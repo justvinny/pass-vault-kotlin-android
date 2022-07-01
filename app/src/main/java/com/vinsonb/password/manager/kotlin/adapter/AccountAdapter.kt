@@ -10,12 +10,13 @@ import androidx.recyclerview.widget.RecyclerView
 import com.vinsonb.password.manager.kotlin.R
 import com.vinsonb.password.manager.kotlin.database.enitities.Account
 import com.vinsonb.password.manager.kotlin.fragments.dialogs.AccountDialog
+import com.vinsonb.password.manager.kotlin.utilities.ClipboardUtilities.CLIP_PASSWORD_LABEL
 import com.vinsonb.password.manager.kotlin.utilities.ClipboardUtilities.copyToClipboard
+import com.vinsonb.password.manager.kotlin.viewmodels.AccountViewModel
 
-private const val CLIP_LABEL = "Account Password"
-
-class AccountAdapter(
+class AccountAdapter (
     private val fragmentManager: FragmentManager,
+    private val viewModel: AccountViewModel,
     private var accountList: MutableList<Account> = mutableListOf()
 ) : RecyclerView.Adapter<AccountAdapter.ViewHolder>() {
 
@@ -31,9 +32,8 @@ class AccountAdapter(
 
         holder.iconMaximizeAccount.setOnClickListener {
             val dialog = AccountDialog(
-                accountList[position].platform,
-                accountList[position].username,
-                accountList[position].password
+                accountList[position],
+                viewModel
             )
             dialog.show(fragmentManager, AccountDialog.TAG)
         }
@@ -41,7 +41,7 @@ class AccountAdapter(
         holder.iconCopy.setOnClickListener {
             copyToClipboard(
                 holder.iconCopy.context,
-                CLIP_LABEL,
+                CLIP_PASSWORD_LABEL,
                 accountList[position].password,
                 message = " password for ${accountList[position].username} "
             )
@@ -55,7 +55,7 @@ class AccountAdapter(
     fun updateAccountList(accountList: List<Account>) {
         this.accountList.clear()
         this.accountList.addAll(accountList)
-        notifyDataSetChanged() // TODO Optimise for performance
+        notifyDataSetChanged()
     }
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
