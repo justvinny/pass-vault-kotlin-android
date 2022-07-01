@@ -7,6 +7,9 @@ import android.widget.Toast
 import com.vinsonb.password.manager.kotlin.R
 
 object ClipboardUtilities {
+    const val CLIP_USERNAME_LABEL = "Account Username"
+    const val CLIP_PASSWORD_LABEL = "Account Password"
+
     /**
      * Copies text to the clipboard and notify user when successful.
      */

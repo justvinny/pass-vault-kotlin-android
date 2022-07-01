@@ -22,14 +22,12 @@ class AccountViewModel @Inject constructor(
         }
     }
 
-    // TODO in Update Account Ticket
     fun updateAccount(account: Account) {
         viewModelScope.launch {
             accountRepository.updateAccount(account)
         }
     }
 
-    // TODO in Delete Account Ticket
     fun deleteAccount(account: Account) {
         viewModelScope.launch {
             accountRepository.deleteAccount(account)

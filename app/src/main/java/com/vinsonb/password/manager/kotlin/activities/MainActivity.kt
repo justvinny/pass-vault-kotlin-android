@@ -1,22 +1,18 @@
 package com.vinsonb.password.manager.kotlin.activities
 
-import android.app.Dialog
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.os.CountDownTimer
 import android.view.View
-import android.view.Window
-import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.forEach
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
 import androidx.preference.PreferenceManager
-import androidx.recyclerview.widget.RecyclerView
 import com.vinsonb.password.manager.kotlin.R
-import com.vinsonb.password.manager.kotlin.adapter.CreditAdapter
 import com.vinsonb.password.manager.kotlin.databinding.ActivityMainBinding
+import com.vinsonb.password.manager.kotlin.fragments.dialogs.CreditsDialog
 import com.vinsonb.password.manager.kotlin.utilities.Constants.Password.SharedPreferenceKeys.AUTHENTICATED_KEY
 import com.vinsonb.password.manager.kotlin.utilities.Constants.Password.Timer.MAX_TIMER_MILLI
 import com.vinsonb.password.manager.kotlin.utilities.Constants.Password.Timer.TIMER_INTERVAL_MILLI
@@ -30,8 +26,8 @@ class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
     private lateinit var sharedPreferences: SharedPreferences
     private lateinit var countDownTimer: CountDownTimer
+    private lateinit var creditsDialog: CreditsDialog
     private lateinit var navController: NavController
-    private lateinit var creditsDialog: Dialog
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -40,6 +36,7 @@ class MainActivity : AppCompatActivity() {
 
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(applicationContext)
         countDownTimer = createCountdownTimer()
+        creditsDialog = CreditsDialog()
 
         // Setup for bottom navigation bar to use navigation controller.
         val navHostFragment = supportFragmentManager.findFragmentById(
@@ -68,26 +65,11 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-        // Setup for Credits Dialog
-        creditsDialog = Dialog(this)
-        creditsDialog.requestWindowFeature(Window.FEATURE_ACTION_BAR)
-        creditsDialog.setTitle(R.string.menu_item_credits)
-        creditsDialog.setContentView(R.layout.dialog_credits)
-
-        val recyclerViewCredits =
-            creditsDialog.findViewById<RecyclerView>(R.id.recycler_view_credits)
-        recyclerViewCredits.adapter = CreditAdapter(this)
-
-        val buttonClose = creditsDialog.findViewById<Button>(R.id.button_close)
-        buttonClose.setOnClickListener {
-            creditsDialog.dismiss()
-        }
-
         // Top Bar Menu Items
         binding.topNavigation.setOnMenuItemClickListener {
             when (it.itemId) {
                 R.id.menu_item_credits -> {
-                    creditsDialog.show()
+                    creditsDialog.show(supportFragmentManager, CreditsDialog.TAG)
                     true
                 }
                 R.id.menu_item_logout -> {

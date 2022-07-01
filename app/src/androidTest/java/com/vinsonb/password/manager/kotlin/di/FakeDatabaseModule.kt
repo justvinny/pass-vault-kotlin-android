@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.room.Room
 import com.vinsonb.password.manager.kotlin.database.AccountLocalDatabase
 import com.vinsonb.password.manager.kotlin.database.AccountRepository
+import com.vinsonb.password.manager.kotlin.database.enitities.Account
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -40,5 +41,9 @@ object FakeDatabaseModule {
                 accountLocalDatabase.accountDao().insertAccount(it)
             }
         }
+    }
+
+    suspend fun addFakeAccount(account: Account) {
+        accountLocalDatabase.accountDao().insertAccount(account)
     }
 }

@@ -109,9 +109,6 @@ class MainActivityTest {
         onView(withId(R.id.text_credits_dialog_title))
             .check(matches(isDisplayed()))
 
-        onView(withId(R.id.button_close))
-            .check(matches(isDisplayed()))
-
         Constants.Credits.CREDITS.forEachIndexed { index, credit ->
             onView(withId(R.id.recycler_view_credits))
                 .check(
