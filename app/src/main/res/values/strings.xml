@@ -34,6 +34,7 @@
     <string name="hint_username">Username</string>
     <string name="hint_password">Password</string>
     <string name="hint_repeat_password">Repeat Password</string>
+    <string name="hint_search">Search account or platform</string>
 
     <!-- Toast Messages -->
     <string name="success_save_account">%1$s account with username %2$s has been saved!</string>
