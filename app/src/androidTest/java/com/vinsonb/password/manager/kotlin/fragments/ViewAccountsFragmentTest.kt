@@ -7,11 +7,12 @@ import androidx.navigation.testing.TestNavHostController
 import androidx.preference.PreferenceManager
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
-import androidx.test.espresso.action.ViewActions.click
+import androidx.test.espresso.action.ViewActions.*
 import androidx.test.espresso.assertion.ViewAssertions.doesNotExist
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import androidx.test.filters.FlakyTest
 import com.vinsonb.password.manager.kotlin.R
 import com.vinsonb.password.manager.kotlin.database.enitities.Account
 import com.vinsonb.password.manager.kotlin.di.FakeData
@@ -41,6 +42,7 @@ class ViewAccountsFragmentTest {
     private var targetContext: Context = ApplicationProvider.getApplicationContext()
     private var preferences = PreferenceManager.getDefaultSharedPreferences(targetContext)
     private lateinit var navController: TestNavHostController
+    private lateinit var fragment: ViewAccountsFragment
 
     @Before
     fun setup() {
@@ -56,6 +58,7 @@ class ViewAccountsFragmentTest {
             navController.setGraph(R.navigation.nav_graph)
             navController.setCurrentDestination(R.id.view_accounts_fragment)
             Navigation.setViewNavController(requireView(), navController)
+            fragment = this
         }
     }
 
@@ -95,6 +98,42 @@ class ViewAccountsFragmentTest {
     }
 
     @Test
+    fun searchInput_givenValidInput_displaysOnlyDataThatContainsGivenInput() {
+        runBlocking {
+            val platformToSearch = "amazon"
+            val usernameToSearch = "jo"
+            val expectedPlatformSearchLength = 1
+            val expectedUsernameSearchLength = 3
+            FakeDatabaseModule.populateFakeData()
+
+            onView(withId(R.id.input_search))
+                .perform(typeText(platformToSearch), closeSoftKeyboard())
+
+            onView(withId(R.id.recycler_view_accounts))
+                .check(
+                    matches(
+                        RecyclerViewMatchers.withAdaptedDataLength(
+                            expectedPlatformSearchLength
+                        )
+                    )
+                )
+
+            onView(withId(R.id.input_search))
+                .perform(clearText(), typeText(usernameToSearch), closeSoftKeyboard())
+
+            onView(withId(R.id.recycler_view_accounts))
+                .check(
+                    matches(
+                        RecyclerViewMatchers.withAdaptedDataLength(
+                            expectedUsernameSearchLength
+                        )
+                    )
+                )
+        }
+    }
+
+    @Test
+    @FlakyTest
     fun accountDialog_givenFakeAccount_displaysAndFunctionsProperly() {
         runBlocking {
             val platform = "TestPlatform"
@@ -131,7 +170,8 @@ class ViewAccountsFragmentTest {
             // Test copy and paste functionalities.
             val clipboardManager: ClipboardManager?
             withContext(Main) {
-                clipboardManager = targetContext.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+                clipboardManager =
+                    targetContext.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
             }
 
             if (clipboardManager != null) {

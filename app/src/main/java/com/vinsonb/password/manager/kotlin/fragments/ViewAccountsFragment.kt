@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.findNavController
@@ -43,10 +44,24 @@ class ViewAccountsFragment : Fragment(R.layout.fragment_view_accounts) {
             validateAuthentication(view, sharedPreferences)
         }
 
+        // Recycler view
         binding.recyclerViewAccounts.adapter = AccountAdapter(parentFragmentManager, viewModel)
 
+        // Observer on account changes
         viewModel.accounts.observe(viewLifecycleOwner) {
             (binding.recyclerViewAccounts.adapter as AccountAdapter).updateAccountList(it)
+        }
+
+        // Search functionality for accounts or platform
+        binding.inputSearch.addTextChangedListener { text ->
+            viewModel.accounts.value?.filter {
+                it.username.contains(text.toString(), ignoreCase = true) ||
+                        it.platform.contains(text.toString(), ignoreCase = true)
+            }.also {
+                if (it != null) {
+                    (binding.recyclerViewAccounts.adapter as AccountAdapter).updateAccountList(it)
+                }
+            }
         }
     }
 

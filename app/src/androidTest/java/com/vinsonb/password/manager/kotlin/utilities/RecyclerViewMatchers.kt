@@ -21,4 +21,17 @@ object RecyclerViewMatchers {
                 return itemMatcher.matches(viewHolder.itemView)
             }
         }
+
+    fun withAdaptedDataLength(length: Int): Matcher<View> =
+        object : TypeSafeMatcher<View>() {
+            override fun describeTo(description: Description?) {
+                description?.appendText("expected length: $length")
+            }
+
+            override fun matchesSafely(item: View?): Boolean {
+                if (item !is RecyclerView) return false
+                val adapterCount = item.adapter?.itemCount ?: return false
+                return adapterCount == length
+            }
+        }
 }
