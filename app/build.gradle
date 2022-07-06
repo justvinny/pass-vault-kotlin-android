@@ -4,10 +4,12 @@ plugins {
     id 'androidx.navigation.safeargs.kotlin'
     id 'kotlin-kapt'
     id 'dagger.hilt.android.plugin'
+    id 'com.google.android.libraries.mapsplatform.secrets-gradle-plugin'
 }
 
 android {
     compileSdk 32
+
 
     defaultConfig {
         applicationId "com.vinsonb.password.manager.kotlin"

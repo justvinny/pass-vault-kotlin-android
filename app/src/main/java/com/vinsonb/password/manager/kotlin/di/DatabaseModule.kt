@@ -2,7 +2,7 @@ package com.vinsonb.password.manager.kotlin.di
 
 import android.content.Context
 import androidx.room.Room
-import com.vinsonb.password.manager.kotlin.R
+import com.vinsonb.password.manager.kotlin.BuildConfig
 import com.vinsonb.password.manager.kotlin.database.AccountLocalDatabase
 import com.vinsonb.password.manager.kotlin.database.AccountRepository
 import com.vinsonb.password.manager.kotlin.utilities.Constants
@@ -20,7 +20,7 @@ object DatabaseModule {
     @Singleton
     @Provides
     fun providesAccountLocalDatabase(@ApplicationContext context: Context): AccountLocalDatabase {
-        val passphrase = context.getString(R.string.passphrase)
+        val passphrase = BuildConfig.ROOM_PASSPHRASE
         val factory = SupportFactory(passphrase.toByteArray())
         return Room
             .databaseBuilder(
