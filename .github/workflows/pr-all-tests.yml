@@ -12,7 +12,12 @@ jobs:
     runs-on: [ubuntu-latest]
     steps:
       - uses: actions/checkout@v3
-      
+
+      - name: Access ROOM_PASSPHRASE
+        env:
+          ROOM_PASSPHRASE: $
+        run: echo ROOM_PASSPHRASE=\"ROOM_PASSPHRASE\" > ./local.properties
+
       - name: Gradle cache
         uses: gradle/gradle-build-action@v2
 
@@ -33,7 +38,12 @@ jobs:
           distribution: 'temurin'
           java-version: '11'
           cache: 'gradle'
-          
+
+      - name: Access ROOM_PASSPHRASE
+        env:
+          ROOM_PASSPHRASE: $
+        run: echo ROOM_PASSPHRASE=\"ROOM_PASSPHRASE\" > ./local.properties
+
       - name: Gradle cache
         uses: gradle/gradle-build-action@v2
         
