@@ -51,5 +51,18 @@ My main goal is to release an MVP to the playstore soon.
 - **GitHub Actions** — Uses GitHubActions to automatically run Unit and Instrumentation (API 26) tests during pull requests on non-main branches and merges to main.
 
 # Screenshots
+<img src="https://github.com/justvinny/pass-vault-kotlin-android/blob/main/screenshots/create-login.png" height="600" width="300" />
 
+<img src="https://github.com/justvinny/pass-vault-kotlin-android/blob/main/screenshots/login-screen.png" height="600" />
 
+<img src="https://github.com/justvinny/pass-vault-kotlin-android/blob/main/screenshots/account-list.png" height="600" />
+
+<img src="https://github.com/justvinny/pass-vault-kotlin-android/blob/main/screenshots/individual-account-dialog.png" height="600" />
+
+<img src="https://github.com/justvinny/pass-vault-kotlin-android/blob/main/screenshots/save-account.png" height="600" />
+
+<img src="https://github.com/justvinny/pass-vault-kotlin-android/blob/main/screenshots/password-generator.png" height="600" />
+
+<img src="https://github.com/justvinny/pass-vault-kotlin-android/blob/main/screenshots/overflow-menu.png" height="600" />
+
+<img src="https://github.com/justvinny/pass-vault-kotlin-android/blob/main/screenshots/credits-dialog.png" height="600" />
