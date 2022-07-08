@@ -10,15 +10,14 @@ import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
 import androidx.preference.PreferenceManager
-import com.google.android.material.textfield.TextInputLayout
 import com.vinsonb.password.manager.kotlin.R
 import com.vinsonb.password.manager.kotlin.databinding.FragmentCreateLoginBinding
-import com.vinsonb.password.manager.kotlin.utilities.Constants.Password.PASSCODE_MAX_LENGTH
 import com.vinsonb.password.manager.kotlin.utilities.Constants.Password.SharedPreferenceKeys.PASSCODE_KEY
 import com.vinsonb.password.manager.kotlin.utilities.Constants.Password.SharedPreferenceKeys.SECRET_ANSWER_KEY
 import com.vinsonb.password.manager.kotlin.utilities.Constants.Password.SharedPreferenceKeys.SECRET_QUESTION_KEY
 import com.vinsonb.password.manager.kotlin.utilities.TextInputUtilities.checkInputNotEmpty
 import com.vinsonb.password.manager.kotlin.utilities.TextInputUtilities.checkInputTextMatches
+import com.vinsonb.password.manager.kotlin.utilities.TextInputUtilities.checkPasscodeLength
 import com.vinsonb.password.manager.kotlin.utilities.TextInputUtilities.isNoneTextInputLayoutErrorEnabled
 
 private const val TAG = "CreateLoginFragment"
@@ -45,11 +44,15 @@ class CreateLoginFragment : Fragment(R.layout.fragment_create_login) {
 
         // Text Input Listeners
         binding.inputPasscode.addTextChangedListener {
-            checkPasscodeLength(binding.layoutPasscode)
+            checkPasscodeLength(binding.layoutPasscode, getString(R.string.error_passcode_length))
         }
 
         binding.inputRepeatPasscode.addTextChangedListener {
-            if (checkPasscodeLength(binding.layoutRepeatPasscode)) {
+            if (checkPasscodeLength(
+                    binding.layoutRepeatPasscode,
+                    getString((R.string.error_passcode_length))
+                )
+            ) {
                 checkInputTextMatches(
                     binding.inputPasscode,
                     binding.inputRepeatPasscode,
@@ -101,24 +104,6 @@ class CreateLoginFragment : Fragment(R.layout.fragment_create_login) {
             getString(R.string.error_text_empty, binding.layoutSecretQuestion.hint)
         binding.layoutSecretAnswer.error =
             getString(R.string.error_text_empty, binding.layoutSecretAnswer.hint)
-    }
-
-    /**
-     * Checks passcode is of required length.
-     * Otherwise, display appropriate error message on the Text Input.
-     *
-     * Returns whether the passcode length is valid or not.
-     */
-    private fun checkPasscodeLength(passcode: TextInputLayout): Boolean {
-        val passcodeText = passcode.editText?.text.toString()
-
-        if (passcodeText.length < PASSCODE_MAX_LENGTH) {
-            passcode.isErrorEnabled = true
-            passcode.error = getString(R.string.error_passcode_length)
-            return false
-        }
-        passcode.isErrorEnabled = false
-        return true
     }
 
     /**

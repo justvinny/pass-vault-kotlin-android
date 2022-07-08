@@ -48,4 +48,22 @@ object TextInputUtilities {
     fun isNoneTextInputLayoutErrorEnabled(vararg textInputLayout: TextInputLayout): Boolean {
         return textInputLayout.none { it.isErrorEnabled }
     }
+
+    /**
+     * Checks passcode is of required length.
+     * Otherwise, display appropriate error message on the Text Input.
+     *
+     * Returns whether the passcode length is valid or not.
+     */
+    fun checkPasscodeLength(passcode: TextInputLayout, errorMessage: String): Boolean {
+        val passcodeText = passcode.editText?.text.toString()
+
+        if (passcodeText.length < Constants.Password.PASSCODE_MAX_LENGTH) {
+            passcode.isErrorEnabled = true
+            passcode.error = errorMessage
+            return false
+        }
+        passcode.isErrorEnabled = false
+        return true
+    }
 }
