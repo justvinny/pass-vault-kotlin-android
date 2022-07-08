@@ -9,27 +9,35 @@ import androidx.navigation.Navigation
 import androidx.navigation.testing.TestNavHostController
 import androidx.preference.PreferenceManager
 import androidx.test.core.app.ApplicationProvider
-import androidx.test.espresso.Espresso
-import androidx.test.espresso.action.ViewActions
-import androidx.test.espresso.matcher.ViewMatchers
+import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.action.ViewActions.click
+import androidx.test.espresso.assertion.ViewAssertions.matches
+import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
+import androidx.test.espresso.matcher.ViewMatchers.withId
+import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.vinsonb.password.manager.kotlin.R
-import com.vinsonb.password.manager.kotlin.utilities.Constants
 import com.vinsonb.password.manager.kotlin.utilities.Constants.Password.SharedPreferenceKeys.AUTHENTICATED_KEY
+import com.vinsonb.password.manager.kotlin.utilities.Constants.Password.SharedPreferenceKeys.PASSCODE_KEY
+import com.vinsonb.password.manager.kotlin.utilities.Constants.Password.SharedPreferenceKeys.SECRET_ANSWER_KEY
 import org.junit.After
 import org.junit.Assert
 import org.junit.Before
 import org.junit.Test
+import org.junit.runner.RunWith
 
+@RunWith(AndroidJUnit4::class)
 class LoginFragmentTest {
     private lateinit var scenario: FragmentScenario<LoginFragment>
 
     private val targetContext: Context = ApplicationProvider.getApplicationContext()
-    private val preferences: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(targetContext)
+    private val preferences: SharedPreferences =
+        PreferenceManager.getDefaultSharedPreferences(targetContext)
 
     @Before
     fun setup() {
         with(preferences.edit()) {
-            putString(Constants.Password.SharedPreferenceKeys.PASSCODE_KEY, "11111")
+            putString(PASSCODE_KEY, "11111")
+            putString(SECRET_ANSWER_KEY, "Answer")
             apply()
         }
 
@@ -59,10 +67,19 @@ class LoginFragmentTest {
         }
 
         repeat(5) {
-            Espresso.onView(ViewMatchers.withId(R.id.button_1))
-                .perform(ViewActions.click())
+            onView(withId(R.id.button_1))
+                .perform(click())
         }
 
         Assert.assertEquals(navController.currentDestination?.id, R.id.view_accounts_fragment)
+    }
+
+    @Test
+    fun forgotPasswordButton_clicked_showsDialogVerifySecret() {
+        onView(withId(R.id.button_forgot_password))
+            .perform(click())
+
+        onView(withId(R.id.layout_dialog_verify_secret_answer))
+            .check(matches(isDisplayed()))
     }
 }

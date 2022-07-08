@@ -123,10 +123,12 @@
             android:hint="@string/hint_password"
             android:importantForAutofill="no"
             android:inputType="textPassword"
+            android:minHeight="48dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@id/icon_accounts_dialog_see_password"
             app:layout_constraintStart_toEndOf="@id/icon_accounts_dialog_password"
             app:layout_constraintTop_toTopOf="parent"
+            tools:ignore="TouchTargetSizeCheck"
             tools:text="good.password132141" />
 
         <ImageView

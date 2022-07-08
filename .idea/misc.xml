@@ -13,9 +13,11 @@
         <entry key="..\:/Dev/Work/android/pass-vault-kotlin-android/app/src/main/res/layout/activity_main.xml" value="0.2921195652173913" />
         <entry key="..\:/Dev/Work/android/pass-vault-kotlin-android/app/src/main/res/layout/credit_item.xml" value="0.5" />
         <entry key="..\:/Dev/Work/android/pass-vault-kotlin-android/app/src/main/res/layout/dialog_account.xml" value="0.67" />
+        <entry key="..\:/Dev/Work/android/pass-vault-kotlin-android/app/src/main/res/layout/dialog_change_passcode.xml" value="0.33" />
         <entry key="..\:/Dev/Work/android/pass-vault-kotlin-android/app/src/main/res/layout/dialog_credits.xml" value="0.33" />
+        <entry key="..\:/Dev/Work/android/pass-vault-kotlin-android/app/src/main/res/layout/dialog_forgot_password.xml" value="0.67" />
         <entry key="..\:/Dev/Work/android/pass-vault-kotlin-android/app/src/main/res/layout/fragment_create_login.xml" value="0.33" />
-        <entry key="..\:/Dev/Work/android/pass-vault-kotlin-android/app/src/main/res/layout/fragment_generate_password.xml" value="0.33" />
+        <entry key="..\:/Dev/Work/android/pass-vault-kotlin-android/app/src/main/res/layout/fragment_generate_password.xml" value="0.75" />
         <entry key="..\:/Dev/Work/android/pass-vault-kotlin-android/app/src/main/res/layout/fragment_login.xml" value="0.1" />
         <entry key="..\:/Dev/Work/android/pass-vault-kotlin-android/app/src/main/res/layout/fragment_save_account.xml" value="0.33" />
         <entry key="..\:/Dev/Work/android/pass-vault-kotlin-android/app/src/main/res/layout/fragment_view_accounts.xml" value="0.33" />
