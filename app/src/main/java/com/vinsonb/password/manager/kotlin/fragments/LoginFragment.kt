@@ -13,7 +13,7 @@ import androidx.navigation.findNavController
 import androidx.preference.PreferenceManager
 import com.vinsonb.password.manager.kotlin.R
 import com.vinsonb.password.manager.kotlin.databinding.FragmentLoginBinding
-import com.vinsonb.password.manager.kotlin.fragments.dialogs.VerifySecretDialog
+import com.vinsonb.password.manager.kotlin.fragments.dialogs.ForgotPasswordDialog
 import com.vinsonb.password.manager.kotlin.utilities.Constants.Password.PASSCODE_MAX_LENGTH
 import com.vinsonb.password.manager.kotlin.utilities.Constants.Password.SharedPreferenceKeys.AUTHENTICATED_KEY
 import com.vinsonb.password.manager.kotlin.utilities.Constants.Password.SharedPreferenceKeys.PASSCODE_KEY
@@ -61,7 +61,7 @@ class LoginFragment : Fragment(R.layout.fragment_login) {
 
         // Forgot Password Button
         binding.buttonForgotPassword.setOnClickListener {
-            VerifySecretDialog().show(parentFragmentManager, VerifySecretDialog.TAG)
+            ForgotPasswordDialog().show(parentFragmentManager, ForgotPasswordDialog.TAG)
         }
 
         // ImageViews 5 circles

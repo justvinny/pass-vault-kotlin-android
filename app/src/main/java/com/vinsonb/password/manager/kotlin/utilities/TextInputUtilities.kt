@@ -66,4 +66,24 @@ object TextInputUtilities {
         passcode.isErrorEnabled = false
         return true
     }
+
+    /**
+     * Validates repeat passcode EditText for length and passcode match.
+     */
+    fun validateRepeatPasscode(
+        layoutRepeatPasscode: TextInputLayout,
+        inputPasscode: TextInputEditText,
+        inputRepeatPasscode: TextInputEditText,
+        errorMessageLength: String,
+        errorMessageMustMatch: String
+    ) {
+        if (checkPasscodeLength(layoutRepeatPasscode, errorMessageLength)) {
+            checkInputTextMatches(
+                inputPasscode,
+                inputRepeatPasscode,
+                layoutRepeatPasscode,
+                errorMessageMustMatch
+            )
+        }
+    }
 }

@@ -16,9 +16,9 @@ import com.vinsonb.password.manager.kotlin.utilities.Constants.Password.SharedPr
 import com.vinsonb.password.manager.kotlin.utilities.Constants.Password.SharedPreferenceKeys.SECRET_ANSWER_KEY
 import com.vinsonb.password.manager.kotlin.utilities.Constants.Password.SharedPreferenceKeys.SECRET_QUESTION_KEY
 import com.vinsonb.password.manager.kotlin.utilities.TextInputUtilities.checkInputNotEmpty
-import com.vinsonb.password.manager.kotlin.utilities.TextInputUtilities.checkInputTextMatches
 import com.vinsonb.password.manager.kotlin.utilities.TextInputUtilities.checkPasscodeLength
 import com.vinsonb.password.manager.kotlin.utilities.TextInputUtilities.isNoneTextInputLayoutErrorEnabled
+import com.vinsonb.password.manager.kotlin.utilities.TextInputUtilities.validateRepeatPasscode
 
 private const val TAG = "CreateLoginFragment"
 
@@ -45,21 +45,23 @@ class CreateLoginFragment : Fragment(R.layout.fragment_create_login) {
         // Text Input Listeners
         binding.inputPasscode.addTextChangedListener {
             checkPasscodeLength(binding.layoutPasscode, getString(R.string.error_passcode_length))
+            validateRepeatPasscode(
+                binding.layoutRepeatPasscode,
+                binding.inputPasscode,
+                binding.inputRepeatPasscode,
+                requireContext().getString(R.string.error_passcode_length),
+                requireContext().getString(R.string.error_passcode_must_match)
+            )
         }
 
         binding.inputRepeatPasscode.addTextChangedListener {
-            if (checkPasscodeLength(
-                    binding.layoutRepeatPasscode,
-                    getString((R.string.error_passcode_length))
-                )
-            ) {
-                checkInputTextMatches(
-                    binding.inputPasscode,
-                    binding.inputRepeatPasscode,
-                    binding.layoutRepeatPasscode,
-                    getString(R.string.error_passcode_must_match)
-                )
-            }
+            validateRepeatPasscode(
+                binding.layoutRepeatPasscode,
+                binding.inputPasscode,
+                binding.inputRepeatPasscode,
+                requireContext().getString(R.string.error_passcode_length),
+                requireContext().getString(R.string.error_passcode_must_match)
+            )
         }
 
         binding.inputSecretQuestion.addTextChangedListener {
@@ -134,7 +136,7 @@ class CreateLoginFragment : Fragment(R.layout.fragment_create_login) {
         }
 
         Toast.makeText(
-            view.context,
+            requireContext(),
             getString(R.string.error_save_unsuccessful),
             Toast.LENGTH_SHORT
         ).show()

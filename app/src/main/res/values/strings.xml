@@ -18,7 +18,6 @@
     <string name="button_save_account">Save Account</string>
     <string name="button_generate_password">Generate Password</string>
     <string name="button_close">Close</string>
-    <string name="button_verify">Verify</string>
     <string name="button_reset">Reset</string>
 
     <!-- Switches -->
@@ -37,6 +36,8 @@
     <string name="hint_password">Password</string>
     <string name="hint_repeat_password">Repeat Password</string>
     <string name="hint_search">Search account or platform</string>
+    <string name="hint_new_repeat_passcode">Repeat new 5 digit passcode</string>
+    <string name="hint_new_passcode">New 5 digit passcode</string>
 
     <!-- Toast Messages -->
     <string name="success_save_account">%1$s account with username %2$s has been saved!</string>
