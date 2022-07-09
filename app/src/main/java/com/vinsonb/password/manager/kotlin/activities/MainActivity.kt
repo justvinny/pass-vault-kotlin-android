@@ -91,6 +91,11 @@ class MainActivity : AppCompatActivity() {
         countDownTimer.start()
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        logout()
+    }
+
     /**
      * Logs out the user using [removeAuthenticatedStatus].
      *
