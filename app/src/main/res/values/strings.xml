@@ -57,6 +57,8 @@
     <string name="menu_item_generate_pass">Generator</string>
     <string name="menu_item_logout">Logout</string>
     <string name="menu_item_credits">Credits</string>
+    <string name="menu_item_import_csv">Import CSV</string>
+    <string name="menu_item_export_csv">Export CSV</string>
 
     <!-- Accessibility Text    -->
     <string name="content_copy_password">Copy password icon</string>
@@ -66,6 +68,8 @@
     <string name="content_menu_item_logout">Logout menu item</string>
     <string name="content_menu_item_credits">Credits menu item</string>
     <string name="content_open_link">Open link</string>
+    <string name="content_import_csv">Import CSV menu item</string>
+    <string name="content_export_csv">Export CSV menu item</string>
 
     <!-- Others -->
     <string name="default_password_length">20</string>

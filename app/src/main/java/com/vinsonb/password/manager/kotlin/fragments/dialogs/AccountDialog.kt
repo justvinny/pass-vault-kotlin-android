@@ -23,7 +23,7 @@ class AccountDialog(
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         return activity?.let {
             val builder = MaterialAlertDialogBuilder(it)
-            val inflater = requireActivity().layoutInflater;
+            val inflater = requireActivity().layoutInflater
             val view = inflater.inflate(R.layout.dialog_account, null, false)
 
             val textViewPlatform = view.findViewById<TextView>(R.id.text_accounts_dialog_platform)
@@ -95,7 +95,7 @@ class AccountDialog(
             iconEdit.setImageResource(R.drawable.ic_save)
         } else {
             iconEdit.setImageResource(R.drawable.ic_edit)
-            viewModel.updateAccount(account.copy(password = inputPassword.text.toString()))
+            viewModel.updateAccount(Account(account.platform, account.username, inputPassword.text.toString()))
         }
     }
 

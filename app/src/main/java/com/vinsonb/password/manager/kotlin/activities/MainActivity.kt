@@ -4,6 +4,9 @@ import android.content.SharedPreferences
 import android.os.Bundle
 import android.os.CountDownTimer
 import android.view.View
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.forEach
 import androidx.navigation.NavController
@@ -11,11 +14,15 @@ import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
 import androidx.preference.PreferenceManager
 import com.vinsonb.password.manager.kotlin.R
+import com.vinsonb.password.manager.kotlin.database.enitities.Account
 import com.vinsonb.password.manager.kotlin.databinding.ActivityMainBinding
 import com.vinsonb.password.manager.kotlin.fragments.dialogs.CreditsDialog
+import com.vinsonb.password.manager.kotlin.utilities.Constants.FileName.DEFAULT_FILENAME
+import com.vinsonb.password.manager.kotlin.utilities.Constants.MimeType.CSV
 import com.vinsonb.password.manager.kotlin.utilities.Constants.Password.SharedPreferenceKeys.AUTHENTICATED_KEY
 import com.vinsonb.password.manager.kotlin.utilities.Constants.Password.Timer.MAX_TIMER_MILLI
 import com.vinsonb.password.manager.kotlin.utilities.Constants.Password.Timer.TIMER_INTERVAL_MILLI
+import com.vinsonb.password.manager.kotlin.viewmodels.AccountViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 private const val TAG = "MainActivityPassVault"
@@ -23,11 +30,16 @@ private const val TAG = "MainActivityPassVault"
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
     private var isTimedOut = false
+    private var accounts: List<Account> = listOf()
     private lateinit var binding: ActivityMainBinding
     private lateinit var sharedPreferences: SharedPreferences
     private lateinit var countDownTimer: CountDownTimer
     private lateinit var creditsDialog: CreditsDialog
     private lateinit var navController: NavController
+    private lateinit var csvLauncher: ActivityResultLauncher<String>
+    private lateinit var createCsvLauncher: ActivityResultLauncher<String>
+
+    private val viewModel: AccountViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -37,6 +49,8 @@ class MainActivity : AppCompatActivity() {
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(applicationContext)
         countDownTimer = createCountdownTimer()
         creditsDialog = CreditsDialog()
+        csvLauncher = getCsvContent()
+        createCsvLauncher = createDocumentCsv()
 
         // Setup for bottom navigation bar to use navigation controller.
         val navHostFragment = supportFragmentManager.findFragmentById(
@@ -68,6 +82,14 @@ class MainActivity : AppCompatActivity() {
         // Top Bar Menu Items
         binding.topNavigation.setOnMenuItemClickListener {
             when (it.itemId) {
+                R.id.menu_item_import_csv -> {
+                    csvLauncher.launch(CSV)
+                    true
+                }
+                R.id.menu_item_export_csv -> {
+                    createCsvLauncher.launch(DEFAULT_FILENAME)
+                    true
+                }
                 R.id.menu_item_credits -> {
                     creditsDialog.show(supportFragmentManager, CreditsDialog.TAG)
                     true
@@ -78,6 +100,10 @@ class MainActivity : AppCompatActivity() {
                 }
                 else -> false
             }
+        }
+
+        viewModel.accounts.observe(this) {
+            accounts = it
         }
     }
 
@@ -95,6 +121,21 @@ class MainActivity : AppCompatActivity() {
         super.onDestroy()
         logout()
     }
+
+    /**
+     * Launcher to use when loading CSV content from the system's file picker.
+     */
+    private fun getCsvContent() = registerForActivityResult(ActivityResultContracts.GetContent()) {
+        if (it != null) viewModel.loadAccountsFromCsv(contentResolver, it, accounts)
+    }
+
+    /**
+     * Launcher to use when saving Accounts to a CSV file using the system's file picker.
+     */
+    private fun createDocumentCsv() =
+        registerForActivityResult(ActivityResultContracts.CreateDocument(CSV)) {
+            if (it != null) viewModel.saveAccountsAsCsv(contentResolver, it, accounts)
+        }
 
     /**
      * Logs out the user using [removeAuthenticatedStatus].

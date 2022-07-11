@@ -35,4 +35,16 @@ object Constants {
             )
         )
     }
+
+    object MimeType {
+        const val CSV = "text/comma-separated-values"
+    }
+
+    object FileName {
+        const val DEFAULT_FILENAME = "filename"
+    }
+
+    object Csv {
+        const val DELIMITER = ",_____,"
+    }
 }
