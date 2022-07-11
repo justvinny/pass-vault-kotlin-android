@@ -2,6 +2,16 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
+        android:id="@+id/menu_item_import_csv"
+        android:title="@string/menu_item_import_csv"
+        android:contentDescription="@string/content_menu_item_credits"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/menu_item_export_csv"
+        android:title="@string/menu_item_export_csv"
+        android:contentDescription="@string/content_menu_item_credits"
+        app:showAsAction="never" />
+    <item
         android:id="@+id/menu_item_credits"
         android:title="@string/menu_item_credits"
         android:contentDescription="@string/content_menu_item_credits"
