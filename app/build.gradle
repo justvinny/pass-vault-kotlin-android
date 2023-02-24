@@ -1,24 +1,23 @@
 plugins {
     id 'com.android.application'
     id 'org.jetbrains.kotlin.android'
-    id 'androidx.navigation.safeargs.kotlin'
-    id 'kotlin-kapt'
-    id 'dagger.hilt.android.plugin'
-    id 'com.google.android.libraries.mapsplatform.secrets-gradle-plugin'
 }
 
 android {
-    compileSdk 33
-
+    namespace 'com.example.passvault'
+    compileSdk 32
 
     defaultConfig {
-        applicationId "com.vinsonb.password.manager.kotlin"
+        applicationId "com.example.passvault"
         minSdk 23
-        targetSdk 33
+        targetSdk 32
         versionCode 1
         versionName "1.0"
 
-        testInstrumentationRunner "com.vinsonb.password.manager.kotlin.di.CustomTestRunner"
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        vectorDrawables {
+            useSupportLibrary true
+        }
     }
 
     buildTypes {
@@ -35,53 +34,30 @@ android {
         jvmTarget = '1.8'
     }
     buildFeatures {
-        viewBinding true
+        compose true
     }
-    namespace 'com.vinsonb.password.manager.kotlin'
+    composeOptions {
+        kotlinCompilerExtensionVersion '1.1.1'
+    }
+    packagingOptions {
+        resources {
+            excludes += '/META-INF/{AL2.0,LGPL2.1}'
+        }
+    }
 }
 
 dependencies {
-    // Default dependencies
-    implementation 'androidx.core:core-ktx:1.9.0'
-    implementation 'androidx.appcompat:appcompat:1.6.1'
-    implementation 'androidx.preference:preference:1.2.0'
-    implementation 'com.google.android.material:material:1.8.0'
-    implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
 
-    // Hilt Dependency Injection
-    implementation 'com.google.dagger:hilt-android:2.42'
-    kapt 'com.google.dagger:hilt-compiler:2.42'
-    androidTestImplementation  'com.google.dagger:hilt-android-testing:2.42'
-    kaptAndroidTest 'com.google.dagger:hilt-compiler:2.42'
-    testImplementation 'com.google.dagger:hilt-android-testing:2.42'
-    kaptTest 'com.google.dagger:hilt-compiler:2.42'
-
-    // Navigation
-    implementation "androidx.navigation:navigation-fragment-ktx:2.5.3"
-    implementation "androidx.navigation:navigation-ui-ktx:2.5.3"
-    implementation "androidx.navigation:navigation-dynamic-features-fragment:2.5.3"
-
-    // Room
-    implementation "androidx.room:room-runtime:2.5.0"
-    implementation "androidx.lifecycle:lifecycle-livedata-ktx:2.5.1"
-    implementation "androidx.room:room-ktx:2.5.0"
-    kapt "androidx.room:room-compiler:2.5.0"
-    androidTestImplementation "androidx.navigation:navigation-testing:2.5.3"
-
-    // SQLCipher Room
-    implementation "net.zetetic:android-database-sqlcipher:4.5.0"
-    implementation "androidx.sqlite:sqlite:2.3.0"
-
-    // Mockito
-    testImplementation "org.mockito.kotlin:mockito-kotlin:4.0.0"
-    androidTestImplementation "org.mockito:mockito-android:4.6.1"
-
-    // Other Testing Dependencies
+    implementation 'androidx.core:core-ktx:1.7.0'
+    implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.3.1'
+    implementation 'androidx.activity:activity-compose:1.3.1'
+    implementation "androidx.compose.ui:ui:$compose_version"
+    implementation "androidx.compose.ui:ui-tooling-preview:$compose_version"
+    implementation 'androidx.compose.material3:material3:1.0.0-alpha02'
     testImplementation 'junit:junit:4.13.2'
-    testImplementation "androidx.arch.core:core-testing:2.2.0"
     androidTestImplementation 'androidx.test.ext:junit:1.1.5'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
-    androidTestImplementation "androidx.test:runner:1.5.2"
-    androidTestImplementation "androidx.test:rules:1.5.0"
-    debugImplementation "androidx.fragment:fragment-testing:1.5.5"
+    androidTestImplementation "androidx.compose.ui:ui-test-junit4:$compose_version"
+    debugImplementation "androidx.compose.ui:ui-tooling:$compose_version"
+    debugImplementation "androidx.compose.ui:ui-test-manifest:$compose_version"
 }

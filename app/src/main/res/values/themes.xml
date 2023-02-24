@@ -1,30 +1,5 @@
-<resources xmlns:tools="http://schemas.android.com/tools">
-    <!-- Base application theme. -->
-    <style name="Theme.PasswordManagerKotlinRewrite" parent="Theme.MaterialComponents.DayNight.NoActionBar">
-        <!-- Primary brand color. -->
-        <item name="colorPrimary">@color/custom_cyan</item>
-        <item name="colorPrimaryVariant">@color/custom_cyan_dark</item>
-        <item name="colorOnPrimary">@color/white</item>
-        <!-- Secondary brand color. -->
-        <item name="colorSecondary">@color/custom_cyan</item>
-        <item name="colorSecondaryVariant">@color/custom_cyan_dark</item>
-        <item name="colorOnSecondary">@color/white</item>
-        <!-- Status bar color. -->
-        <item name="android:statusBarColor">?attr/colorPrimaryVariant</item>
-        <!-- Customize your theme here. -->
-        <item name="android:textColor">@color/black</item>
-    </style>
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
 
-    <!-- Button for numbers in Login Screen -->
-    <style name="Widget.MaterialComponents.Button.OutlinedButton.Circular" parent="@style/Widget.MaterialComponents.Button.OutlinedButton">
-        <item name="android:layout_width">100dp</item>
-        <item name="android:layout_height">60dp</item>
-        <item name="android:inset">0dp</item>
-        <item name="cornerRadius">30dp</item>
-    </style>
-
-    <!-- Text View for Password Generator -->
-    <style name="Widget.AppCompat.TextView.CustomTextView" parent="Widget.AppCompat.TextView">
-        <item name="borderWidth">1dp</item>
-    </style>
+    <style name="Theme.PassVault" parent="android:Theme.Material.Light.NoActionBar" />
 </resources>
