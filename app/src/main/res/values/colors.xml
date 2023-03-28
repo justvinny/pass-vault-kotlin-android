@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="custom_cyan">#022433</color>
-    <color name="custom_cyan_light">#2f4c5d</color>
+    <color name="custom_cyan">#00668A</color>
+    <color name="custom_cyan_light">#7AD0FF</color>
     <color name="custom_cyan_dark">#00000c</color>
     <color name="custom_purple">#120233</color>
     <color name="custom_purple_light">#3a2b5d</color>

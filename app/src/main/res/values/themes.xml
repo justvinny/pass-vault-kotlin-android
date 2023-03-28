@@ -3,11 +3,11 @@
     <style name="Theme.PasswordManagerKotlinRewrite" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <!-- Primary brand color. -->
         <item name="colorPrimary">@color/custom_cyan</item>
-        <item name="colorPrimaryVariant">@color/custom_cyan_dark</item>
+        <item name="colorPrimaryVariant">@color/custom_cyan</item>
         <item name="colorOnPrimary">@color/white</item>
         <!-- Secondary brand color. -->
         <item name="colorSecondary">@color/custom_cyan</item>
-        <item name="colorSecondaryVariant">@color/custom_cyan_dark</item>
+        <item name="colorSecondaryVariant">@color/custom_cyan</item>
         <item name="colorOnSecondary">@color/white</item>
         <!-- Status bar color. -->
         <item name="android:statusBarColor">?attr/colorPrimaryVariant</item>
