@@ -1,11 +1,14 @@
 package com.vinsonb.password.manager.kotlin.ui.components
 
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -17,7 +20,7 @@ fun CustomTextField(
     isError: Boolean = false,
     errorText: String = "",
 ) {
-    androidx.compose.material3.TextField(
+    androidx.compose.material3.OutlinedTextField(
         modifier = Modifier
             .fillMaxWidth()
             .then(modifier),
@@ -28,6 +31,8 @@ fun CustomTextField(
         supportingText = {
             if (isError) {
                 Text(errorText)
+            } else {
+                Spacer(Modifier.height(16.dp))
             }
         }
     )
