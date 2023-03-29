@@ -33,7 +33,7 @@ inline fun <reified T : Fragment> launchFragmentInHiltContainer(
         }
 
         val fragment = activity.supportFragmentManager.fragmentFactory.instantiate(
-            Preconditions.checkNotNull(T::class.java.classLoader),
+            Preconditions.checkNotNull(T::class.java.classLoader) as ClassLoader,
             T::class.java.name
         )
         fragment.arguments = fragmentArgs

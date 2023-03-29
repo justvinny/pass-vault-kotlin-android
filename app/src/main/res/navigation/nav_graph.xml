@@ -51,6 +51,5 @@
     <fragment
         android:id="@+id/save_account_fragment"
         android:name="com.vinsonb.password.manager.kotlin.fragments.SaveAccountFragment"
-        android:label="fragment_save_account"
-        tools:layout="@layout/fragment_save_account" />
+        android:label="fragment_save_account" />
 </navigation>
