@@ -50,7 +50,7 @@ My main goal is to release an MVP to the playstore once everything in [In-Progre
 - **viewmodels** — All the architecture component ViewModels live here.
   
 # Testing
-- **Unit Tests** — Uses JUnit4. Primarily tested ViewModels and Utility classes not related to the UI. These is our most important tests especially once I finish the compose migration as I will be hosting state to the ViewModel for all compose screens. This makes it easier to unit test states related to the screen without tightly coupling them to the UI which relies on the Android API.
+- **Unit Tests** — Uses JUnit4, JUnitParams (easy paramaterized tests), Turbine (library to make testings Flows easier) and Coroutines Test (necessary to test flows). Primarily tested ViewModels and Utility classes not related to the UI. These is our most important tests especially once I finish the compose migration as I will be hosting state to the ViewModel for all compose screens. This makes it easier to unit test states related to the screen without tightly coupling them to the UI which relies on the Android API.
 - **Instrumentation Tests** — Uses Espresso with Hamcrest. Tested all the UI related classes such as Activities and Fragments. Not as important as the ViewModel unit tests should cover most cases once the migration is over. 
 - **Hilt** — Dependency injection framework. In our tests specifically, we use this to swap the Database with a Fake using Room's in-memory database builder as we do not want our production DB to be affected.
 
