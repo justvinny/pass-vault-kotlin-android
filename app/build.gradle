@@ -10,7 +10,6 @@ plugins {
 android {
     compileSdk 33
 
-
     defaultConfig {
         applicationId "com.vinsonb.password.manager.kotlin"
         minSdk 23
@@ -87,7 +86,10 @@ dependencies {
 
     // Other Testing Dependencies
     testImplementation 'junit:junit:4.13.2'
+    testImplementation 'org.jetbrains.kotlinx:kotlinx-coroutines-test:1.6.4'
+    testImplementation 'app.cash.turbine:turbine:0.12.1'
     testImplementation "androidx.arch.core:core-testing:2.2.0"
+    testImplementation  "pl.pragmatists:JUnitParams:1.1.1"
     androidTestImplementation 'androidx.test.ext:junit:1.1.5'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
     androidTestImplementation "androidx.test:runner:1.5.2"
