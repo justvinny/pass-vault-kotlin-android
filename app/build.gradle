@@ -10,7 +10,6 @@ plugins {
 android {
     compileSdk 33
 
-
     defaultConfig {
         applicationId "com.vinsonb.password.manager.kotlin"
         minSdk 23
@@ -27,16 +26,25 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
+
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
+
     kotlinOptions {
         jvmTarget = '1.8'
     }
+
     buildFeatures {
         viewBinding true
+        compose true
     }
+
+    composeOptions {
+        kotlinCompilerExtensionVersion = "1.4.1"
+    }
+
     namespace 'com.vinsonb.password.manager.kotlin'
 }
 
@@ -49,12 +57,12 @@ dependencies {
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
 
     // Hilt Dependency Injection
-    implementation 'com.google.dagger:hilt-android:2.42'
-    kapt 'com.google.dagger:hilt-compiler:2.42'
-    androidTestImplementation  'com.google.dagger:hilt-android-testing:2.42'
-    kaptAndroidTest 'com.google.dagger:hilt-compiler:2.42'
-    testImplementation 'com.google.dagger:hilt-android-testing:2.42'
-    kaptTest 'com.google.dagger:hilt-compiler:2.42'
+    implementation 'com.google.dagger:hilt-android:2.45'
+    kapt 'com.google.dagger:hilt-compiler:2.45'
+    androidTestImplementation  'com.google.dagger:hilt-android-testing:2.45'
+    kaptAndroidTest 'com.google.dagger:hilt-compiler:2.45'
+    testImplementation 'com.google.dagger:hilt-android-testing:2.45'
+    kaptTest 'com.google.dagger:hilt-compiler:2.45'
 
     // Navigation
     implementation "androidx.navigation:navigation-fragment-ktx:2.5.3"
@@ -62,15 +70,15 @@ dependencies {
     implementation "androidx.navigation:navigation-dynamic-features-fragment:2.5.3"
 
     // Room
-    implementation "androidx.room:room-runtime:2.5.0"
-    implementation "androidx.lifecycle:lifecycle-livedata-ktx:2.5.1"
-    implementation "androidx.room:room-ktx:2.5.0"
-    kapt "androidx.room:room-compiler:2.5.0"
+    implementation "androidx.room:room-runtime:2.5.1"
+    implementation "androidx.lifecycle:lifecycle-livedata-ktx:2.6.1"
+    implementation "androidx.room:room-ktx:2.5.1"
+    kapt "androidx.room:room-compiler:2.5.1"
     androidTestImplementation "androidx.navigation:navigation-testing:2.5.3"
 
     // SQLCipher Room
     implementation "net.zetetic:android-database-sqlcipher:4.5.0"
-    implementation "androidx.sqlite:sqlite:2.3.0"
+    implementation "androidx.sqlite:sqlite:2.3.1"
 
     // Mockito
     testImplementation "org.mockito.kotlin:mockito-kotlin:4.0.0"
@@ -78,10 +86,29 @@ dependencies {
 
     // Other Testing Dependencies
     testImplementation 'junit:junit:4.13.2'
+    testImplementation 'org.jetbrains.kotlinx:kotlinx-coroutines-test:1.6.4'
+    testImplementation 'app.cash.turbine:turbine:0.12.1'
     testImplementation "androidx.arch.core:core-testing:2.2.0"
+    testImplementation  "pl.pragmatists:JUnitParams:1.1.1"
     androidTestImplementation 'androidx.test.ext:junit:1.1.5'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
     androidTestImplementation "androidx.test:runner:1.5.2"
     androidTestImplementation "androidx.test:rules:1.5.0"
-    debugImplementation "androidx.fragment:fragment-testing:1.5.5"
+    debugImplementation "androidx.fragment:fragment-testing:1.5.6"
+
+    // Compose
+    def composeBom = platform('androidx.compose:compose-bom:2023.01.00')
+    implementation composeBom
+    androidTestImplementation composeBom
+    implementation 'androidx.lifecycle:lifecycle-viewmodel-compose:2.6.1'
+    implementation 'androidx.compose.runtime:runtime-livedata'
+
+    // Compose Material
+    implementation 'androidx.compose.material3:material3'
+    implementation 'androidx.compose.material:material-icons-extended'
+
+    // Preview Support
+    implementation 'androidx.compose.ui:ui-tooling-preview'
+    debugImplementation 'androidx.compose.ui:ui-tooling'
+
 }

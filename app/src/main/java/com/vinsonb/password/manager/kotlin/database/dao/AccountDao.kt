@@ -9,8 +9,8 @@ interface AccountDao {
     @Query("SELECT * FROM account")
     fun getAll(): Flow<List<Account>>
 
-    @Insert
-    suspend fun insertAccount(account: Account)
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    suspend fun insertAccount(account: Account): Long
 
     @Update
     suspend fun updateAccount(account: Account)

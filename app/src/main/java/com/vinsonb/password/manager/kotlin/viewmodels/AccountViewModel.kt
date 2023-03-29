@@ -25,7 +25,7 @@ class AccountViewModel @Inject constructor(
     /**
      * Inserts a new [account] to our Room Database.
      */
-    fun insertAccount(account: Account) {
+    private fun insertAccount(account: Account) {
         viewModelScope.launch {
             accountRepository.insertAccount(account)
         }
