@@ -1,9 +1,9 @@
 # Pass Vault
 Rewriting [Pass Vault Java Android](https://github.com/justvinny/pass-vault-java-android) to Kotlin, incorporate modern Android features, and use recommended MVVM architecture.
 
-I orginally made this application to store all my passwords using my Android phone as I got sick of getting locked out of important services such as StudyLink due to the increasing need of using unique and complex passwords. 
+I originally made this application to store all my passwords using my Android phone as I got sick of getting locked out of important services such as StudyLink due to the increasing need of using unique and complex passwords. 
 
-My main goal is to release an MVP to the playstore once everything in [In-Progress](#in-progress) is completed.
+My main goal is to release an MVP to the PlayStore once everything in [In-Progress](#in-progress) is completed.
 
 ## Features
 ### Finished
@@ -15,11 +15,11 @@ My main goal is to release an MVP to the playstore once everything in [In-Progre
 - Login using a passcode to protect your passwords from people snooping on your phone. If a user is inactive for more than 10 minutes, you will be automatically logged out.
 - All data is stored offline using a SQLite database.
 - Databases are encrypted for security using [SQLCipher.](https://github.com/sqlcipher/android-database-sqlcipher)
-- Import / Eport CSV feature.
+- Import / Export CSV feature.
 - Forgot Password
 
 ### In-progress
-- Adding non-intrusive ads. Big focus on **non-instrusive** as I hate all the annoying ads that plague freemium mobile applications with a passion.
+- Adding non-intrusive ads. Big focus on **non-intrusive** as I hate all the annoying ads that plague freemium mobile applications with a passion.
 - Migrate all screens to Compose.
 - Allow username editing
 - Fix Visual Bug - Can't see the entire password for long passwords.
@@ -34,14 +34,11 @@ My main goal is to release an MVP to the playstore once everything in [In-Progre
 - Customisable application colour theme
 - Tutorials
 
-## Other Links
-[Trello Board](https://trello.com/b/UGu9TQYG/password-manager-kotlin)
-
 # Package Structure
-**This is only applicabled to the old XML version of the application. I will be changing the structure during the Compose Migration and will update this section once I finish that.**
+**This is only applicable to the old XML version of the application. I will be changing the structure during the Compose Migration and will update this section once I finish that.**
 
 - **activities** — Only contains one activity, which is the main activity as we are following the single activity architecture proposed by Google.
-- **adapter** — Contains all Adapter classes, primariliy for RecyclerViews.
+- **adapter** — Contains all Adapter classes, primarily for RecyclerViews.
 - **database** — Anything related to Databases live here. As of the moment, only Room SQLite related classes live here such as Entities, DAO, Main Room DB class. Repository pattern is being used to make it easy to plugin different types of databases in the future.
 - **di** — Hilt dependency injection modules live here.
 - **fragments** — All the different Fragments (Screens) live here along with the popup Dialogs.
@@ -50,9 +47,9 @@ My main goal is to release an MVP to the playstore once everything in [In-Progre
 - **viewmodels** — All the architecture component ViewModels live here.
   
 # Testing
-- **Unit Tests** — Uses JUnit4, JUnitParams (easy paramaterized tests), Turbine (library to make testings Flows easier) and Coroutines Test (necessary to test flows). Primarily tested ViewModels and Utility classes not related to the UI. These is our most important tests especially once I finish the compose migration as I will be hosting state to the ViewModel for all compose screens. This makes it easier to unit test states related to the screen without tightly coupling them to the UI which relies on the Android API.
-- **Instrumentation Tests** — Uses Espresso with Hamcrest. Tested all the UI related classes such as Activities and Fragments. Not as important as the ViewModel unit tests should cover most cases once the migration is over. 
-- **Hilt** — Dependency injection framework. In our tests specifically, we use this to swap the Database with a Fake using Room's in-memory database builder as we do not want our production DB to be affected.
+- **Unit Tests** — Uses JUnit4, JUnitParams (easy paramaterized tests), Turbine (library to make testings Flows easier) and Coroutines Test (necessary to test flows). Primarily tested ViewModels and Utility classes not related to the UI. These are our most important tests. This is especially the case once I finish the compose migration as I will be hosting state to the ViewModel for all compose screens. This makes it easier to unit test states related to the screen without having to perform Instrumentation tests instead as those are tightly coupled with the Android API.
+- **Instrumentation Tests** — Uses Espresso with Hamcrest. Tested all the UI related classes such as Activities and Fragments. This is not as important anymore as the ViewModel unit tests should cover most cases once the migration is over. 
+- **Hilt** — Dependency injection framework. In our tests specifically, we use this to swap the Database with a Fake using Room's in-memory database builder as we do not want our production database to be affected during tests.
 
 # Continuous Integration (CI)
 - **GitHub Actions** — Uses GitHubActions to automatically run Unit tests during pull requests on non-main branches and merges to main. Did not include UI testing to the CI as running an Android Emulator takes a significant time which means it'll be expensive. This is undesirable as I am only using the free tier for GitHub actions which hard caps me to 2,000 minutes per month.

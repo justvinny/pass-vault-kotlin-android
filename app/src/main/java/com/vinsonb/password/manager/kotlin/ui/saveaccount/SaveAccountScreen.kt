@@ -23,7 +23,7 @@ import com.vinsonb.password.manager.kotlin.ui.saveaccount.SaveAccountState.TextF
 import com.vinsonb.password.manager.kotlin.ui.saveaccount.SaveAccountState.TextFieldState.ErrorState
 import com.vinsonb.password.manager.kotlin.ui.saveaccount.SaveAccountState.TextFieldState.ErrorState.*
 import com.vinsonb.password.manager.kotlin.ui.theme.PassVaultTheme
-import com.vinsonb.password.manager.kotlin.utilities.LightDarkModePreviews
+import com.vinsonb.password.manager.kotlin.utilities.ScreenPreviews
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.Dispatchers.Main
@@ -146,7 +146,7 @@ private fun showToast(context: Context, isInserted: Boolean) {
     ).show()
 }
 
-@LightDarkModePreviews
+@ScreenPreviews
 @Composable
 private fun PreviewSaveAccountScreen() = PassVaultTheme {
     SaveAccountContent(
@@ -156,6 +156,24 @@ private fun PreviewSaveAccountScreen() = PassVaultTheme {
                 USERNAME to TextFieldState(),
                 PASSWORD to TextFieldState(),
                 REPEAT_PASSWORD to TextFieldState(),
+            )
+        ),
+        onTextChange = { _, _ -> },
+        saveAccount = suspend { true },
+        validate = {},
+    )
+}
+
+@ScreenPreviews
+@Composable
+private fun PreviewSaveAccountScreenNoErrors() = PassVaultTheme {
+    SaveAccountContent(
+        state = SaveAccountState(
+            mapOf(
+                PLATFORM to TextFieldState(text = "platform", errorState = NO_ERROR),
+                USERNAME to TextFieldState(text = "username", errorState = NO_ERROR),
+                PASSWORD to TextFieldState(text = "password", errorState = NO_ERROR),
+                REPEAT_PASSWORD to TextFieldState(text = "password", errorState = NO_ERROR),
             )
         ),
         onTextChange = { _, _ -> },

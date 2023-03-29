@@ -18,7 +18,7 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import com.vinsonb.password.manager.kotlin.R
 import com.vinsonb.password.manager.kotlin.ui.theme.PassVaultTheme
-import com.vinsonb.password.manager.kotlin.utilities.LightDarkModePreviews
+import com.vinsonb.password.manager.kotlin.utilities.ComponentPreviews
 
 object CustomTextField {
     @Composable
@@ -125,13 +125,13 @@ private fun CustomTextField(
     )
 }
 
-@LightDarkModePreviews
+@ComponentPreviews
 @Composable
 private fun PreviewTextField() = PassVaultTheme {
     CustomTextField(text = "Text", onTextChange = { }, label = "Label")
 }
 
-@LightDarkModePreviews
+@ComponentPreviews
 @Composable
 private fun PreviewTextFieldError() = PassVaultTheme {
     CustomTextField(
@@ -143,7 +143,7 @@ private fun PreviewTextFieldError() = PassVaultTheme {
     )
 }
 
-@LightDarkModePreviews
+@ComponentPreviews
 @Composable
 private fun PreviewTextFieldPasswordVisible() = PassVaultTheme {
     CustomTextField.Password(
@@ -155,7 +155,7 @@ private fun PreviewTextFieldPasswordVisible() = PassVaultTheme {
     )
 }
 
-@LightDarkModePreviews
+@ComponentPreviews
 @Composable
 private fun PreviewTextFieldPasswordHidden() = PassVaultTheme {
     CustomTextField.Password(

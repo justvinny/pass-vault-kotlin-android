@@ -10,7 +10,6 @@ import junit.framework.TestCase.assertEquals
 import junitparams.JUnitParamsRunner
 import junitparams.Parameters
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.test.runTest
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -31,7 +30,7 @@ class SaveAccountViewModelTest {
      */
     @Test
     @Parameters(method = "provideValidateParams")
-    fun `GIVEN various cases WHEN THEN errorState should change appropriately`(
+    fun `GIVEN various cases WHEN validate invoked THEN errorState should change appropriately`(
         textFieldName: SaveAccountState.TextFieldName,
         text1: String,
         text2: String?,
@@ -98,7 +97,6 @@ class SaveAccountViewModelTest {
 
             // Assert
             viewModel.stateFlow.test {
-                delay(1000)
                 awaitItem().textFields.values
                     .all { it.text.isBlank() }
                     .also { isAllBlank ->
