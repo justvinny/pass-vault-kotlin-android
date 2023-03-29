@@ -40,14 +40,14 @@
     <string name="hint_new_passcode">New 5 digit passcode</string>
 
     <!-- Toast Messages -->
-    <string name="success_save_account">%1$s account with username %2$s has been saved!</string>
+    <string name="success_save_account">Account has been saved!</string>
     <string name="success_copied_to_clipboard">Successfully copied%1$sto clipboard!</string>
     <string name="success_passcode_changed">Passcode changed successfully!</string>
-    <string name="error_save_unsuccessful">Not saved. Please enter valid data and fill required fields.</string>
+    <string name="error_save_unsuccessful">Account already exists! Use a different username.</string>
     <string name="error_passcode_length">Passcode must be 5 digits</string>
     <string name="error_passcode_must_match">Passcode must match</string>
     <string name="error_text_empty">%1$s must not be empty</string>
-    <string name="error_password_must_match">Password must match</string>
+    <string name="error_password_must_match">Passwords must match</string>
     <string name="error_wrong_passcode">Passcode entered does not match</string>
     <string name="error_wrong_secret_answer">Secret answer is incorrect. Try again!</string>
 
@@ -70,6 +70,8 @@
     <string name="content_open_link">Open link</string>
     <string name="content_import_csv">Import CSV menu item</string>
     <string name="content_export_csv">Export CSV menu item</string>
+    <string name="content_show_password">Show Password</string>
+    <string name="content_hide_password">Hide Password</string>
 
     <!-- Others -->
     <string name="default_password_length">20</string>
