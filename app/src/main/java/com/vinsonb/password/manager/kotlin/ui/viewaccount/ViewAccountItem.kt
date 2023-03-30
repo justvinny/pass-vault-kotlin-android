@@ -35,7 +35,7 @@ fun ViewAccountItem(
     ) {
         ConstraintLayout(
             modifier = Modifier
-                .height(150.dp)
+                .height(135.dp)
                 .fillMaxWidth()
                 .padding(16.dp),
         ) {

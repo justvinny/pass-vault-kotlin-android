@@ -1,10 +1,10 @@
 package com.vinsonb.password.manager.kotlin.ui.components
 
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.*
@@ -13,9 +13,9 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
-import androidx.compose.ui.unit.dp
 import com.vinsonb.password.manager.kotlin.R
 import com.vinsonb.password.manager.kotlin.ui.theme.PassVaultTheme
 import com.vinsonb.password.manager.kotlin.utilities.ComponentPreviews
@@ -29,6 +29,7 @@ object CustomTextField {
         label: String = "",
         isError: Boolean = false,
         errorText: String = "",
+        emptyErrorTextPlaceHolder: @Composable () -> Unit = { VerticalSpacer() },
         keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
     ) {
         CustomTextField(
@@ -38,6 +39,7 @@ object CustomTextField {
             label = label,
             isError = isError,
             errorText = errorText,
+            emptyErrorTextPlaceHolder = emptyErrorTextPlaceHolder,
             visualTransformation = VisualTransformation.None,
             keyboardOptions = keyboardOptions,
         )
@@ -51,6 +53,7 @@ object CustomTextField {
         label: String = "",
         isError: Boolean = false,
         errorText: String = "",
+        emptyErrorTextPlaceHolder: @Composable () -> Unit = { VerticalSpacer() },
         keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
         isPasswordVisibleDefault: Boolean = false,
     ) {
@@ -63,6 +66,7 @@ object CustomTextField {
             label = label,
             isError = isError,
             errorText = errorText,
+            emptyErrorTextPlaceHolder = emptyErrorTextPlaceHolder,
             trailingIcon = {
                 if (isPasswordVisible.value) {
                     IconButton(onClick = { isPasswordVisible.value = false }) {
@@ -89,6 +93,31 @@ object CustomTextField {
         )
     }
 
+    @Composable
+    fun Search(
+        modifier: Modifier = Modifier,
+        text: String = "",
+        onTextChange: (String) -> Unit,
+        label: String = "",
+        onSearch: () -> Unit,
+    ) {
+        CustomTextField(
+            modifier = modifier,
+            text = text,
+            onTextChange = onTextChange,
+            label = label,
+            leadingIcon = {
+                Icon(
+                    imageVector = Icons.Filled.Search,
+                    contentDescription = stringResource(id = R.string.content_search),
+                )
+            },
+            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
+            keyboardActions = KeyboardActions(onSearch = {
+                onSearch()
+            })
+        )
+    }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -100,9 +129,12 @@ private fun CustomTextField(
     label: String = "",
     isError: Boolean = false,
     errorText: String = "",
+    emptyErrorTextPlaceHolder: @Composable (() -> Unit)? = null,
+    leadingIcon: @Composable (() -> Unit)? = null,
     trailingIcon: @Composable (() -> Unit)? = null,
     visualTransformation: VisualTransformation = VisualTransformation.None,
     keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
+    keyboardActions: KeyboardActions = KeyboardActions.Default,
 ) {
     OutlinedTextField(
         modifier = Modifier
@@ -116,12 +148,16 @@ private fun CustomTextField(
             if (isError) {
                 Text(errorText)
             } else {
-                Spacer(Modifier.height(16.dp))
+                if (emptyErrorTextPlaceHolder != null) {
+                    emptyErrorTextPlaceHolder()
+                }
             }
         },
+        leadingIcon = leadingIcon,
         trailingIcon = trailingIcon,
         visualTransformation = visualTransformation,
         keyboardOptions = keyboardOptions,
+        keyboardActions = keyboardActions,
     )
 }
 
@@ -163,5 +199,15 @@ private fun PreviewTextFieldPasswordHidden() = PassVaultTheme {
         onTextChange = { },
         label = "Label",
         errorText = "Error Text",
+    )
+}
+
+@ComponentPreviews
+@Composable
+private fun PreviewTextFieldSearch() = PassVaultTheme {
+    CustomTextField.Search(
+        label = "Search",
+        onTextChange = {},
+        onSearch = {},
     )
 }
