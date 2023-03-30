@@ -52,10 +52,10 @@ class AccountDialog(
                 view.findViewById<ImageView>(R.id.icon_accounts_dialog_copy_username)
             iconCopyUsername.setOnClickListener {
                 ClipboardUtilities.copyToClipboard(
-                    requireContext(),
-                    CLIP_USERNAME_LABEL,
-                    account.username,
-                    message = " username ${account.username} "
+                    context = requireContext(),
+                    clipLabel = CLIP_USERNAME_LABEL,
+                    toCopy = account.username,
+                    username = account.username,
                 )
             }
 
@@ -69,10 +69,10 @@ class AccountDialog(
                 view.findViewById<ImageView>(R.id.icon_accounts_dialog_copy_password)
             iconCopyPassword.setOnClickListener {
                 ClipboardUtilities.copyToClipboard(
-                    requireContext(),
-                    CLIP_PASSWORD_LABEL,
-                    account.password,
-                    message = " password for ${account.username} "
+                    context = requireContext(),
+                    clipLabel = CLIP_PASSWORD_LABEL,
+                    toCopy = account.password,
+                    username = account.username,
                 )
             }
 

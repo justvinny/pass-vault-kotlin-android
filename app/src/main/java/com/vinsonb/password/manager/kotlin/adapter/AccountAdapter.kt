@@ -40,10 +40,10 @@ class AccountAdapter (
 
         holder.iconCopy.setOnClickListener {
             copyToClipboard(
-                holder.iconCopy.context,
-                CLIP_PASSWORD_LABEL,
-                accountList[position].password,
-                message = " password for ${accountList[position].username} "
+                context = holder.iconCopy.context,
+                clipLabel = CLIP_PASSWORD_LABEL,
+                toCopy = accountList[position].password,
+                username = accountList[position].username,
             )
         }
     }

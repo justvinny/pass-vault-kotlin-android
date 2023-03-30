@@ -41,7 +41,8 @@
 
     <!-- Toast Messages -->
     <string name="success_save_account">Account has been saved!</string>
-    <string name="success_copied_to_clipboard">Successfully copied%1$sto clipboard!</string>
+    <string name="success_copied_password_phrase">password for %1$s</string>
+    <string name="success_copied_to_clipboard">Successfully copied %1$s to the clipboard!</string>
     <string name="success_passcode_changed">Passcode changed successfully!</string>
     <string name="error_save_unsuccessful">Account already exists! Use a different username.</string>
     <string name="error_passcode_length">Passcode must be 5 digits</string>
@@ -72,6 +73,7 @@
     <string name="content_export_csv">Export CSV menu item</string>
     <string name="content_show_password">Show Password</string>
     <string name="content_hide_password">Hide Password</string>
+    <string name="content_search">Search</string>
 
     <!-- Others -->
     <string name="default_password_length">20</string>
