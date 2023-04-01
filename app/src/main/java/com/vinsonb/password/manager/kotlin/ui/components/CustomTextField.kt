@@ -1,6 +1,8 @@
 package com.vinsonb.password.manager.kotlin.ui.components
 
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
@@ -11,11 +13,13 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
+import androidx.compose.ui.unit.dp
 import com.vinsonb.password.manager.kotlin.R
 import com.vinsonb.password.manager.kotlin.ui.theme.PassVaultTheme
 import com.vinsonb.password.manager.kotlin.utilities.ComponentPreviews
@@ -27,9 +31,12 @@ object CustomTextField {
         text: String = "",
         onTextChange: (String) -> Unit,
         label: String = "",
+        enabled: Boolean = true,
         isError: Boolean = false,
         errorText: String = "",
         emptyErrorTextPlaceHolder: @Composable () -> Unit = { VerticalSpacer() },
+        leadingIcon: @Composable (() -> Unit)? = null,
+        trailingIcon: @Composable (() -> Unit)? = null,
         keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
     ) {
         CustomTextField(
@@ -37,9 +44,12 @@ object CustomTextField {
             text = text,
             onTextChange = onTextChange,
             label = label,
+            enabled = enabled,
             isError = isError,
             errorText = errorText,
             emptyErrorTextPlaceHolder = emptyErrorTextPlaceHolder,
+            leadingIcon = leadingIcon,
+            trailingIcon = trailingIcon,
             visualTransformation = VisualTransformation.None,
             keyboardOptions = keyboardOptions,
         )
@@ -51,9 +61,12 @@ object CustomTextField {
         text: String = "",
         onTextChange: (String) -> Unit,
         label: String = "",
+        enabled: Boolean = true,
         isError: Boolean = false,
         errorText: String = "",
         emptyErrorTextPlaceHolder: @Composable () -> Unit = { VerticalSpacer() },
+        leadingIcon: @Composable (() -> Unit)? = null,
+        trailingIcon: @Composable (() -> Unit)? = null,
         keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
         isPasswordVisibleDefault: Boolean = false,
     ) {
@@ -64,24 +77,45 @@ object CustomTextField {
             text = text,
             onTextChange = onTextChange,
             label = label,
+            enabled = enabled,
             isError = isError,
             errorText = errorText,
             emptyErrorTextPlaceHolder = emptyErrorTextPlaceHolder,
-            trailingIcon = {
-                if (isPasswordVisible.value) {
-                    IconButton(onClick = { isPasswordVisible.value = false }) {
-                        Icon(
-                            imageVector = Icons.Filled.VisibilityOff,
-                            contentDescription = stringResource(id = R.string.content_hide_password),
-                        )
+            leadingIcon = leadingIcon,
+            trailingIcon = { // TODO: Surely this can be refactored.
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    if (isPasswordVisible.value) {
+                        IconButton(
+                            modifier = Modifier.offset(x = if (trailingIcon == null) 0.dp else 12.dp),
+                            onClick = { isPasswordVisible.value = false },
+                        ) {
+                            Icon(
+                                imageVector = Icons.Filled.VisibilityOff,
+                                contentDescription = stringResource(id = R.string.content_hide_password),
+                                tint = if (isError) {
+                                    MaterialTheme.colorScheme.error
+                                } else {
+                                    MaterialTheme.colorScheme.primary
+                                },
+                            )
+                        }
+                    } else {
+                        IconButton(
+                            modifier = Modifier.offset(x = if (trailingIcon == null) 0.dp else 12.dp),
+                            onClick = { isPasswordVisible.value = true }
+                        ) {
+                            Icon(
+                                imageVector = Icons.Filled.Visibility,
+                                contentDescription = stringResource(id = R.string.content_show_password),
+                                tint = if (isError) {
+                                    MaterialTheme.colorScheme.error
+                                } else {
+                                    MaterialTheme.colorScheme.primary
+                                }
+                            )
+                        }
                     }
-                } else {
-                    IconButton(onClick = { isPasswordVisible.value = true }) {
-                        Icon(
-                            imageVector = Icons.Filled.Visibility,
-                            contentDescription = stringResource(id = R.string.content_show_password),
-                        )
-                    }
+                    trailingIcon?.invoke()
                 }
             },
             visualTransformation = if (isPasswordVisible.value) {
@@ -110,6 +144,7 @@ object CustomTextField {
                 Icon(
                     imageVector = Icons.Filled.Search,
                     contentDescription = stringResource(id = R.string.content_search),
+                    tint = MaterialTheme.colorScheme.primary,
                 )
             },
             keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
@@ -127,6 +162,7 @@ private fun CustomTextField(
     text: String = "",
     onTextChange: (String) -> Unit,
     label: String = "",
+    enabled: Boolean = true,
     isError: Boolean = false,
     errorText: String = "",
     emptyErrorTextPlaceHolder: @Composable (() -> Unit)? = null,
@@ -143,6 +179,7 @@ private fun CustomTextField(
         value = text,
         onValueChange = onTextChange,
         label = { Text(label) },
+        enabled = enabled,
         isError = isError,
         supportingText = {
             if (isError) {
@@ -164,7 +201,7 @@ private fun CustomTextField(
 @ComponentPreviews
 @Composable
 private fun PreviewTextField() = PassVaultTheme {
-    CustomTextField(text = "Text", onTextChange = { }, label = "Label")
+    CustomTextField(text = "Text", onTextChange = {}, label = "Label")
 }
 
 @ComponentPreviews
@@ -172,7 +209,7 @@ private fun PreviewTextField() = PassVaultTheme {
 private fun PreviewTextFieldError() = PassVaultTheme {
     CustomTextField(
         text = "Text",
-        onTextChange = { },
+        onTextChange = {},
         label = "Label",
         isError = true,
         errorText = "Error Text",
@@ -184,7 +221,7 @@ private fun PreviewTextFieldError() = PassVaultTheme {
 private fun PreviewTextFieldPasswordVisible() = PassVaultTheme {
     CustomTextField.Password(
         text = "Text",
-        onTextChange = { },
+        onTextChange = {},
         label = "Label",
         errorText = "Error Text",
         isPasswordVisibleDefault = true,
@@ -196,7 +233,7 @@ private fun PreviewTextFieldPasswordVisible() = PassVaultTheme {
 private fun PreviewTextFieldPasswordHidden() = PassVaultTheme {
     CustomTextField.Password(
         text = "Text",
-        onTextChange = { },
+        onTextChange = {},
         label = "Label",
         errorText = "Error Text",
     )
