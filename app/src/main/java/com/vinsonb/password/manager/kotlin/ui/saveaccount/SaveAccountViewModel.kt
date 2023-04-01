@@ -54,13 +54,17 @@ class SaveAccountViewModel(
 
     fun validate(textFieldName: TextFieldName) {
         flowMap[textFieldName]?.also {
-            val doPasswordsMatch = textFieldName == REPEAT_PASSWORD &&
-                    repeatPasswordFlow.value.text != passwordFlow.value.text
+            if (textFieldName == PASSWORD) {
+                validate(REPEAT_PASSWORD)
+            }
+
+            val doPasswordsMatch = repeatPasswordFlow.value.text == passwordFlow.value.text
             val errorState = when {
                 it.value.text.isBlank() -> TEXT_EMPTY
-                doPasswordsMatch -> PASSWORDS_MUST_MATCH
+                textFieldName == REPEAT_PASSWORD && !doPasswordsMatch -> PASSWORDS_MUST_MATCH
                 else -> NO_ERROR
             }
+
             flowMap[textFieldName]?.update { oldState ->
                 oldState.copy(errorState = errorState)
             }
