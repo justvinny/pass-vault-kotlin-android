@@ -13,8 +13,8 @@ interface AccountDao {
     suspend fun insertAccount(account: Account): Long
 
     @Update
-    suspend fun updateAccount(account: Account)
+    suspend fun updateAccount(account: Account): Int
 
     @Delete
-    suspend fun deleteAccount(account: Account)
+    suspend fun deleteAccount(account: Account): Int
 }
