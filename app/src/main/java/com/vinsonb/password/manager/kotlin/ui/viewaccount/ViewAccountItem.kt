@@ -1,13 +1,12 @@
 package com.vinsonb.password.manager.kotlin.ui.viewaccount
 
-import android.content.Context
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ContentCopy
 import androidx.compose.material.icons.filled.Fullscreen
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -25,9 +24,11 @@ import com.vinsonb.password.manager.kotlin.utilities.ComponentPreviews
 
 @Composable
 fun ViewAccountItem(
-    context: Context,
     account: Account,
+    selectAccount: () -> Unit,
 ) {
+    val context = LocalContext.current
+
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -109,13 +110,6 @@ fun ViewAccountItem(
                 maxLines = 3,
             )
 
-            // TODO: Migrate AccountDialog and integrate it with this Composable.
-            var isDialogVisible by remember { mutableStateOf(false) }
-
-            if (isDialogVisible) {
-                ViewAccountItemDialog { isDialogVisible = false }
-            }
-
             IconButton(
                 modifier = Modifier
                     .size(48.dp)
@@ -124,7 +118,7 @@ fun ViewAccountItem(
                         bottom.linkTo(platformIcon.bottom)
                         end.linkTo(parent.end)
                     },
-                onClick = { isDialogVisible = true },
+                onClick = { selectAccount() },
             ) {
                 Icon(
                     modifier = Modifier.size(40.dp),
@@ -165,11 +159,11 @@ fun ViewAccountItem(
 @Composable
 fun PreviewViewAccountItem() = PassVaultTheme {
     ViewAccountItem(
-        context = LocalContext.current,
         account = Account(
             platform = "Platform",
             username = "Username",
             password = "Password",
         ),
+        selectAccount = {},
     )
 }
