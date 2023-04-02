@@ -11,6 +11,8 @@ import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.ReadOnlyComposable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
@@ -39,7 +41,7 @@ object CustomTextField {
         trailingIcon: @Composable (() -> Unit)? = null,
         keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
     ) {
-        CustomTextField(
+        CommonImpl(
             modifier = modifier,
             text = text,
             onTextChange = onTextChange,
@@ -72,7 +74,7 @@ object CustomTextField {
     ) {
         val isPasswordVisible = rememberSaveable { mutableStateOf(isPasswordVisibleDefault) }
 
-        CustomTextField(
+        CommonImpl(
             modifier = modifier,
             text = text,
             onTextChange = onTextChange,
@@ -82,38 +84,17 @@ object CustomTextField {
             errorText = errorText,
             emptyErrorTextPlaceHolder = emptyErrorTextPlaceHolder,
             leadingIcon = leadingIcon,
-            trailingIcon = { // TODO: Surely this can be refactored.
+            trailingIcon = {
                 Row(verticalAlignment = Alignment.CenterVertically) {
-                    if (isPasswordVisible.value) {
-                        IconButton(
-                            modifier = Modifier.offset(x = if (trailingIcon == null) 0.dp else 12.dp),
-                            onClick = { isPasswordVisible.value = false },
-                        ) {
-                            Icon(
-                                imageVector = Icons.Filled.VisibilityOff,
-                                contentDescription = stringResource(id = R.string.content_hide_password),
-                                tint = if (isError) {
-                                    MaterialTheme.colorScheme.error
-                                } else {
-                                    MaterialTheme.colorScheme.primary
-                                },
-                            )
-                        }
-                    } else {
-                        IconButton(
-                            modifier = Modifier.offset(x = if (trailingIcon == null) 0.dp else 12.dp),
-                            onClick = { isPasswordVisible.value = true }
-                        ) {
-                            Icon(
-                                imageVector = Icons.Filled.Visibility,
-                                contentDescription = stringResource(id = R.string.content_show_password),
-                                tint = if (isError) {
-                                    MaterialTheme.colorScheme.error
-                                } else {
-                                    MaterialTheme.colorScheme.primary
-                                }
-                            )
-                        }
+                    IconButton(
+                        modifier = Modifier.offset(x = if (trailingIcon == null) 0.dp else 12.dp),
+                        onClick = isPasswordVisible.getPasswordOnClick(),
+                    ) {
+                        Icon(
+                            imageVector = isPasswordVisible.getPasswordImageVector(),
+                            contentDescription = isPasswordVisible.getPasswordIconDescription(),
+                            tint = isError.getErrorTint(),
+                        )
                     }
                     trailingIcon?.invoke()
                 }
@@ -133,9 +114,11 @@ object CustomTextField {
         text: String = "",
         onTextChange: (String) -> Unit,
         label: String = "",
-        onSearch: () -> Unit,
+        trailingIcon: (@Composable () -> Unit)? = null,
+        keyboardOptions: KeyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
+        onSearch: (() -> Unit)? = null,
     ) {
-        CustomTextField(
+        CommonImpl(
             modifier = modifier,
             text = text,
             onTextChange = onTextChange,
@@ -147,17 +130,20 @@ object CustomTextField {
                     tint = MaterialTheme.colorScheme.primary,
                 )
             },
-            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
-            keyboardActions = KeyboardActions(onSearch = {
-                onSearch()
-            })
+            trailingIcon = trailingIcon,
+            keyboardOptions = keyboardOptions,
+            keyboardActions = onSearch?.let {
+                KeyboardActions(onSearch = {
+                    onSearch()
+                })
+            } ?: KeyboardActions.Default
         )
     }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun CustomTextField(
+private fun CommonImpl(
     modifier: Modifier = Modifier,
     text: String = "",
     onTextChange: (String) -> Unit,
@@ -198,16 +184,53 @@ private fun CustomTextField(
     )
 }
 
+// region start CustomTextField.Password helper functions
+@ReadOnlyComposable
+@Composable
+private fun Boolean.getErrorTint() = if (this) {
+    MaterialTheme.colorScheme.error
+} else {
+    MaterialTheme.colorScheme.primary
+}
+
+@ReadOnlyComposable
+@Composable
+private fun MutableState<Boolean>.getPasswordOnClick() = if (this.value) {
+    { this.value = false }
+} else {
+    { this.value = true }
+}
+
+@ReadOnlyComposable
+@Composable
+private fun MutableState<Boolean>.getPasswordImageVector() = if (this.value) {
+    Icons.Filled.VisibilityOff
+} else {
+    Icons.Filled.Visibility
+}
+
+@ReadOnlyComposable
+@Composable
+private fun MutableState<Boolean>.getPasswordIconDescription() = stringResource(
+    id = if (this.value) {
+        R.string.content_hide_password
+    } else {
+        R.string.content_show_password
+    },
+)
+// region end CustomTextField.Password helper functions
+
+// region start Previews
 @ComponentPreviews
 @Composable
 private fun PreviewTextField() = PassVaultTheme {
-    CustomTextField(text = "Text", onTextChange = {}, label = "Label")
+    CustomTextField.Normal(text = "Text", onTextChange = {}, label = "Label")
 }
 
 @ComponentPreviews
 @Composable
 private fun PreviewTextFieldError() = PassVaultTheme {
-    CustomTextField(
+    CustomTextField.Normal(
         text = "Text",
         onTextChange = {},
         label = "Label",
@@ -248,3 +271,4 @@ private fun PreviewTextFieldSearch() = PassVaultTheme {
         onSearch = {},
     )
 }
+// region end Previews

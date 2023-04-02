@@ -2,10 +2,10 @@ package com.vinsonb.password.manager.kotlin.viewmodels
 
 import app.cash.turbine.test
 import com.vinsonb.password.manager.kotlin.database.enitities.Account
-import com.vinsonb.password.manager.kotlin.ui.saveaccount.SaveAccountState
-import com.vinsonb.password.manager.kotlin.ui.saveaccount.SaveAccountState.TextFieldName.*
-import com.vinsonb.password.manager.kotlin.ui.saveaccount.SaveAccountState.TextFieldState.ErrorState.*
-import com.vinsonb.password.manager.kotlin.ui.saveaccount.SaveAccountViewModel
+import com.vinsonb.password.manager.kotlin.ui.features.saveaccount.SaveAccountState
+import com.vinsonb.password.manager.kotlin.ui.features.saveaccount.SaveAccountState.TextFieldName.*
+import com.vinsonb.password.manager.kotlin.ui.features.saveaccount.SaveAccountState.TextFieldState.ErrorState.*
+import com.vinsonb.password.manager.kotlin.ui.features.saveaccount.SaveAccountViewModel
 import junit.framework.TestCase.assertEquals
 import junitparams.JUnitParamsRunner
 import junitparams.Parameters

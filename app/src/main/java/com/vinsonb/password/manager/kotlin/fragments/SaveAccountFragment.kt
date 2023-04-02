@@ -6,8 +6,8 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import com.vinsonb.password.manager.kotlin.ui.saveaccount.SaveAccountScreen
-import com.vinsonb.password.manager.kotlin.ui.saveaccount.SaveAccountViewModel
+import com.vinsonb.password.manager.kotlin.ui.features.saveaccount.SaveAccountScreen
+import com.vinsonb.password.manager.kotlin.ui.features.saveaccount.SaveAccountViewModel
 import com.vinsonb.password.manager.kotlin.utilities.withComposeView
 import dagger.hilt.android.AndroidEntryPoint
 

@@ -23,7 +23,7 @@ object TextInputUtilities {
      * Checks two EditText fields have the same input.
      * Otherwise, display appropriate error message on the Text Input.
      */
-    fun checkInputTextMatches(
+    private fun checkInputTextMatches(
         editText: TextInputEditText,
         editText2: TextInputEditText,
         textInputLayout: TextInputLayout,

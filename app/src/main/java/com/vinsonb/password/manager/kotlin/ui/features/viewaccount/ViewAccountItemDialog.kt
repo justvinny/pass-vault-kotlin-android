@@ -1,4 +1,4 @@
-package com.vinsonb.password.manager.kotlin.ui.viewaccount
+package com.vinsonb.password.manager.kotlin.ui.features.viewaccount
 
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
