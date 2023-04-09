@@ -1,12 +1,12 @@
-package com.vinsonb.password.manager.kotlin.ui.saveaccount
+package com.vinsonb.password.manager.kotlin.ui.features.saveaccount
 
 import androidx.lifecycle.ViewModel
 import com.vinsonb.password.manager.kotlin.database.AccountRepository
 import com.vinsonb.password.manager.kotlin.database.enitities.Account
-import com.vinsonb.password.manager.kotlin.ui.saveaccount.SaveAccountState.TextFieldName
-import com.vinsonb.password.manager.kotlin.ui.saveaccount.SaveAccountState.TextFieldName.*
-import com.vinsonb.password.manager.kotlin.ui.saveaccount.SaveAccountState.TextFieldState
-import com.vinsonb.password.manager.kotlin.ui.saveaccount.SaveAccountState.TextFieldState.ErrorState.*
+import com.vinsonb.password.manager.kotlin.ui.features.saveaccount.SaveAccountState.TextFieldName
+import com.vinsonb.password.manager.kotlin.ui.features.saveaccount.SaveAccountState.TextFieldName.*
+import com.vinsonb.password.manager.kotlin.ui.features.saveaccount.SaveAccountState.TextFieldState
+import com.vinsonb.password.manager.kotlin.ui.features.saveaccount.SaveAccountState.TextFieldState.ErrorState.*
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.combine
@@ -54,13 +54,17 @@ class SaveAccountViewModel(
 
     fun validate(textFieldName: TextFieldName) {
         flowMap[textFieldName]?.also {
-            val doPasswordsMatch = textFieldName == REPEAT_PASSWORD &&
-                    repeatPasswordFlow.value.text != passwordFlow.value.text
+            if (textFieldName == PASSWORD) {
+                validate(REPEAT_PASSWORD)
+            }
+
+            val doPasswordsMatch = repeatPasswordFlow.value.text == passwordFlow.value.text
             val errorState = when {
                 it.value.text.isBlank() -> TEXT_EMPTY
-                doPasswordsMatch -> PASSWORDS_MUST_MATCH
+                textFieldName == REPEAT_PASSWORD && !doPasswordsMatch -> PASSWORDS_MUST_MATCH
                 else -> NO_ERROR
             }
+
             flowMap[textFieldName]?.update { oldState ->
                 oldState.copy(errorState = errorState)
             }

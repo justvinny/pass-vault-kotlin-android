@@ -1,4 +1,4 @@
-package com.vinsonb.password.manager.kotlin.ui.saveaccount
+package com.vinsonb.password.manager.kotlin.ui.features.saveaccount
 
 import androidx.annotation.StringRes
 import com.vinsonb.password.manager.kotlin.R

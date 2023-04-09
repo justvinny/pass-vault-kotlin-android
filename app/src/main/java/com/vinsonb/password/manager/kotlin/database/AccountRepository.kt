@@ -16,12 +16,12 @@ class AccountRepository(
         return accountDao.insertAccount(account) != SQLITE_INSERT_FAILED_VALUE
     }
 
-    suspend fun updateAccount(account: Account) {
-        accountDao.updateAccount(account)
+    suspend fun updateAccount(account: Account): Boolean {
+        return accountDao.updateAccount(account) > 0
     }
 
-    suspend fun deleteAccount(account: Account) {
-        accountDao.deleteAccount(account)
+    suspend fun deleteAccount(account: Account): Boolean {
+        return accountDao.deleteAccount(account) > 0
     }
 
     companion object {

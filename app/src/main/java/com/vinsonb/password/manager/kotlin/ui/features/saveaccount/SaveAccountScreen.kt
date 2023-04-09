@@ -1,7 +1,6 @@
-package com.vinsonb.password.manager.kotlin.ui.saveaccount
+package com.vinsonb.password.manager.kotlin.ui.features.saveaccount
 
 import android.content.Context
-import android.widget.Toast
 import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -16,12 +15,13 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import com.vinsonb.password.manager.kotlin.R
+import com.vinsonb.password.manager.kotlin.extensions.showToast
 import com.vinsonb.password.manager.kotlin.ui.components.CustomTextField
-import com.vinsonb.password.manager.kotlin.ui.saveaccount.SaveAccountState.TextFieldName
-import com.vinsonb.password.manager.kotlin.ui.saveaccount.SaveAccountState.TextFieldName.*
-import com.vinsonb.password.manager.kotlin.ui.saveaccount.SaveAccountState.TextFieldState
-import com.vinsonb.password.manager.kotlin.ui.saveaccount.SaveAccountState.TextFieldState.ErrorState
-import com.vinsonb.password.manager.kotlin.ui.saveaccount.SaveAccountState.TextFieldState.ErrorState.*
+import com.vinsonb.password.manager.kotlin.ui.features.saveaccount.SaveAccountState.TextFieldName
+import com.vinsonb.password.manager.kotlin.ui.features.saveaccount.SaveAccountState.TextFieldName.*
+import com.vinsonb.password.manager.kotlin.ui.features.saveaccount.SaveAccountState.TextFieldState
+import com.vinsonb.password.manager.kotlin.ui.features.saveaccount.SaveAccountState.TextFieldState.ErrorState
+import com.vinsonb.password.manager.kotlin.ui.features.saveaccount.SaveAccountState.TextFieldState.ErrorState.*
 import com.vinsonb.password.manager.kotlin.ui.theme.PassVaultTheme
 import com.vinsonb.password.manager.kotlin.utilities.ScreenPreviews
 import kotlinx.coroutines.CoroutineScope
@@ -66,7 +66,7 @@ private fun SaveAccountContent(
             .padding(16.dp)
             .verticalScroll(rememberScrollState())
             .imePadding()
-            .navigationBarsPadding()
+            .navigationBarsPadding(),
     ) {
         for (textField in state.textFields) {
             when (textField.key) {
@@ -132,18 +132,16 @@ private fun onSaveClick(
             val isInserted = saveAccount()
 
             withContext(Main) {
-                showToast(context, isInserted)
+                context.showToast(
+                    if (isInserted) {
+                        R.string.success_save_account
+                    } else {
+                        R.string.error_save_unsuccessful
+                    }
+                )
             }
         }
     }
-}
-
-private fun showToast(context: Context, isInserted: Boolean) {
-    Toast.makeText(
-        context,
-        if (isInserted) R.string.success_save_account else R.string.error_save_unsuccessful,
-        Toast.LENGTH_SHORT,
-    ).show()
 }
 
 @ScreenPreviews

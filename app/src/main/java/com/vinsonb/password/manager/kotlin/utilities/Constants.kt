@@ -47,4 +47,8 @@ object Constants {
     object Csv {
         const val DELIMITER = ",_____,"
     }
+
+    object Toast {
+        const val SHORT_DELAY = 2000L
+    }
 }

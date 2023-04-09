@@ -23,33 +23,6 @@ class AccountViewModel @Inject constructor(
     val accounts: LiveData<List<Account>> = accountRepository.getAll().asLiveData()
 
     /**
-     * Inserts a new [account] to our Room Database.
-     */
-    private fun insertAccount(account: Account) {
-        viewModelScope.launch {
-            accountRepository.insertAccount(account)
-        }
-    }
-
-    /**
-     * Updates password of given [account] in our Room Database.
-     */
-    fun updateAccount(account: Account) {
-        viewModelScope.launch {
-            accountRepository.updateAccount(account)
-        }
-    }
-
-    /**
-     * Deletes given [account] from our Room Database.
-     */
-    fun deleteAccount(account: Account) {
-        viewModelScope.launch {
-            accountRepository.deleteAccount(account)
-        }
-    }
-
-    /**
      * Saves all accounts to a CSV file using an OutputStream created with a [contentResolver] and [uri].
      */
     fun saveAccountsAsCsv(contentResolver: ContentResolver, uri: Uri, accounts: List<Account>) {
@@ -97,6 +70,15 @@ class AccountViewModel @Inject constructor(
             }.onFailure {
                 e(TAG, it.message.toString())
             }
+        }
+    }
+
+    /**
+     * Inserts a new [account] to our Room Database.
+     */
+    private fun insertAccount(account: Account) {
+        viewModelScope.launch {
+            accountRepository.insertAccount(account)
         }
     }
 
