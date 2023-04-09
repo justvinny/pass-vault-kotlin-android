@@ -1,11 +1,9 @@
-package com.vinsonb.password.manager.kotlin.viewmodels
+package com.vinsonb.password.manager.kotlin.ui.features.saveaccount
 
 import app.cash.turbine.test
 import com.vinsonb.password.manager.kotlin.database.enitities.Account
-import com.vinsonb.password.manager.kotlin.ui.features.saveaccount.SaveAccountState
 import com.vinsonb.password.manager.kotlin.ui.features.saveaccount.SaveAccountState.TextFieldName.*
 import com.vinsonb.password.manager.kotlin.ui.features.saveaccount.SaveAccountState.TextFieldState.ErrorState.*
-import com.vinsonb.password.manager.kotlin.ui.features.saveaccount.SaveAccountViewModel
 import junit.framework.TestCase.assertEquals
 import junitparams.JUnitParamsRunner
 import junitparams.Parameters
@@ -26,10 +24,10 @@ class SaveAccountViewModelTest {
      *  3. Test for invalid input passwords don't match.
      *  4. Test for valid input passwords match.
      *
-     *  Method Params Provider: [provideValidateParams]
+     *  Method Params Provider: [provideValidateArgs]
      */
     @Test
-    @Parameters(method = "provideValidateParams")
+    @Parameters(method = "provideValidateArgs")
     fun `GIVEN various cases WHEN validate invoked THEN errorState should change appropriately`(
         textFieldName: SaveAccountState.TextFieldName,
         text1: String,
@@ -151,7 +149,7 @@ class SaveAccountViewModelTest {
         return account
     }
 
-    private fun provideValidateParams() = arrayOf(
+    private fun provideValidateArgs() = arrayOf(
         arrayOf(PLATFORM, "good input", null, NO_ERROR),
         arrayOf(REPEAT_PASSWORD, "password", "password", NO_ERROR),
         arrayOf(USERNAME, "", null, TEXT_EMPTY),

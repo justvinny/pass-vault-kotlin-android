@@ -1,11 +1,12 @@
 package com.vinsonb.password.manager.kotlin.ui.features.viewaccount
 
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import com.vinsonb.password.manager.kotlin.database.AccountRepository
 import com.vinsonb.password.manager.kotlin.database.enitities.Account
+import com.vinsonb.password.manager.kotlin.di.CoroutineDispatchers
 import com.vinsonb.password.manager.kotlin.utilities.Constants
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
@@ -13,6 +14,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class ViewAccountViewModel(
+    private val scope: CoroutineScope,
     private val getAllAccounts: () -> Flow<List<Account>>,
     private val updateAccount: suspend (Account) -> Boolean,
     private val deleteAccount: suspend (Account) -> Boolean,
@@ -20,29 +22,25 @@ class ViewAccountViewModel(
     @Inject
     constructor(
         accountRepository: AccountRepository,
+        dispatchers: CoroutineDispatchers,
     ) : this(
+        scope = CoroutineScope(dispatchers.default),
         getAllAccounts = accountRepository::getAll,
         updateAccount = accountRepository::updateAccount,
         deleteAccount = accountRepository::deleteAccount,
     )
 
     private val accountsFlow = getAllAccounts()
-    private val searchQueryFlow = MutableStateFlow("")
-    private val _stateFlow = MutableStateFlow(ViewAccountState(emptyList()))
+    private val _stateFlow = MutableStateFlow(ViewAccountState())
     val stateFlow = combine(
         accountsFlow,
-        searchQueryFlow,
         _stateFlow,
-    ) { accounts, searchQuery, initialState ->
-        initialState.copy(accounts = accounts.filterByPlatformOrUsername(searchQuery))
-    }.stateIn(
-        scope = viewModelScope,
-        started = SharingStarted.Lazily,
-        initialValue = ViewAccountState(emptyList()),
-    )
+    ) { accounts, state ->
+        state.copy(accounts = accounts.filterByPlatformOrUsername(state.searchQuery))
+    }.stateIn(scope, SharingStarted.WhileSubscribed(5000L), ViewAccountState())
 
     fun onSearch(query: String) {
-        searchQueryFlow.update { query }
+        _stateFlow.update { it.copy(searchQuery = query) }
     }
 
     private fun List<Account>.filterByPlatformOrUsername(query: String) = filter {
@@ -54,7 +52,7 @@ class ViewAccountViewModel(
     }
 
     fun onUpdateAccount(account: Account) {
-        viewModelScope.launch {
+        scope.launch {
             if (updateAccount(account)) {
                 _stateFlow.update { it.copy(toastState = ViewAccountToastState.SuccessfullyUpdated) }
                 changeToIdleAfterDelay()
@@ -63,7 +61,7 @@ class ViewAccountViewModel(
     }
 
     fun onDeleteAccount(account: Account) {
-        viewModelScope.launch {
+        scope.launch {
             if (deleteAccount(account)) {
                 _stateFlow.update { it.copy(toastState = ViewAccountToastState.SuccessfullyDeleted) }
                 changeToIdleAfterDelay()
@@ -77,6 +75,6 @@ class ViewAccountViewModel(
     }
 
     fun onClearSearch() {
-        searchQueryFlow.update { "" }
+        _stateFlow.update { it.copy(searchQuery = "") }
     }
 }
