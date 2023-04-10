@@ -44,8 +44,7 @@
     <fragment
         android:id="@+id/generate_password_fragment"
         android:name="com.vinsonb.password.manager.kotlin.fragments.GeneratePasswordFragment"
-        android:label="fragment_generate_password"
-        tools:layout="@layout/fragment_generate_password" />
+        android:label="fragment_generate_password" />
 
     <fragment
         android:id="@+id/save_account_fragment"

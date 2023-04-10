@@ -9,11 +9,17 @@ import com.vinsonb.password.manager.kotlin.R
 object ClipboardUtilities {
     const val CLIP_USERNAME_LABEL = "Account Username"
     const val CLIP_PASSWORD_LABEL = "Account Password"
+    const val CLIP_GENERATED_PASSWORD_LABEL = "Generated Password"
 
     /**
      * Copies text to the clipboard and notify user when successful.
      */
-    fun copyToClipboard(context: Context, clipLabel: String, toCopy: String, username: String = "") {
+    fun copyToClipboard(
+        context: Context,
+        clipLabel: String,
+        toCopy: String,
+        username: String = "",
+    ) {
         val clipboard = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
         val clip = ClipData.newPlainText(clipLabel, toCopy)
         clipboard.setPrimaryClip(clip)
