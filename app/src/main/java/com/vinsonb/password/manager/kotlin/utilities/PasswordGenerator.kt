@@ -26,7 +26,7 @@ object PasswordGenerator {
         hasUppercaseLetters: Boolean,
         hasLowercaseLetters: Boolean,
         hasNumbers: Boolean,
-        hasSpecialSymbols: Boolean
+        hasSpecialSymbols: Boolean,
     ): String {
         if (!(hasUppercaseLetters || hasLowercaseLetters || hasNumbers || hasSpecialSymbols)) return ""
 
@@ -42,5 +42,13 @@ object PasswordGenerator {
         }
 
         return password.toString()
+    }
+
+    fun getValidPasswordLength(passwordLength: Int): Int {
+        return when {
+            passwordLength < MIN_LENGTH -> MIN_LENGTH
+            passwordLength > MAX_LENGTH -> MAX_LENGTH
+            else -> passwordLength
+        }
     }
 }

@@ -99,7 +99,7 @@ fun ViewAccountItemDialog(
                         onClick = {
                             ClipboardUtilities.copyToClipboard(
                                 context = context,
-                                clipLabel = ClipboardUtilities.CLIP_PASSWORD_LABEL,
+                                clipLabel = ClipboardUtilities.CLIP_USERNAME_LABEL,
                                 toCopy = account.username,
                             )
                         },
