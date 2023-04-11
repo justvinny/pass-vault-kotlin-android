@@ -153,7 +153,7 @@ class ViewAccountViewModelTest {
         }
 
     @Test
-    fun `Given searchQuery not empty WHEN onClearSearch invoked THEN updates stateFlow to have empty searchQuery`() =
+    fun `GIVEN searchQuery not empty WHEN onClearSearch invoked THEN updates stateFlow to have empty searchQuery`() =
         runCancellingTest {
             // Arrange
             val viewModel = provideViewModel(updateAccountReturn = false)

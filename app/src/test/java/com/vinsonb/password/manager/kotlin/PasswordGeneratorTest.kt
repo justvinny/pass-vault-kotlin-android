@@ -4,6 +4,7 @@ import com.vinsonb.password.manager.kotlin.utilities.PasswordGenerator
 import com.vinsonb.password.manager.kotlin.utilities.PasswordGenerator.DEFAULT_LENGTH
 import junitparams.JUnitParamsRunner
 import junitparams.Parameters
+import junitparams.naming.TestCaseName
 import org.junit.Assert.assertEquals
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -63,7 +64,8 @@ class PasswordGeneratorTest {
             "75,75",
         ],
     )
-    fun `WHEN getValidPasswordLength THEN`(
+    @TestCaseName("GIVEN {0} password length WHEN getValidPasswordLength invoked THEN return valid length {1}")
+    fun `GIVEN various input WHEN getValidPasswordLength invoked THEN return appropriate length`(
         passwordLength: Int,
         expected: Int,
     ) {

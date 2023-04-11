@@ -2,7 +2,6 @@ package com.vinsonb.password.manager.kotlin.activities
 
 import android.content.SharedPreferences
 import android.os.Bundle
-import android.os.CountDownTimer
 import android.view.View
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
@@ -16,24 +15,21 @@ import androidx.preference.PreferenceManager
 import com.vinsonb.password.manager.kotlin.R
 import com.vinsonb.password.manager.kotlin.database.enitities.Account
 import com.vinsonb.password.manager.kotlin.databinding.ActivityMainBinding
+import com.vinsonb.password.manager.kotlin.extensions.SESSION_EXPIRED_KEY
+import com.vinsonb.password.manager.kotlin.extensions.hasSessionExpired
 import com.vinsonb.password.manager.kotlin.fragments.dialogs.CreditsDialog
 import com.vinsonb.password.manager.kotlin.utilities.Constants.FileName.DEFAULT_FILENAME
 import com.vinsonb.password.manager.kotlin.utilities.Constants.MimeType.CSV
 import com.vinsonb.password.manager.kotlin.utilities.Constants.Password.SharedPreferenceKeys.AUTHENTICATED_KEY
-import com.vinsonb.password.manager.kotlin.utilities.Constants.Password.Timer.MAX_TIMER_MILLI
-import com.vinsonb.password.manager.kotlin.utilities.Constants.Password.Timer.TIMER_INTERVAL_MILLI
 import com.vinsonb.password.manager.kotlin.viewmodels.AccountViewModel
 import dagger.hilt.android.AndroidEntryPoint
-
-private const val TAG = "MainActivityPassVault"
+import java.time.LocalTime
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
-    private var isTimedOut = false
     private var accounts: List<Account> = listOf()
     private lateinit var binding: ActivityMainBinding
     private lateinit var sharedPreferences: SharedPreferences
-    private lateinit var countDownTimer: CountDownTimer
     private lateinit var creditsDialog: CreditsDialog
     private lateinit var navController: NavController
     private lateinit var csvLauncher: ActivityResultLauncher<String>
@@ -47,7 +43,6 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(applicationContext)
-        countDownTimer = createCountdownTimer()
         creditsDialog = CreditsDialog()
         csvLauncher = getCsvContent()
         createCsvLauncher = createDocumentCsv()
@@ -109,17 +104,13 @@ class MainActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
-        checkIfAuthenticationTimedOut()
+        logoutIfAuthenticationExpired()
     }
 
-    override fun onStop() {
-        super.onStop()
-        countDownTimer.start()
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        logout()
+    override fun onPause() {
+        super.onPause()
+        saveTimeNowToPreferences()
+        removeAuthenticationOnFinish()
     }
 
     /**
@@ -147,7 +138,7 @@ class MainActivity : AppCompatActivity() {
     private fun logout() {
         if (removeAuthenticatedStatus()) {
             navController.popBackStack()
-            navController.navigate(R.id.view_accounts_fragment)
+            navController.navigate(R.id.login_fragment)
         }
     }
 
@@ -164,30 +155,37 @@ class MainActivity : AppCompatActivity() {
     }
 
     /**
-     * Checks if the current user's authentication timed out.
-     * If [isTimedOut] evaluates to true, logout the user.
-     * Otherwise, cancel the [countDownTimer].
+     * Save [LocalTime.now] to shared preferences which will be used to determine if the user should
+     * be logout due to them being away from the app for x amount of time which is determine
+     * in [LocalTime.hasSessionExpired].
      */
-    private fun checkIfAuthenticationTimedOut() {
-        if (isTimedOut) {
-            logout()
-            isTimedOut = false
-        } else {
-            countDownTimer.cancel()
+    private fun saveTimeNowToPreferences() {
+        with(sharedPreferences.edit()) {
+            putString(SESSION_EXPIRED_KEY, LocalTime.now().toString())
+            apply()
         }
     }
 
     /**
-     * Countdown timer to be used for logging out when a user has the activity on the STOPPED state.
-     * Timer is set to [MAX_TIMER_MILLI] with an interval of [TIMER_INTERVAL_MILLI].
-     * Boolean [isTimedOut] will be set to true when countdown finishes.
+     * Logout the user if the app [isFinishing].
      */
-    private fun createCountdownTimer() =
-        object : CountDownTimer(MAX_TIMER_MILLI, TIMER_INTERVAL_MILLI) {
-            override fun onTick(millis: Long) {}
-
-            override fun onFinish() {
-                isTimedOut = true
-            }
+    private fun removeAuthenticationOnFinish() {
+        if (isFinishing) {
+            removeAuthenticatedStatus()
         }
+    }
+
+    /**
+     * Logouts the user if authentication has expired due to time elapsed.
+     */
+    private fun logoutIfAuthenticationExpired() {
+        val isAuthenticated = sharedPreferences.getBoolean(AUTHENTICATED_KEY, false)
+        val hasSessionExpired = sharedPreferences.getString(SESSION_EXPIRED_KEY, "")?.let {
+            it.isNotBlank() && LocalTime.now().hasSessionExpired(it)
+        } ?: false
+
+        if (!isAuthenticated || hasSessionExpired) {
+            logout()
+        }
+    }
 }
