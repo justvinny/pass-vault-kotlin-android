@@ -5,152 +5,72 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import android.widget.ImageView
-import android.widget.Toast
 import androidx.fragment.app.Fragment
-import androidx.navigation.findNavController
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import androidx.preference.PreferenceManager
 import com.vinsonb.password.manager.kotlin.R
-import com.vinsonb.password.manager.kotlin.databinding.FragmentLoginBinding
+import com.vinsonb.password.manager.kotlin.extensions.showToast
 import com.vinsonb.password.manager.kotlin.fragments.dialogs.ForgotPasswordDialog
-import com.vinsonb.password.manager.kotlin.utilities.Constants.Password.PASSCODE_MAX_LENGTH
+import com.vinsonb.password.manager.kotlin.ui.features.login.LoginScreen
+import com.vinsonb.password.manager.kotlin.ui.features.login.LoginState.Companion.MAX_PASSCODE_DIGITS
+import com.vinsonb.password.manager.kotlin.ui.features.login.LoginViewModel
 import com.vinsonb.password.manager.kotlin.utilities.Constants.Password.SharedPreferenceKeys.AUTHENTICATED_KEY
 import com.vinsonb.password.manager.kotlin.utilities.Constants.Password.SharedPreferenceKeys.PASSCODE_KEY
 import com.vinsonb.password.manager.kotlin.utilities.Constants.Password.SharedPreferenceKeys.SECRET_ANSWER_KEY
 import com.vinsonb.password.manager.kotlin.utilities.Constants.Password.SharedPreferenceKeys.SECRET_QUESTION_KEY
-import com.vinsonb.password.manager.kotlin.viewmodels.LoginViewModel
+import com.vinsonb.password.manager.kotlin.utilities.withComposeView
+import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 
-private const val TAG = "LoginFragment"
-
-class LoginFragment : Fragment(R.layout.fragment_login) {
-    private val viewModel: LoginViewModel by lazy {
-        LoginViewModel()
-    }
-
-    private var _binding: FragmentLoginBinding? = null
-    private val binding get() = _binding!!
-
-    private var buttonList: MutableList<Button> = mutableListOf()
-    private var circleList: MutableList<ImageView> = mutableListOf()
+@AndroidEntryPoint
+class LoginFragment : Fragment() {
+    private val viewModel: LoginViewModel by viewModels()
+    private lateinit var sharedPreferences: SharedPreferences
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): View {
-        _binding = FragmentLoginBinding.inflate(inflater, container, false)
-        return binding.root
-    }
+        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(requireContext())
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-
-        // Number 0 - 9 buttons
-        populateButtonList()
-        buttonList.forEach { it ->
-            it.setOnClickListener {
-                numberButtonClick(it)
-            }
+        if (isAccountNotCreated()) {
+            findNavController().navigate(R.id.create_login_fragment)
         }
 
-        // Clear button
-        binding.buttonClear.setOnClickListener {
-            viewModel.clearLastDigit()
-        }
+        lifecycleScope.launch {
+            viewModel.stateFlow.collect { state ->
+                if (state.passcodeLength == MAX_PASSCODE_DIGITS) {
+                    viewModel.onClearAllDigits()
 
-        // Forgot Password Button
-        binding.buttonForgotPassword.setOnClickListener {
-            ForgotPasswordDialog().show(parentFragmentManager, ForgotPasswordDialog.TAG)
-        }
-
-        // ImageViews 5 circles
-        val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(view.context)
-        populateCircleList()
-        viewModel.getPassword().observe(viewLifecycleOwner) {
-            setCircleIcon(it)
-
-            // Try to login when passcode reaches 5 digits.
-            if (it.size == PASSCODE_MAX_LENGTH) {
-                if (login(it, sharedPreferences)) {
-                    viewModel.clearAllDigits()
-                    view.findNavController()
-                        .navigate(R.id.action_loginFragment_to_viewAccountsFragment)
-                } else {
-                    Toast.makeText(view.context, R.string.error_wrong_passcode, Toast.LENGTH_SHORT)
-                        .show()
+                    if (passcodeMatches(state.passcode)) {
+                        findNavController().popBackStack()
+                        findNavController().navigate(R.id.view_accounts_fragment)
+                    } else {
+                        requireContext().showToast(R.string.error_passcode_must_match)
+                    }
                 }
             }
         }
 
-        if (isAccountNotCreated(sharedPreferences)) {
-            view.findNavController().navigate(R.id.action_loginFragment_to_createLoginFragment2)
+        return withComposeView(requireContext()) {
+            LoginScreen(viewModel, this::showForgotPasswordDialog)
         }
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
     }
 
     /**
      * Check if account is not already created by checking SharedPreferences if
      * values: passcode, secret question, and secret answer exist.
+     *
+     * returns whether the account is created or not
      */
-    private fun isAccountNotCreated(sharedPreferences: SharedPreferences?): Boolean {
-        val passcode = sharedPreferences?.getString(PASSCODE_KEY, "")
-        val secretQuestion =
-            sharedPreferences?.getString(SECRET_QUESTION_KEY, "")
-        val secretAnswer = sharedPreferences?.getString(SECRET_ANSWER_KEY, "")
+    private fun isAccountNotCreated(): Boolean {
+        val passcode = sharedPreferences.getString(PASSCODE_KEY, "")
+        val secretQuestion = sharedPreferences.getString(SECRET_QUESTION_KEY, "")
+        val secretAnswer = sharedPreferences.getString(SECRET_ANSWER_KEY, "")
         return passcode.isNullOrBlank() && secretQuestion.isNullOrBlank() && secretAnswer.isNullOrBlank()
-    }
-
-    /**
-     * Puts all number buttons in one collection for ease of access.
-     */
-    private fun populateButtonList() {
-        buttonList.add(binding.button0)
-        buttonList.add(binding.button1)
-        buttonList.add(binding.button2)
-        buttonList.add(binding.button3)
-        buttonList.add(binding.button4)
-        buttonList.add(binding.button5)
-        buttonList.add(binding.button6)
-        buttonList.add(binding.button7)
-        buttonList.add(binding.button8)
-        buttonList.add(binding.button9)
-    }
-
-    /**
-     * Click listener for number buttons to enter the digit clicked as part of password.
-     */
-    private fun numberButtonClick(view: View) {
-        val digit = (view as Button).text.toString().toInt()
-        viewModel.addDigitToPassword(digit)
-    }
-
-    /**
-     * Puts all circles in one collection for ease of access.
-     */
-    private fun populateCircleList() {
-        circleList.add(binding.circle1)
-        circleList.add(binding.circle2)
-        circleList.add(binding.circle3)
-        circleList.add(binding.circle4)
-        circleList.add(binding.circle5)
-    }
-
-    /**
-     * Dynamically fill / un-fill circle icons depending on number press and clear.
-     */
-    private fun setCircleIcon(passcode: ArrayDeque<Int>) {
-        for (i in 0 until PASSCODE_MAX_LENGTH) {
-            if (i < passcode.size) {
-                circleList[i].setImageResource(R.drawable.ic_circle_filled)
-            } else {
-                circleList[i].setImageResource(R.drawable.ic_circle_outlined)
-            }
-        }
     }
 
     /**
@@ -159,15 +79,19 @@ class LoginFragment : Fragment(R.layout.fragment_login) {
      *
      * returns whether the user successfully logged in or not.
      */
-    private fun login(passcode: ArrayDeque<Int>, sharedPreferences: SharedPreferences?): Boolean {
-        val savedPasscode = sharedPreferences?.getString(PASSCODE_KEY, "")
-        val enteredPasscode = passcode.joinToString(separator = "")
-        if (savedPasscode == enteredPasscode) {
+    private fun passcodeMatches(passcode: String): Boolean {
+        val savedPasscode = sharedPreferences.getString(PASSCODE_KEY, "")
+        if (savedPasscode == passcode) {
             with(sharedPreferences.edit()) {
                 putBoolean(AUTHENTICATED_KEY, true)
-                return (commit())
+
+                return commit()
             }
         }
         return false
+    }
+
+    private fun showForgotPasswordDialog() {
+        ForgotPasswordDialog().show(parentFragmentManager, ForgotPasswordDialog.TAG)
     }
 }

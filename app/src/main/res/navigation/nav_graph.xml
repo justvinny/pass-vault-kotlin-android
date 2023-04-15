@@ -29,8 +29,7 @@
     <fragment
         android:id="@+id/login_fragment"
         android:name="com.vinsonb.password.manager.kotlin.fragments.LoginFragment"
-        android:label="fragment_login"
-        tools:layout="@layout/fragment_login">
+        android:label="fragment_login">
         <action
             android:id="@+id/action_loginFragment_to_viewAccountsFragment"
             app:destination="@id/view_accounts_fragment"

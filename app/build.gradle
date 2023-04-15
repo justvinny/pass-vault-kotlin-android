@@ -28,6 +28,7 @@ android {
     }
 
     compileOptions {
+        coreLibraryDesugaringEnabled true
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
@@ -79,6 +80,9 @@ dependencies {
     // SQLCipher Room
     implementation "net.zetetic:android-database-sqlcipher:4.5.0"
     implementation "androidx.sqlite:sqlite:2.3.1"
+
+    // Desugaring
+    coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:1.2.2")
 
     // Mockito
     testImplementation "org.mockito.kotlin:mockito-kotlin:4.0.0"

@@ -80,6 +80,8 @@
     <string name="content_update_account">Update Account</string>
     <string name="content_delete_account">Delete Account</string>
     <string name="content_clear_search">Clear Search Query</string>
+    <string name="content_passcode_digit_circle_filled">Passcode digit number %d is filled</string>
+    <string name="content_passcode_digit_circle_empty">Passcode digit number %d is empty</string>
 
     <!-- Others -->
     <string name="default_password_length">20</string>

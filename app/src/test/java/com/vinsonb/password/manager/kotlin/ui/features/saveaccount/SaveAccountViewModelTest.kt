@@ -7,6 +7,7 @@ import com.vinsonb.password.manager.kotlin.ui.features.saveaccount.SaveAccountSt
 import junit.framework.TestCase.assertEquals
 import junitparams.JUnitParamsRunner
 import junitparams.Parameters
+import junitparams.naming.TestCaseName
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
 import org.junit.Test
@@ -28,7 +29,8 @@ class SaveAccountViewModelTest {
      */
     @Test
     @Parameters(method = "provideValidateArgs")
-    fun `GIVEN various cases WHEN validate invoked THEN errorState should change appropriately`(
+    @TestCaseName("GIVEN {0} TextFieldName, {1} as 1st text input and {2} as 2nd text input WHEN validate invoked THEN return error state {3}")
+    fun `validate parameterised test`(
         textFieldName: SaveAccountState.TextFieldName,
         text1: String,
         text2: String?,
@@ -69,7 +71,7 @@ class SaveAccountViewModelTest {
         }
 
     @Test
-    fun `Given new text WHEN onTextChange invoked THEN update text value of state`() = runTest {
+    fun `GIVEN new text WHEN onTextChange invoked THEN update text value of state`() = runTest {
         // Arrange
         val viewModel = provideViewModel()
         val expected = "new value"

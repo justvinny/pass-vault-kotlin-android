@@ -27,7 +27,7 @@ class ViewAccountViewModelTest {
      */
     @Test
     @Parameters(method = "provideOnSearchArgs")
-    fun `GIVEN valid queries WHEN onSearch invoked THEN filters accounts appropriately`(
+    fun `onSearch parameterised test`(
         expected: ViewAccountState,
         additionalAccounts: List<Account>?,
     ) = runCancellingTest {
@@ -39,7 +39,6 @@ class ViewAccountViewModelTest {
 
         // Assert
         viewModel.stateFlow.test {
-            awaitItem()
             assertEquals(expected, awaitItem())
             cancelAndIgnoreRemainingEvents()
         }
@@ -57,7 +56,6 @@ class ViewAccountViewModelTest {
 
             // Assert
             viewModel.stateFlow.test {
-                awaitItem()
                 assertEquals(expected, awaitItem().selectedAccount)
             }
         }
@@ -79,7 +77,6 @@ class ViewAccountViewModelTest {
 
             // Assert
             viewModel.stateFlow.test {
-                awaitItem()
                 assertEquals(ViewAccountToastState.SuccessfullyUpdated, awaitItem().toastState)
                 assertEquals(ViewAccountToastState.Idle, awaitItem().toastState)
             }
@@ -124,7 +121,6 @@ class ViewAccountViewModelTest {
 
             // Assert
             viewModel.stateFlow.test {
-                awaitItem()
                 assertEquals(ViewAccountToastState.SuccessfullyDeleted, awaitItem().toastState)
                 assertEquals(ViewAccountToastState.Idle, awaitItem().toastState)
             }
@@ -153,7 +149,7 @@ class ViewAccountViewModelTest {
         }
 
     @Test
-    fun `Given searchQuery not empty WHEN onClearSearch invoked THEN updates stateFlow to have empty searchQuery`() =
+    fun `GIVEN searchQuery not empty WHEN onClearSearch invoked THEN updates stateFlow to have empty searchQuery`() =
         runCancellingTest {
             // Arrange
             val viewModel = provideViewModel(updateAccountReturn = false)
@@ -165,7 +161,6 @@ class ViewAccountViewModelTest {
 
             // Assert
             viewModel.stateFlow.test {
-                awaitItem()
                 assertEquals("", awaitItem().searchQuery)
             }
         }

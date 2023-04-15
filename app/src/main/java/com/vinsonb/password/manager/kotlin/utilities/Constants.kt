@@ -12,11 +12,6 @@ object Constants {
             const val SECRET_ANSWER_KEY = "secret answer"
             const val AUTHENTICATED_KEY = "authenticated"
         }
-
-        object Timer {
-            const val MAX_TIMER_MILLI = 600000L
-            const val TIMER_INTERVAL_MILLI = 1000L
-        }
     }
 
     object Database {
