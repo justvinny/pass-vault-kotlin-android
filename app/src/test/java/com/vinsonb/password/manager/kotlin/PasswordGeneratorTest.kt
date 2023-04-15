@@ -65,7 +65,7 @@ class PasswordGeneratorTest {
         ],
     )
     @TestCaseName("GIVEN {0} password length WHEN getValidPasswordLength invoked THEN return valid length {1}")
-    fun `GIVEN various input WHEN getValidPasswordLength invoked THEN return appropriate length`(
+    fun `getValidPasswordLength parameterised test`(
         passwordLength: Int,
         expected: Int,
     ) {

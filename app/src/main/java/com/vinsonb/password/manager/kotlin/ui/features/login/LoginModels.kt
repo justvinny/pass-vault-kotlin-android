@@ -2,7 +2,6 @@ package com.vinsonb.password.manager.kotlin.ui.features.login
 
 import com.vinsonb.password.manager.kotlin.R
 
-
 data class LoginState(
     val passcode: String = "",
     val passcodeLength: Int = 0,

@@ -26,7 +26,7 @@ class LocalTimeExtensionsTests {
         "0,false",
     ])
     @TestCaseName("GIVEN {0} minutes elapsed WHEN hasSessionExpired invoked THEN return {1}")
-    fun `GIVEN various minutes elapsed input WHEN hasSessionExpired invoked THEN return appropriate boolean`(
+    fun `hasSessionExpired parameterised test`(
         minutesElapsed: Long,
         expected: Boolean,
     ) {

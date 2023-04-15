@@ -18,16 +18,21 @@ My main goal is to release an MVP to the PlayStore once everything in [In-Progre
 - Import / Export CSV feature.
 - Forgot Password
 
+### Bug Fixes
+<details><summary>Expand to see bug fixes</summary>
+
+- FIXED Visual Bug - Can't see the entire password for long passwords. 
+- MOSTLY FIXED Bug - Auto-logout feature when application is sent to the background does not work most of the time. It says **MOSTLY FIXED** because it's now mostly working except for when the Android OS decides to kill the app without onPause being killed. I've decided to just live with this as the current alternate solution that I'm aware of would require me using an Authentication Service like Firebase which may cost dollars depending on the number of users. Not keen on that. :)
+</details>
+
+
 ### In-progress
 - Adding non-intrusive ads. Big focus on **non-intrusive** as I hate all the annoying ads that plague freemium mobile applications with a passion.
-- Migrate all screens to Compose.
+- Migrate all screens to Compose (5 of 9 currently migrated).
 - Allow username editing
-- Fix Visual Bug - Can't see the entire password for long passwords.
-- Fix Bug - Auto-logout feature when application is sent to the background does not work most of the time. 
 
 ### Features that I might add in the future (No timeline)
 - Allow user to create Groups for their accounts for better organisation.
-- More filter options
 - Potentially integrate with user's Google Drive.
 - Adding animations and gestures.
 - Customisable font and font size

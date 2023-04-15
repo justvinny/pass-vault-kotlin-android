@@ -30,7 +30,7 @@ class LoginViewModel(
         )
 
     fun onEnterPasscodeDigit(digit: Int) {
-        if (passcodeDigitsEntered.size <= MAX_PASSCODE_DIGITS) {
+        if (passcodeDigitsEntered.size < MAX_PASSCODE_DIGITS) {
             passcodeDigitsEntered.addLast(digit)
             _stateFlow.update {
                 it.copy(
@@ -41,25 +41,24 @@ class LoginViewModel(
         }
     }
 
-    fun onClearLastDigit(): Boolean {
-        val isRemoved = passcodeDigitsEntered.removeLastOrNull() != null
-        _stateFlow.update {
-            it.copy(
-                passcode = passcodeDigitsEntered.joinToString(separator = ""),
-                passcodeLength = passcodeDigitsEntered.size,
-            )
+    fun onClearLastDigit() {
+        passcodeDigitsEntered.removeLastOrNull()?.also {
+            _stateFlow.update { state ->
+                state.copy(
+                    passcode = passcodeDigitsEntered.joinToString(separator = ""),
+                    passcodeLength = passcodeDigitsEntered.size,
+                )
+            }
         }
-        return isRemoved
     }
 
-    fun onClearAllDigits(): Boolean = passcodeDigitsEntered.run {
-        clear()
+    fun onClearAllDigits() {
+        passcodeDigitsEntered.clear()
         _stateFlow.update {
             it.copy(
                 passcode = passcodeDigitsEntered.joinToString(separator = ""),
                 passcodeLength = passcodeDigitsEntered.size,
             )
         }
-        isEmpty()
     }
 }

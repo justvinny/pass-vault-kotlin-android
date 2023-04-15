@@ -30,7 +30,7 @@ class SaveAccountViewModelTest {
     @Test
     @Parameters(method = "provideValidateArgs")
     @TestCaseName("GIVEN {0} TextFieldName, {1} as 1st text input and {2} as 2nd text input WHEN validate invoked THEN return error state {3}")
-    fun `GIVEN various cases WHEN validate invoked THEN errorState should change appropriately`(
+    fun `validate parameterised test`(
         textFieldName: SaveAccountState.TextFieldName,
         text1: String,
         text2: String?,

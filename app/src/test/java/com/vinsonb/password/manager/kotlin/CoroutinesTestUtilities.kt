@@ -3,6 +3,7 @@ package com.vinsonb.password.manager.kotlin
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.cancelChildren
 import kotlinx.coroutines.test.TestScope
+import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.runTest
 
 /**
@@ -10,7 +11,7 @@ import kotlinx.coroutines.test.runTest
  * be cancelled manually at the end of the test.
  */
 @ExperimentalCoroutinesApi
-fun runCancellingTest(content: suspend TestScope.() -> Unit) = runTest {
+fun runCancellingTest(content: suspend TestScope.() -> Unit) = runTest(UnconfinedTestDispatcher()) {
     content()
     coroutineContext.cancelChildren()
 }

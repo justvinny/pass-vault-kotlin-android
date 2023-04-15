@@ -89,7 +89,7 @@ private fun PasscodeCircleGroup(loginState: LoginState) {
 @Composable
 private fun PasscodeButtonGroup(
     onEnterPasscodeDigit: (Int) -> Unit,
-    onClearLastDigit: () -> Boolean,
+    onClearLastDigit: () -> Unit,
     showForgotPasswordDialog: () -> Unit,
 ) {
     val buttonLabelsQueue = ArrayDeque(BUTTON_LABEL_LIST)
