@@ -85,7 +85,7 @@ fun ViewAccountItemDialog(
             CustomTextField.Normal(
                 modifier = Modifier.padding(horizontal = 16.dp),
                 text = account.username,
-                onTextChange = { },
+                onTextChange = {},
                 enabled = false,
                 leadingIcon = {
                     Icon(
