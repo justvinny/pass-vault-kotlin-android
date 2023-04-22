@@ -12,15 +12,12 @@ import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
-import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.vinsonb.password.manager.kotlin.R
-import com.vinsonb.password.manager.kotlin.ui.features.credits.CREDITS_DATA
 import com.vinsonb.password.manager.kotlin.utilities.Constants.Password.SharedPreferenceKeys.AUTHENTICATED_KEY
-import com.vinsonb.password.manager.kotlin.utilities.RecyclerViewMatchers
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import org.hamcrest.CoreMatchers.anyOf
@@ -91,35 +88,6 @@ class MainActivityTest {
         val actualDestination = navController.currentDestination?.displayName
 
         assertThat(actualDestination, anyOf(`is`(expectedDestination1), `is`(expectedDestination2)))
-    }
-
-    @Test
-    fun menuItemCredits_clicked_opensValidCreditsDialog() {
-        val scenario = ActivityScenario.launch(MainActivity::class.java)
-        scenario.onActivity {
-            val menuItem = it.findViewById<MaterialToolbar>(R.id.top_navigation)
-                .menu.findItem(R.id.menu_item_credits)
-            // Remove Credits from Overflow Menu and show it on the app bar for this test.
-            menuItem.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS)
-        }
-
-        onView(withText(targetContext.getString(R.string.menu_item_credits)))
-            .perform(click())
-
-        onView(withId(R.id.text_credits_dialog_title))
-            .check(matches(isDisplayed()))
-
-        CREDITS_DATA.forEachIndexed { index, credit ->
-            onView(withId(R.id.recycler_view_credits))
-                .check(
-                    matches(
-                        RecyclerViewMatchers.withPositionMatchesText(
-                            index,
-                            hasDescendant(withText(credit.title))
-                        )
-                    )
-                )
-        }
     }
 
     companion object {

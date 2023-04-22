@@ -31,9 +31,8 @@ fun CreditsDialog(
             Text(
                 modifier = Modifier.padding(start = 16.dp, top = 16.dp),
                 text = stringResource(id = R.string.menu_item_credits),
-                style = MaterialTheme.typography.headlineMedium.copy(
-                    color = MaterialTheme.colorScheme.primary,
-                )
+                style = MaterialTheme.typography.headlineSmall
+                    .copy(color = MaterialTheme.colorScheme.primary)
             )
 
             LazyColumn(
