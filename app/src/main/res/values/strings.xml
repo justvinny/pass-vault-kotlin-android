@@ -48,10 +48,10 @@
     <string name="success_updated_password">Password updated successfully!</string>
     <string name="error_save_unsuccessful">Account already exists! Use a different username.</string>
     <string name="error_passcode_length">Passcode must be 5 digits</string>
-    <string name="error_passcode_must_match">Passcode must match</string>
     <string name="error_text_empty">%1$s must not be empty</string>
     <string name="error_password_must_match">Passwords must match</string>
-    <string name="error_wrong_passcode">Passcode entered does not match</string>
+    <string name="error_passcode_must_match">Passcodes must match</string>
+    <string name="error_wrong_passcode">Passcode entered is incorrect. Try again!</string>
     <string name="error_wrong_secret_answer">Secret answer is incorrect. Try again!</string>
 
     <!-- Bottom Navigation Menu Item Labels   -->
@@ -71,8 +71,6 @@
     <string name="content_menu_item_logout">Logout menu item</string>
     <string name="content_menu_item_credits">Credits menu item</string>
     <string name="content_open_link">Open link</string>
-    <string name="content_import_csv">Import CSV menu item</string>
-    <string name="content_export_csv">Export CSV menu item</string>
     <string name="content_show_password">Show Password</string>
     <string name="content_hide_password">Hide Password</string>
     <string name="content_search">Search</string>>
@@ -82,7 +80,4 @@
     <string name="content_clear_search">Clear Search Query</string>
     <string name="content_passcode_digit_circle_filled">Passcode digit number %d is filled</string>
     <string name="content_passcode_digit_circle_empty">Passcode digit number %d is empty</string>
-
-    <!-- Others -->
-    <string name="default_password_length">20</string>
 </resources>

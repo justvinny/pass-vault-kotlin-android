@@ -76,7 +76,7 @@ fun ViewAccountItemDialog(
                 IconButton(onClick = { onDelete(account) }) {
                     Icon(
                         imageVector = Icons.Filled.Delete,
-                        contentDescription = stringResource(id = R.string.content_edit_account),
+                        contentDescription = stringResource(id = R.string.content_delete_account),
                         tint = MaterialTheme.colorScheme.error,
                     )
                 }

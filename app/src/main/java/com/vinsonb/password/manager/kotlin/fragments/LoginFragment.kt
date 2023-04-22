@@ -49,7 +49,7 @@ class LoginFragment : Fragment() {
                         findNavController().popBackStack()
                         findNavController().navigate(R.id.view_accounts_fragment)
                     } else {
-                        requireContext().showToast(R.string.error_passcode_must_match)
+                        requireContext().showToast(R.string.error_wrong_passcode)
                     }
                 }
             }
