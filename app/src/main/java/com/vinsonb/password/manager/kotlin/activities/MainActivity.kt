@@ -2,14 +2,21 @@ package com.vinsonb.password.manager.kotlin.activities
 
 import android.content.SharedPreferences
 import android.os.Bundle
+import android.util.Log
 import android.view.View
+import androidx.activity.compose.setContent
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.viewinterop.AndroidViewBinding
 import androidx.core.view.forEach
 import androidx.navigation.NavController
-import androidx.navigation.fragment.NavHostFragment
+import androidx.navigation.findNavController
 import androidx.navigation.ui.setupWithNavController
 import androidx.preference.PreferenceManager
 import com.vinsonb.password.manager.kotlin.R
@@ -17,8 +24,9 @@ import com.vinsonb.password.manager.kotlin.database.enitities.Account
 import com.vinsonb.password.manager.kotlin.databinding.ActivityMainBinding
 import com.vinsonb.password.manager.kotlin.extensions.SESSION_EXPIRED_KEY
 import com.vinsonb.password.manager.kotlin.extensions.hasSessionExpired
-import com.vinsonb.password.manager.kotlin.fragments.dialogs.CreditsDialog
-import com.vinsonb.password.manager.kotlin.utilities.Constants.FileName.DEFAULT_FILENAME
+import com.vinsonb.password.manager.kotlin.ui.features.credits.CreditsDialog
+import com.vinsonb.password.manager.kotlin.ui.theme.PassVaultTheme
+import com.vinsonb.password.manager.kotlin.utilities.Constants
 import com.vinsonb.password.manager.kotlin.utilities.Constants.MimeType.CSV
 import com.vinsonb.password.manager.kotlin.utilities.Constants.Password.SharedPreferenceKeys.AUTHENTICATED_KEY
 import com.vinsonb.password.manager.kotlin.viewmodels.AccountViewModel
@@ -28,9 +36,9 @@ import java.time.LocalTime
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
     private var accounts: List<Account> = listOf()
+    private var isDialogShown by mutableStateOf(false)
     private lateinit var binding: ActivityMainBinding
     private lateinit var sharedPreferences: SharedPreferences
-    private lateinit var creditsDialog: CreditsDialog
     private lateinit var navController: NavController
     private lateinit var csvLauncher: ActivityResultLauncher<String>
     private lateinit var createCsvLauncher: ActivityResultLauncher<String>
@@ -39,66 +47,78 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivityMainBinding.inflate(layoutInflater)
-        setContentView(binding.root)
 
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(applicationContext)
-        creditsDialog = CreditsDialog()
         csvLauncher = getCsvContent()
         createCsvLauncher = createDocumentCsv()
 
-        // Setup for bottom navigation bar to use navigation controller.
-        val navHostFragment = supportFragmentManager.findFragmentById(
-            R.id.nav_host_fragment
-        ) as NavHostFragment
-        navController = navHostFragment.navController
-        binding.bottomNavigation.setupWithNavController(navController)
+        setContent {
+            AndroidViewBinding(ActivityMainBinding::inflate) {
+                binding = this@AndroidViewBinding
 
-        // Hide navigation bars if not authenticated.
-        navController.addOnDestinationChangedListener { _, destination, _ ->
-            when (destination.id) {
-                R.id.login_fragment -> {
-                    binding.topNavigation.visibility = View.GONE
-                    binding.bottomNavigation.visibility = View.GONE
+                // Setup for bottom navigation bar to use navigation controller.
+                navController = binding.navHostFragment.findNavController()
+                binding.bottomNavigation.setupWithNavController(navController)
+
+                // Hide navigation bars if not authenticated.
+                navController.addOnDestinationChangedListener { _, destination, _ ->
+                    when (destination.id) {
+                        R.id.login_fragment -> {
+                            binding.topNavigation.visibility = View.GONE
+                            binding.bottomNavigation.visibility = View.GONE
+                        }
+                        R.id.create_login_fragment -> {
+                            binding.topNavigation.visibility = View.VISIBLE
+                            binding.topNavigation.menu.forEach { it.isVisible = false }
+                            binding.bottomNavigation.visibility = View.GONE
+                        }
+                        else -> {
+                            binding.topNavigation.visibility = View.VISIBLE
+                            binding.topNavigation.menu.forEach { it.isVisible = true }
+                            binding.bottomNavigation.visibility = View.VISIBLE
+                        }
+                    }
                 }
-                R.id.create_login_fragment -> {
-                    binding.topNavigation.visibility = View.VISIBLE
-                    binding.topNavigation.menu.forEach { it.isVisible = false }
-                    binding.bottomNavigation.visibility = View.GONE
+
+                // Top Bar Menu Items
+                binding.topNavigation.setOnMenuItemClickListener {
+                    when (it.itemId) {
+                        R.id.menu_item_import_csv -> {
+                            csvLauncher.launch(CSV)
+                            true
+                        }
+                        R.id.menu_item_export_csv -> {
+                            createCsvLauncher.launch(Constants.FileName.DEFAULT_FILENAME)
+                            true
+                        }
+                        R.id.menu_item_credits -> {
+                            isDialogShown = true
+                            true
+                        }
+                        R.id.menu_item_logout -> {
+                            logout()
+                            true
+                        }
+                        else -> false
+                    }
                 }
-                else -> {
-                    binding.topNavigation.visibility = View.VISIBLE
-                    binding.topNavigation.menu.forEach { it.isVisible = true }
-                    binding.bottomNavigation.visibility = View.VISIBLE
+
+                viewModel.accounts.observe(this@MainActivity) {
+                    accounts = it
                 }
             }
-        }
 
-        // Top Bar Menu Items
-        binding.topNavigation.setOnMenuItemClickListener {
-            when (it.itemId) {
-                R.id.menu_item_import_csv -> {
-                    csvLauncher.launch(CSV)
-                    true
+            if (isDialogShown) {
+                PassVaultTheme {
+                    CreditsDialog {
+                        isDialogShown = false
+                    }
                 }
-                R.id.menu_item_export_csv -> {
-                    createCsvLauncher.launch(DEFAULT_FILENAME)
-                    true
-                }
-                R.id.menu_item_credits -> {
-                    creditsDialog.show(supportFragmentManager, CreditsDialog.TAG)
-                    true
-                }
-                R.id.menu_item_logout -> {
-                    logout()
-                    true
-                }
-                else -> false
             }
-        }
 
-        viewModel.accounts.observe(this) {
-            accounts = it
+            LaunchedEffect(Unit) {
+                logoutIfAuthenticationExpired()
+            }
         }
     }
 
@@ -179,6 +199,8 @@ class MainActivity : AppCompatActivity() {
      * Logouts the user if authentication has expired due to time elapsed.
      */
     private fun logoutIfAuthenticationExpired() {
+        if (!this::navController.isInitialized) return
+        Log.d(this::class.simpleName, "NavController initialised")
         val isAuthenticated = sharedPreferences.getBoolean(AUTHENTICATED_KEY, false)
         val hasSessionExpired = sharedPreferences.getString(SESSION_EXPIRED_KEY, "")?.let {
             it.isNotBlank() && LocalTime.now().hasSessionExpired(it)

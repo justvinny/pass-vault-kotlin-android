@@ -28,7 +28,8 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/top_navigation"
-        app:navGraph="@navigation/nav_graph" />
+        app:navGraph="@navigation/nav_graph"
+        tools:layout="@layout/fragment_create_login" />
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottom_navigation"
