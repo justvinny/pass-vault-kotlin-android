@@ -18,13 +18,13 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.vinsonb.password.manager.kotlin.R
-import com.vinsonb.password.manager.kotlin.utilities.Constants
+import com.vinsonb.password.manager.kotlin.ui.features.credits.CREDITS_DATA
 import com.vinsonb.password.manager.kotlin.utilities.Constants.Password.SharedPreferenceKeys.AUTHENTICATED_KEY
 import com.vinsonb.password.manager.kotlin.utilities.RecyclerViewMatchers
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
-import org.hamcrest.CoreMatchers.`is`
 import org.hamcrest.CoreMatchers.anyOf
+import org.hamcrest.CoreMatchers.`is`
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Rule
@@ -109,7 +109,7 @@ class MainActivityTest {
         onView(withId(R.id.text_credits_dialog_title))
             .check(matches(isDisplayed()))
 
-        Constants.Credits.CREDITS.forEachIndexed { index, credit ->
+        CREDITS_DATA.forEachIndexed { index, credit ->
             onView(withId(R.id.recycler_view_credits))
                 .check(
                     matches(
