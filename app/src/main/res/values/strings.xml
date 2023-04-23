@@ -17,7 +17,6 @@
     <string name="button_create_login">Create Login</string>
     <string name="button_save_account">Save Account</string>
     <string name="button_generate_password">Generate Password</string>
-    <string name="button_close">Close</string>
     <string name="button_reset">Reset</string>
 
     <!-- Switches -->
@@ -29,21 +28,21 @@
     <!-- Hints for EditText -->
     <string name="hint_secret_answer">Secret answer</string>
     <string name="hint_secret_question">Secret question</string>
-    <string name="hint_repeat_passcode">Repeat 5 digit passcode</string>
+    <string name="hint_repeat_passcode">Repeat passcode</string>
     <string name="hint_passcode">5 digit passcode</string>
     <string name="hint_platform">Account Platform</string>
     <string name="hint_username">Username</string>
     <string name="hint_password">Password</string>
     <string name="hint_repeat_password">Repeat Password</string>
     <string name="hint_search">Search account or platform</string>
-    <string name="hint_new_repeat_passcode">Repeat new 5 digit passcode</string>
+    <string name="hint_new_repeat_passcode">Repeat new passcode</string>
     <string name="hint_new_passcode">New 5 digit passcode</string>
 
     <!-- Toast Messages -->
     <string name="success_save_account">Account has been saved!</string>
     <string name="success_copied_password_phrase">password for %1$s</string>
     <string name="success_copied_to_clipboard">Successfully copied %1$s to the clipboard!</string>
-    <string name="success_passcode_changed">Passcode changed successfully!</string>
+    <string name="success_passcode_reset">Passcode changed successfully!</string>
     <string name="success_deleted_account">Account deleted successfully!</string>
     <string name="success_updated_password">Password updated successfully!</string>
     <string name="error_save_unsuccessful">Account already exists! Use a different username.</string>
@@ -52,7 +51,8 @@
     <string name="error_password_must_match">Passwords must match</string>
     <string name="error_passcode_must_match">Passcodes must match</string>
     <string name="error_wrong_passcode">Passcode entered is incorrect. Try again!</string>
-    <string name="error_wrong_secret_answer">Secret answer is incorrect. Try again!</string>
+    <string name="error_wrong_secret_answer">Secret answer is incorrect.</string>
+    <string name="error_reset_unsuccessful">Something went wrong with the passcode reset. Try again!</string>
 
     <!-- Bottom Navigation Menu Item Labels   -->
     <string name="menu_item_view">View</string>
@@ -80,4 +80,7 @@
     <string name="content_clear_search">Clear Search Query</string>
     <string name="content_passcode_digit_circle_filled">Passcode digit number %d is filled</string>
     <string name="content_passcode_digit_circle_empty">Passcode digit number %d is empty</string>
+
+    <!-- Text -->
+    <string name="text_title_forgot">Forgot your password?</string>
 </resources>

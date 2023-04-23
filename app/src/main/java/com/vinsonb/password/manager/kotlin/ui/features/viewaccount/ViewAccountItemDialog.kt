@@ -36,7 +36,7 @@ fun ViewAccountItemDialog(
 ) {
     val context = LocalContext.current
 
-    Dialog(onDismissRequest = { dismissDialog() }) {
+    Dialog(onDismissRequest = dismissDialog) {
         Card(modifier = Modifier.fillMaxWidth()) {
             val isEditEnabled = rememberSaveable { mutableStateOf(false) }
             val password = rememberSaveable { mutableStateOf(account.password) }
