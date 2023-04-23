@@ -13,6 +13,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.preference.PreferenceManager
 import com.vinsonb.password.manager.kotlin.R
+import com.vinsonb.password.manager.kotlin.di.CoroutineModule
 import com.vinsonb.password.manager.kotlin.extensions.showToast
 import com.vinsonb.password.manager.kotlin.ui.features.forgotpasscode.ForgotPasscodeDialog
 import com.vinsonb.password.manager.kotlin.ui.features.forgotpasscode.ForgotPasscodeState
@@ -33,6 +34,7 @@ class LoginFragment : Fragment() {
     private val loginViewModel: LoginViewModel by viewModels()
     private val forgotPasscodeViewModel by lazy {
         ForgotPasscodeViewModel(
+            dispatchers = CoroutineModule.providesCoroutineDispatchers(),
             savedSecretAnswer = getSecretAnswer(),
             saveNewPasscode = this::saveNewPasscode,
             showSucceededToast = { requireContext().showToast(R.string.success_passcode_reset) },

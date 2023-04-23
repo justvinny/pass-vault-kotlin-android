@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.MaterialTheme
@@ -13,12 +14,13 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import com.vinsonb.password.manager.kotlin.R
 import com.vinsonb.password.manager.kotlin.ui.components.CustomTextField
 import com.vinsonb.password.manager.kotlin.ui.theme.PassVaultTheme
-import com.vinsonb.password.manager.kotlin.utilities.Constants
 import com.vinsonb.password.manager.kotlin.utilities.ScreenPreviews
 import com.vinsonb.password.manager.kotlin.utilities.TextResIdProvider
 
@@ -36,6 +38,7 @@ fun ForgotPasscodeDialog(
             validateSecretAnswer = viewModel::validateSecretAnswer,
             validatePasscode = viewModel::validatePasscode,
             validateRepeatPasscode = viewModel::validateRepeatPasscode,
+            isValidPasscodeInput = viewModel::isValidPasscodeInput,
         )
     }
 }
@@ -48,6 +51,7 @@ private fun ForgotPasscodeContent(
     validateSecretAnswer: (String) -> Unit,
     validatePasscode: (String, String) -> Unit,
     validateRepeatPasscode: (String, String) -> Unit,
+    isValidPasscodeInput: (String) -> Boolean,
 ) {
     Dialog(onDismissRequest = dismissDialog) {
         Card(modifier = Modifier.fillMaxWidth()) {
@@ -71,6 +75,7 @@ private fun ForgotPasscodeContent(
                 label = stringResource(id = R.string.hint_secret_question),
                 isError = state.secretAnswerErrorState != ForgotPasscodeErrors.None,
                 errorText = state.secretAnswerErrorState.getErrorText(R.string.hint_secret_answer),
+                keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
             )
 
             var newPasscode by rememberSaveable { mutableStateOf("") }
@@ -79,7 +84,7 @@ private fun ForgotPasscodeContent(
                 text = newPasscode,
                 modifier = horizontalPadding,
                 onTextChange = {
-                    if (it.length <= Constants.Password.PASSCODE_MAX_LENGTH) {
+                    if (isValidPasscodeInput(it)) {
                         newPasscode = it
                         validatePasscode(it, repeatNewPasscode)
                     }
@@ -87,12 +92,16 @@ private fun ForgotPasscodeContent(
                 label = stringResource(id = R.string.hint_new_passcode),
                 isError = state.passcodeErrorState != ForgotPasscodeErrors.None,
                 errorText = state.passcodeErrorState.getErrorText(R.string.hint_passcode),
+                keyboardOptions = KeyboardOptions(
+                    keyboardType = KeyboardType.Number,
+                    imeAction = ImeAction.Next,
+                ),
             )
             CustomTextField.Password(
                 text = repeatNewPasscode,
                 modifier = horizontalPadding,
                 onTextChange = {
-                    if (it.length <= Constants.Password.PASSCODE_MAX_LENGTH) {
+                    if (isValidPasscodeInput(it)) {
                         repeatNewPasscode = it
                         validateRepeatPasscode(newPasscode, it)
                     }
@@ -100,6 +109,10 @@ private fun ForgotPasscodeContent(
                 label = stringResource(id = R.string.hint_new_repeat_passcode),
                 isError = state.repeatPasscodeErrorState != ForgotPasscodeErrors.None,
                 errorText = state.repeatPasscodeErrorState.getErrorText(R.string.hint_new_passcode),
+                keyboardOptions = KeyboardOptions(
+                    keyboardType = KeyboardType.Number,
+                    imeAction = ImeAction.Done,
+                ),
             )
 
             Row(
@@ -148,6 +161,7 @@ fun PreviewForgotPasswordDialogHasErrors() = PassVaultTheme {
         validateSecretAnswer = {},
         validatePasscode = { _, _ -> },
         validateRepeatPasscode = { _, _ -> },
+        isValidPasscodeInput = { true },
     )
 }
 
@@ -165,5 +179,6 @@ fun PreviewForgotPasswordDialogNoErrors() = PassVaultTheme {
         validateSecretAnswer = {},
         validatePasscode = { _, _ -> },
         validateRepeatPasscode = { _, _ -> },
+        isValidPasscodeInput = { true },
     )
 }
