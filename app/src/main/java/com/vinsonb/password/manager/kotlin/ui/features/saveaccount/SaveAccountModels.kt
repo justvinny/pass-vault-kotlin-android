@@ -1,26 +1,21 @@
 package com.vinsonb.password.manager.kotlin.ui.features.saveaccount
 
-import androidx.annotation.StringRes
 import com.vinsonb.password.manager.kotlin.R
+import com.vinsonb.password.manager.kotlin.ui.features.saveaccount.SaveAccountError.EmptyInputError
+import com.vinsonb.password.manager.kotlin.utilities.TextResIdProvider
+import com.vinsonb.password.manager.kotlin.utilities.textResIdEmptyInputProvider
+import com.vinsonb.password.manager.kotlin.utilities.textResIdProvider
 
 data class SaveAccountState(
-    val textFields: Map<TextFieldName, TextFieldState>,
-) {
-    enum class TextFieldName(@StringRes val hintRes: Int) {
-        PLATFORM(R.string.hint_platform),
-        USERNAME(R.string.hint_username),
-        PASSWORD(R.string.hint_password),
-        REPEAT_PASSWORD(R.string.hint_repeat_password),
-    }
+    val platformError: SaveAccountError = EmptyInputError,
+    val usernameError: SaveAccountError = EmptyInputError,
+    val passwordError: SaveAccountError = EmptyInputError,
+    val repeatPasswordError: SaveAccountError = EmptyInputError,
+)
 
-    data class TextFieldState(
-        val text: String = "",
-        val errorState: ErrorState = ErrorState.TEXT_EMPTY,
-    ) {
-        enum class ErrorState(@StringRes val errorRes: Int? = null) {
-            NO_ERROR,
-            TEXT_EMPTY(R.string.error_text_empty),
-            PASSWORDS_MUST_MATCH(R.string.error_password_must_match)
-        }
-    }
+sealed interface SaveAccountError {
+    object None : SaveAccountError
+    object EmptyInputError : SaveAccountError, TextResIdProvider by textResIdEmptyInputProvider()
+    object PasswordMismatchError : SaveAccountError,
+        TextResIdProvider by textResIdProvider(R.string.error_password_must_match)
 }

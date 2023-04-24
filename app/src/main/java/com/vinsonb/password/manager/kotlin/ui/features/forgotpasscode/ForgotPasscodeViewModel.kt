@@ -5,6 +5,9 @@ import com.vinsonb.password.manager.kotlin.di.CoroutineDispatchers
 import com.vinsonb.password.manager.kotlin.extensions.stateIn
 import com.vinsonb.password.manager.kotlin.utilities.Constants.Password.PASSCODE_MAX_LENGTH
 import com.vinsonb.password.manager.kotlin.utilities.Constants.Password.PASSCODE_REGEX_PATTERN
+import com.vinsonb.password.manager.kotlin.utilities.EventFlow
+import com.vinsonb.password.manager.kotlin.utilities.SimpleToastEvent
+import com.vinsonb.password.manager.kotlin.utilities.simpleToastEventFlow
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
@@ -13,22 +16,16 @@ class ForgotPasscodeViewModel(
     private val scope: CoroutineScope,
     private val savedSecretAnswer: String,
     private val saveNewPasscode: (String) -> Boolean,
-    private val showSucceededToast: () -> Unit,
-    private val showFailedToast: () -> Unit,
-) : ViewModel() {
+) : ViewModel(), EventFlow<SimpleToastEvent> by simpleToastEventFlow(scope) {
 
     constructor(
         dispatchers: CoroutineDispatchers,
         savedSecretAnswer: String,
         saveNewPasscode: (String) -> Boolean,
-        showSucceededToast: () -> Unit,
-        showFailedToast: () -> Unit,
     ) : this(
         scope = CoroutineScope(dispatchers.default),
         savedSecretAnswer = savedSecretAnswer,
         saveNewPasscode = saveNewPasscode,
-        showSucceededToast = showSucceededToast,
-        showFailedToast = showFailedToast,
     )
 
     private val _stateFlow = MutableStateFlow<ForgotPasscodeState>(ForgotPasscodeState.Hidden)
@@ -84,9 +81,9 @@ class ForgotPasscodeViewModel(
     fun resetPasscode(passcode: String) {
         if (saveNewPasscode(passcode)) {
             dismissDialog()
-            showSucceededToast()
+            sendEvent(SimpleToastEvent.ShowSucceeded)
         } else {
-            showFailedToast()
+            sendEvent(SimpleToastEvent.ShowFailed)
         }
     }
 

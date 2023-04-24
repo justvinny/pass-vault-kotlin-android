@@ -25,6 +25,7 @@ import com.vinsonb.password.manager.kotlin.utilities.Constants.Password.SharedPr
 import com.vinsonb.password.manager.kotlin.utilities.Constants.Password.SharedPreferenceKeys.PASSCODE_KEY
 import com.vinsonb.password.manager.kotlin.utilities.Constants.Password.SharedPreferenceKeys.SECRET_ANSWER_KEY
 import com.vinsonb.password.manager.kotlin.utilities.Constants.Password.SharedPreferenceKeys.SECRET_QUESTION_KEY
+import com.vinsonb.password.manager.kotlin.utilities.SimpleToastEvent
 import com.vinsonb.password.manager.kotlin.utilities.withComposeView
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -37,8 +38,6 @@ class LoginFragment : Fragment() {
             dispatchers = CoroutineModule.providesCoroutineDispatchers(),
             savedSecretAnswer = getSecretAnswer(),
             saveNewPasscode = this::saveNewPasscode,
-            showSucceededToast = { requireContext().showToast(R.string.success_passcode_reset) },
-            showFailedToast = { requireContext().showToast(R.string.error_reset_unsuccessful) },
         )
     }
     private lateinit var sharedPreferences: SharedPreferences
@@ -65,6 +64,18 @@ class LoginFragment : Fragment() {
                     } else {
                         requireContext().showToast(R.string.error_wrong_passcode)
                     }
+                }
+            }
+        }
+
+        lifecycleScope.launch {
+            forgotPasscodeViewModel.eventFlow.collect {
+                when (it) {
+                    SimpleToastEvent.None -> {}
+                    SimpleToastEvent.ShowFailed ->
+                        requireContext().showToast(R.string.error_reset_unsuccessful)
+                    SimpleToastEvent.ShowSucceeded ->
+                        requireContext().showToast(R.string.success_passcode_reset)
                 }
             }
         }

@@ -22,7 +22,7 @@ My main goal is to release an MVP to the PlayStore once everything in [In-Progre
 <details><summary>Expand to see bug fixes</summary>
 
 - FIXED Visual Bug - Can't see the entire password for long passwords. 
-- MOSTLY FIXED Bug - Auto-logout feature when application is sent to the background does not work most of the time. It says **MOSTLY FIXED** because it's now mostly working except for when the Android OS decides to kill the app without onPause being killed. I've decided to just live with this as the current alternate solution that I'm aware of would require me using an Authentication Service like Firebase which may cost dollars depending on the number of users. Not keen on that. :)
+- MOSTLY FIXED Bug - Auto-logout feature when application is sent to the background does not work most of the time. It says **MOSTLY FIXED** because it's now mostly working except for when the Android OS decides to kill the app without onPause being run. I've decided to just live with this as the current alternate solution that I'm aware of would require me using an online Authentication Service like Firebase which may cost dollars depending on the number of users. Not keen on that. :)
 </details>
 
 
@@ -52,7 +52,7 @@ My main goal is to release an MVP to the PlayStore once everything in [In-Progre
 - **viewmodels** — All the architecture component ViewModels live here.
   
 # Testing
-- **Unit Tests** — Uses JUnit4, JUnitParams (easy paramaterized tests), Turbine (library to make testings Flows easier) and Coroutines Test (necessary to test flows). Primarily tested ViewModels and Utility classes not related to the UI. These are our most important tests. This is especially the case once I finish the compose migration as I will be hosting state to the ViewModel for all compose screens. This makes it easier to unit test states related to the screen without having to perform Instrumentation tests instead as those are tightly coupled with the Android API.
+- **Unit Tests** — Uses JUnit4, JUnitParams (easy paramaterized tests), Turbine (library to make testings Flows easier) and Coroutines Test (necessary to test flows). Primarily tested ViewModels, Extensions and Utility classes not related to the UI. These are our most important tests. This is especially the case once I finish the compose migration as I will be hoisting state to the ViewModel for all compose screens. This makes it easier to unit test states related to the screen without having to perform Instrumentation tests instead as those are tightly coupled with the Android API.
 - **Instrumentation Tests** — Uses Espresso with Hamcrest. Tested all the UI related classes such as Activities and Fragments. This is not as important anymore as the ViewModel unit tests should cover most cases once the migration is over. 
 - **Hilt** — Dependency injection framework. In our tests specifically, we use this to swap the Database with a Fake using Room's in-memory database builder as we do not want our production database to be affected during tests.
 

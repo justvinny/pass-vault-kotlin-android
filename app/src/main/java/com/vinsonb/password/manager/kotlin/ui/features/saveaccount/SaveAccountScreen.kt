@@ -1,6 +1,5 @@
 package com.vinsonb.password.manager.kotlin.ui.features.saveaccount
 
-import android.content.Context
 import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -9,56 +8,56 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import com.vinsonb.password.manager.kotlin.R
-import com.vinsonb.password.manager.kotlin.extensions.showToast
+import com.vinsonb.password.manager.kotlin.database.enitities.Account
 import com.vinsonb.password.manager.kotlin.ui.components.CustomTextField
-import com.vinsonb.password.manager.kotlin.ui.features.saveaccount.SaveAccountState.TextFieldName
-import com.vinsonb.password.manager.kotlin.ui.features.saveaccount.SaveAccountState.TextFieldName.*
-import com.vinsonb.password.manager.kotlin.ui.features.saveaccount.SaveAccountState.TextFieldState
-import com.vinsonb.password.manager.kotlin.ui.features.saveaccount.SaveAccountState.TextFieldState.ErrorState
-import com.vinsonb.password.manager.kotlin.ui.features.saveaccount.SaveAccountState.TextFieldState.ErrorState.*
 import com.vinsonb.password.manager.kotlin.ui.theme.PassVaultTheme
 import com.vinsonb.password.manager.kotlin.utilities.ScreenPreviews
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers.IO
-import kotlinx.coroutines.Dispatchers.Main
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+import com.vinsonb.password.manager.kotlin.utilities.SimpleToastEvent
+import com.vinsonb.password.manager.kotlin.utilities.TextResIdProvider
+import com.vinsonb.password.manager.kotlin.utilities.clearMutableStateStrings
 
 @Composable
 fun SaveAccountScreen(viewModel: SaveAccountViewModel) {
-    val state by viewModel.stateFlow.collectAsState(SaveAccountState(emptyMap()))
-
-    /**
-     * This ensures it does not run again after recomposition as we only want validateAll
-     * to be called once. Subsequent validations are handled individually in onTextChange
-     * on our Text Fields.
-     */
-    LaunchedEffect(Unit) {
-        viewModel.validateAll()
-    }
+    val state by viewModel.stateFlow.collectAsState()
+    val shouldClearAllInput = viewModel.eventFlow.collectAsState(
+        initial = SimpleToastEvent.None
+    ).value == SimpleToastEvent.ShowSucceeded
 
     SaveAccountContent(
         state = state,
-        onTextChange = viewModel::onTextChange,
+        shouldClearAllInput = shouldClearAllInput,
+        validatePlatform = viewModel::validatePlatform,
+        validateUsername = viewModel::validateUsername,
+        validatePassword = viewModel::validatePassword,
+        validateRepeatPassword = viewModel::validateRepeatPassword,
         saveAccount = viewModel::saveAccount,
-        validate = viewModel::validate,
     )
 }
 
 @Composable
 private fun SaveAccountContent(
     state: SaveAccountState,
-    onTextChange: (TextFieldName, String) -> Unit,
-    saveAccount: suspend () -> Boolean,
-    validate: (TextFieldName) -> Unit,
+    shouldClearAllInput: Boolean,
+    validatePlatform: (String) -> Unit,
+    validateUsername: (String) -> Unit,
+    validatePassword: (String, String) -> Unit,
+    validateRepeatPassword: (String, String) -> Unit,
+    saveAccount: (Account) -> Unit,
 ) {
-    val context = LocalContext.current
+    val platform = rememberSaveable { mutableStateOf("") }
+    val username = rememberSaveable { mutableStateOf("") }
+    val password = rememberSaveable { mutableStateOf("") }
+    val repeatPassword = rememberSaveable { mutableStateOf("") }
+
+    if (shouldClearAllInput) {
+        clearMutableStateStrings(platform, username, password, repeatPassword)
+    }
 
     Column(
         modifier = Modifier
@@ -68,97 +67,106 @@ private fun SaveAccountContent(
             .imePadding()
             .navigationBarsPadding(),
     ) {
-        for (textField in state.textFields) {
-            when (textField.key) {
-                PASSWORD, REPEAT_PASSWORD -> CustomTextField.Password(
-                    text = textField.value.text,
-                    onTextChange = { newText ->
-                        onTextChange(textField.key, newText)
-                        validate(textField.key)
-                    },
-                    label = stringResource(textField.key.hintRes),
-                    isError = textField.value.errorState != NO_ERROR,
-                    errorText = textField.value.errorState.getErrorText(textField.key.hintRes),
-                    keyboardOptions = textField.key.getKeyboardOptions(),
-                )
-                else -> CustomTextField.Normal(
-                    text = textField.value.text,
-                    onTextChange = { newText ->
-                        onTextChange(textField.key, newText)
-                        validate(textField.key)
-                    },
-                    label = stringResource(textField.key.hintRes),
-                    isError = textField.value.errorState != NO_ERROR,
-                    errorText = textField.value.errorState.getErrorText(textField.key.hintRes),
-                    keyboardOptions = textField.key.getKeyboardOptions(),
-                )
-            }
-        }
+        CustomTextField.Normal(
+            text = platform.value,
+            onTextChange = {
+                platform.value = it
+                validatePlatform(it)
+            },
+            label = stringResource(id = R.string.hint_platform),
+            isError = state.platformError != SaveAccountError.None,
+            errorText = state.platformError.getErrorText(R.string.hint_platform),
+            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
+        )
+
+        CustomTextField.Normal(
+            text = username.value,
+            onTextChange = {
+                username.value = it
+                validateUsername(it)
+            },
+            label = stringResource(id = R.string.hint_username),
+            isError = state.usernameError != SaveAccountError.None,
+            errorText = state.usernameError.getErrorText(R.string.hint_username),
+            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
+        )
+
+        CustomTextField.Password(
+            text = password.value,
+            onTextChange = {
+                password.value = it
+                validatePassword(it, repeatPassword.value)
+            },
+            label = stringResource(id = R.string.hint_password),
+            isError = state.passwordError != SaveAccountError.None,
+            errorText = state.passwordError.getErrorText(R.string.hint_password),
+            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
+        )
+
+        CustomTextField.Password(
+            text = repeatPassword.value,
+            onTextChange = {
+                repeatPassword.value = it
+                validateRepeatPassword(password.value, it)
+            },
+            label = stringResource(id = R.string.hint_repeat_password),
+            isError = state.repeatPasswordError != SaveAccountError.None,
+            errorText = state.repeatPasswordError.getErrorText(R.string.hint_repeat_password),
+            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
+        )
 
         Spacer(modifier = Modifier.height(16.dp))
 
         Button(
             modifier = Modifier.fillMaxWidth(),
-            onClick = onSaveClick(context, saveAccount),
-            enabled = state.textFields.values.all { it.errorState == NO_ERROR },
+            onClick = {
+                saveAccount(
+                    Account(
+                        platform = platform.value,
+                        username = username.value,
+                        password = password.value,
+                    )
+                )
+            },
+            enabled = state.hasNoErrors(),
         ) {
             Text(stringResource(id = R.string.button_save_account))
         }
     }
 }
 
-private fun TextFieldName.getKeyboardOptions() = KeyboardOptions(
-    imeAction = when (this) {
-        REPEAT_PASSWORD -> ImeAction.Done
-        else -> ImeAction.Next
+@ReadOnlyComposable
+@Composable
+private fun SaveAccountError.getErrorText(@StringRes additionalId: Int) =
+    if (this == SaveAccountError.None) {
+        ""
+    } else {
+        stringResource(
+            id = (this as TextResIdProvider).getTextResId(),
+            stringResource(id = additionalId),
+        )
     }
-)
 
 @ReadOnlyComposable
 @Composable
-private fun ErrorState.getErrorText(@StringRes hintRes: Int) =
-    when (this) {
-        NO_ERROR -> ""
-        TEXT_EMPTY -> stringResource(this.errorRes!!, stringResource(hintRes))
-        PASSWORDS_MUST_MATCH -> stringResource(this.errorRes!!)
-    }
-
-private fun onSaveClick(
-    context: Context,
-    saveAccount: suspend () -> Boolean,
-): () -> Unit {
-    return {
-        CoroutineScope(IO).launch {
-            val isInserted = saveAccount()
-
-            withContext(Main) {
-                context.showToast(
-                    if (isInserted) {
-                        R.string.success_save_account
-                    } else {
-                        R.string.error_save_unsuccessful
-                    }
-                )
-            }
-        }
-    }
-}
+private fun SaveAccountState.hasNoErrors() = (
+        this.platformError == SaveAccountError.None
+                && this.usernameError == SaveAccountError.None
+                && this.passwordError == SaveAccountError.None
+                && this.repeatPasswordError == SaveAccountError.None
+        )
 
 @ScreenPreviews
 @Composable
 private fun PreviewSaveAccountScreen() = PassVaultTheme {
     SaveAccountContent(
-        state = SaveAccountState(
-            mapOf(
-                PLATFORM to TextFieldState(),
-                USERNAME to TextFieldState(),
-                PASSWORD to TextFieldState(),
-                REPEAT_PASSWORD to TextFieldState(),
-            )
-        ),
-        onTextChange = { _, _ -> },
-        saveAccount = suspend { true },
-        validate = {},
+        state = SaveAccountState(),
+        shouldClearAllInput = false,
+        validatePlatform = {},
+        validateUsername = {},
+        validatePassword = { _, _ -> },
+        validateRepeatPassword = { _, _ -> },
+        saveAccount = {}
     )
 }
 
@@ -167,15 +175,16 @@ private fun PreviewSaveAccountScreen() = PassVaultTheme {
 private fun PreviewSaveAccountScreenNoErrors() = PassVaultTheme {
     SaveAccountContent(
         state = SaveAccountState(
-            mapOf(
-                PLATFORM to TextFieldState(text = "platform", errorState = NO_ERROR),
-                USERNAME to TextFieldState(text = "username", errorState = NO_ERROR),
-                PASSWORD to TextFieldState(text = "password", errorState = NO_ERROR),
-                REPEAT_PASSWORD to TextFieldState(text = "password", errorState = NO_ERROR),
-            )
+            platformError = SaveAccountError.None,
+            usernameError = SaveAccountError.None,
+            passwordError = SaveAccountError.None,
+            repeatPasswordError = SaveAccountError.None,
         ),
-        onTextChange = { _, _ -> },
-        saveAccount = suspend { true },
-        validate = {},
+        shouldClearAllInput = false,
+        validatePlatform = {},
+        validateUsername = {},
+        validatePassword = { _, _ -> },
+        validateRepeatPassword = { _, _ -> },
+        saveAccount = {}
     )
 }

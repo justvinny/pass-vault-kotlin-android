@@ -30,7 +30,13 @@ class LocalTimeExtensionsTests {
         minutesElapsed: Long,
         expected: Boolean,
     ) {
+        // Arrange
         val oldTime = LocalTime.now().minusMinutes(minutesElapsed).toString()
-        assertEquals(expected, LocalTime.now().hasSessionExpired(oldTime))
+
+        // Act
+        val actual = LocalTime.now().hasSessionExpired(oldTime)
+
+        // Assert
+        assertEquals(expected, actual)
     }
 }

@@ -2,14 +2,14 @@ package com.vinsonb.password.manager.kotlin.ui.features.saveaccount
 
 import app.cash.turbine.test
 import com.vinsonb.password.manager.kotlin.database.enitities.Account
-import com.vinsonb.password.manager.kotlin.ui.features.saveaccount.SaveAccountState.TextFieldName.*
-import com.vinsonb.password.manager.kotlin.ui.features.saveaccount.SaveAccountState.TextFieldState.ErrorState.*
-import junit.framework.TestCase.assertEquals
+import com.vinsonb.password.manager.kotlin.runCancellingTest
+import com.vinsonb.password.manager.kotlin.utilities.SimpleToastEvent
 import junitparams.JUnitParamsRunner
 import junitparams.Parameters
 import junitparams.naming.TestCaseName
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.test.runTest
+import kotlinx.coroutines.test.TestScope
+import org.junit.Assert.assertEquals
 import org.junit.Test
 import org.junit.runner.RunWith
 import java.util.*
@@ -19,142 +19,178 @@ import java.util.*
 class SaveAccountViewModelTest {
 
     /**
-     * Test Case Scenarios:
-     *  1. Test for valid non-empty input.
-     *  2. Test for invalid empty input.
-     *  3. Test for invalid input passwords don't match.
-     *  4. Test for valid input passwords match.
+     * [SaveAccountViewModel.validatePlatform] Test Cases:
+     *  1. Test for [SaveAccountError.EmptyInputError]
+     *  2. Test for [SaveAccountError.None]
      *
-     *  Method Params Provider: [provideValidateArgs]
+     *  Method source: [provideValidateCommonArgs]
      */
     @Test
-    @Parameters(method = "provideValidateArgs")
-    @TestCaseName("GIVEN {0} TextFieldName, {1} as 1st text input and {2} as 2nd text input WHEN validate invoked THEN return error state {3}")
-    fun `validate parameterised test`(
-        textFieldName: SaveAccountState.TextFieldName,
-        text1: String,
-        text2: String?,
-        expectedErrorState: SaveAccountState.TextFieldState.ErrorState,
-    ) = runTest {
+    @Parameters(
+        method = "provideValidateCommonArgs"
+    )
+    @TestCaseName("GIVEN {0} as platform WHEN validatePlatform invoked THEN expect {1} as expected error state")
+    fun `validatePlatform parameterised test`(
+        platform: String,
+        expectedError: SaveAccountError,
+    ) = runCancellingTest {
         // Arrange
         val viewModel = provideViewModel()
 
-        viewModel.onTextChange(textFieldName, text1)
-        if (textFieldName == REPEAT_PASSWORD) {
-            viewModel.onTextChange(PASSWORD, text2!!)
-        }
-
         // Act
-        viewModel.validate(textFieldName)
+        viewModel.validatePlatform(platform)
 
         // Assert
         viewModel.stateFlow.test {
-            assertEquals(expectedErrorState, awaitItem().textFields[textFieldName]?.errorState)
+            assertEquals(expectedError, awaitItem().platformError)
         }
     }
 
+    /**
+     * [SaveAccountViewModel.validateUsername] Test Cases:
+     *  1. Test for [SaveAccountError.EmptyInputError]
+     *  2. Test for [SaveAccountError.None]
+     *
+     *  Method source: [provideValidateCommonArgs]
+     */
     @Test
-    fun `GIVEN all text is empty WHEN validateAll invoked THEN all error states should be TEXT_EMPTY`() =
-        runTest {
-            // Arrange
-            val viewModel = provideViewModel()
-
-            // Act
-            viewModel.validateAll()
-
-            // Assert
-            viewModel.stateFlow.test {
-                awaitItem().textFields.values.forEach {
-                    assertEquals(TEXT_EMPTY, it.errorState)
-                }
-            }
-        }
-
-    @Test
-    fun `GIVEN new text WHEN onTextChange invoked THEN update text value of state`() = runTest {
+    @Parameters(
+        method = "provideValidateCommonArgs"
+    )
+    @TestCaseName("GIVEN {0} as username WHEN validateUsername invoked THEN expect {1} as expected error state")
+    fun `validateUsername parameterised test`(
+        username: String,
+        expectedError: SaveAccountError,
+    ) = runCancellingTest {
         // Arrange
         val viewModel = provideViewModel()
-        val expected = "new value"
 
         // Act
-        viewModel.onTextChange(PLATFORM, expected)
+        viewModel.validateUsername(username)
 
         // Assert
         viewModel.stateFlow.test {
-            assertEquals(expected, awaitItem().textFields[PLATFORM]?.text)
+            assertEquals(expectedError, awaitItem().usernameError)
+        }
+    }
+
+    /**
+     * [SaveAccountViewModel.validatePassword] Test Cases:
+     *  1. Test for [SaveAccountError.EmptyInputError]
+     *  2. Test for [SaveAccountError.None]
+     *
+     *  Method source: [provideValidateCommonArgs]
+     */
+    @Test
+    @Parameters(
+        method = "provideValidateCommonArgs"
+    )
+    @TestCaseName("GIVEN {0} as password WHEN validatePassword invoked THEN expect {1} as expected error state")
+    fun `validatePassword parameterised test`(
+        password: String,
+        expectedError: SaveAccountError,
+    ) = runCancellingTest {
+        // Arrange
+        val viewModel = provideViewModel()
+
+        // Act
+        viewModel.validatePassword(password, password)
+
+        // Assert
+        viewModel.stateFlow.test {
+            assertEquals(expectedError, awaitItem().passwordError)
+        }
+    }
+
+    /**
+     * [SaveAccountViewModel.validateRepeatPassword] Test Cases:
+     *  1. Test for [SaveAccountError.EmptyInputError]
+     *  2. Test for [SaveAccountError.PasswordMismatchError]
+     *  3. Test for [SaveAccountError.None]
+     *
+     *  Method source: [provideValidateRepeatPasswordArgs]
+     */
+    @Test
+    @Parameters(
+        method = "provideValidateRepeatPasswordArgs"
+    )
+    @TestCaseName("GIVEN {0} as password and {1} as repeatPassword WHEN validateRepeatPassword invoked THEN expect {2} as expected error state")
+    fun `validateRepeatPassword parameterised test`(
+        password: String,
+        repeatPassword: String,
+        expectedError: SaveAccountError,
+    ) = runCancellingTest {
+        // Arrange
+        val viewModel = provideViewModel()
+
+        // Act
+        viewModel.validateRepeatPassword(password, repeatPassword)
+
+        // Assert
+        viewModel.stateFlow.test {
+            assertEquals(expectedError, awaitItem().repeatPasswordError)
         }
     }
 
     @Test
     fun `GIVEN account successfully inserted WHEN saveAccount invoked THEN all states should be cleared`() =
-        runTest {
+        runCancellingTest {
             // Arrange
             val viewModel = provideViewModel()
-            viewModel.setDummyAccount()
+            val mockAccount = provideDummyAccount()
+            viewModel.validatePlatform(mockAccount.platform)
+            viewModel.validateUsername(mockAccount.username)
+            viewModel.validatePassword(mockAccount.password, mockAccount.password)
 
-            // Act
-            viewModel.saveAccount()
+            viewModel.eventFlow.test {
+                // Act
+                viewModel.saveAccount(mockAccount)
 
-            // Assert
+                // Assert
+                assertEquals(SimpleToastEvent.ShowSucceeded, awaitItem())
+            }
+
+            // Assert error states also reset
             viewModel.stateFlow.test {
-                awaitItem().textFields.values
-                    .all { it.text.isBlank() }
-                    .also { isAllBlank ->
-                        assert(isAllBlank)
-                    }
+                assertEquals(SaveAccountState(), awaitItem())
             }
         }
 
     @Test
     fun `GIVEN account failed to insert WHEN saveAccount invoked THEN all states should remain the same`() =
-        runTest {
+        runCancellingTest {
             // Arrange
             val viewModel = provideViewModel(isAccountInserted = false)
-            val dummyAccount = viewModel.setDummyAccount()
 
-            // Act
-            viewModel.saveAccount()
 
-            // Assert
-            viewModel.stateFlow.test {
-                awaitItem().textFields.forEach {
-                    assertEquals(
-                        /* expected = */
-                        when (it.key) {
-                            PLATFORM -> dummyAccount.platform
-                            USERNAME -> dummyAccount.username
-                            PASSWORD, REPEAT_PASSWORD -> dummyAccount.password
-                        },
-                        /* actual = */
-                        it.value.text,
-                    )
-                }
+            viewModel.eventFlow.test {
+                // Act
+                viewModel.saveAccount(provideDummyAccount())
+
+                // Assert
+                assertEquals(SimpleToastEvent.ShowFailed, awaitItem())
             }
         }
 
-    private fun provideViewModel(isAccountInserted: Boolean = true) =
-        SaveAccountViewModel { isAccountInserted }
+    private fun TestScope.provideViewModel(isAccountInserted: Boolean = true) =
+        SaveAccountViewModel(
+            this
+        ) { isAccountInserted }
 
-    private fun SaveAccountViewModel.setDummyAccount(): Account {
-        val account = Account(
-            platform = "Platform",
-            username = "Username",
-            password = "Password",
-        )
+    private fun provideDummyAccount() = Account(
+        platform = "platform",
+        username = "username",
+        password = "password",
+    )
 
-        onTextChange(PLATFORM, account.platform)
-        onTextChange(USERNAME, account.username)
-        onTextChange(PASSWORD, account.password)
-        onTextChange(REPEAT_PASSWORD, account.password)
-        validateAll()
+    private fun provideValidateCommonArgs() = arrayOf(
+        arrayOf("", SaveAccountError.EmptyInputError),
+        arrayOf("valid", SaveAccountError.None),
+    )
 
-        return account
-    }
-
-    private fun provideValidateArgs() = arrayOf(
-        arrayOf(PLATFORM, "good input", null, NO_ERROR),
-        arrayOf(REPEAT_PASSWORD, "password", "password", NO_ERROR),
-        arrayOf(USERNAME, "", null, TEXT_EMPTY),
-        arrayOf(REPEAT_PASSWORD, "password", "pass", PASSWORDS_MUST_MATCH),
+    private fun provideValidateRepeatPasswordArgs() = arrayOf(
+        arrayOf("", "", SaveAccountError.EmptyInputError),
+        arrayOf("incorrect", "wrong", SaveAccountError.PasswordMismatchError),
+        arrayOf("correct", "correct", SaveAccountError.None),
     )
 }

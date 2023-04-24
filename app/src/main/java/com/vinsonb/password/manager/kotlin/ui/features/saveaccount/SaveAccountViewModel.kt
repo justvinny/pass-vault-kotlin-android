@@ -3,108 +3,82 @@ package com.vinsonb.password.manager.kotlin.ui.features.saveaccount
 import androidx.lifecycle.ViewModel
 import com.vinsonb.password.manager.kotlin.database.AccountRepository
 import com.vinsonb.password.manager.kotlin.database.enitities.Account
-import com.vinsonb.password.manager.kotlin.ui.features.saveaccount.SaveAccountState.TextFieldName
-import com.vinsonb.password.manager.kotlin.ui.features.saveaccount.SaveAccountState.TextFieldName.*
-import com.vinsonb.password.manager.kotlin.ui.features.saveaccount.SaveAccountState.TextFieldState
-import com.vinsonb.password.manager.kotlin.ui.features.saveaccount.SaveAccountState.TextFieldState.ErrorState.*
+import com.vinsonb.password.manager.kotlin.di.CoroutineDispatchers
+import com.vinsonb.password.manager.kotlin.extensions.stateIn
+import com.vinsonb.password.manager.kotlin.utilities.EventFlow
+import com.vinsonb.password.manager.kotlin.utilities.SimpleToastEvent
+import com.vinsonb.password.manager.kotlin.utilities.simpleToastEventFlow
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class SaveAccountViewModel(
+    private val scope: CoroutineScope,
     private val insertAccount: suspend (Account) -> Boolean,
-) : ViewModel() {
+) : ViewModel(), EventFlow<SimpleToastEvent> by simpleToastEventFlow(scope) {
 
     @Inject
     constructor(
+        dispatchers: CoroutineDispatchers,
         accountRepository: AccountRepository,
     ) : this(
+        scope = CoroutineScope(dispatchers.default),
         insertAccount = accountRepository::insertAccount,
     )
 
-    private val platformFlow = MutableStateFlow(TextFieldState())
-    private val usernameFlow = MutableStateFlow(TextFieldState())
-    private val passwordFlow = MutableStateFlow(TextFieldState())
-    private val repeatPasswordFlow = MutableStateFlow(TextFieldState())
+    private val _stateFlow = MutableStateFlow(SaveAccountState())
+    val stateFlow = _stateFlow.stateIn(scope = scope, initialValue = SaveAccountState())
 
-    private val flowMap = mapOf(
-        PLATFORM to platformFlow,
-        USERNAME to usernameFlow,
-        PASSWORD to passwordFlow,
-        REPEAT_PASSWORD to repeatPasswordFlow,
-    )
-    val stateFlow = combine(
-        platformFlow,
-        usernameFlow,
-        passwordFlow,
-        repeatPasswordFlow
-    ) { platform, username, password, repeatPassword ->
-        SaveAccountState(
-            mapOf(
-                PLATFORM to platform,
-                USERNAME to username,
-                PASSWORD to password,
-                REPEAT_PASSWORD to repeatPassword,
-            )
-        )
-    }
-
-    fun validate(textFieldName: TextFieldName) {
-        flowMap[textFieldName]?.also {
-            if (textFieldName == PASSWORD) {
-                validate(REPEAT_PASSWORD)
-            }
-
-            val doPasswordsMatch = repeatPasswordFlow.value.text == passwordFlow.value.text
-            val errorState = when {
-                it.value.text.isBlank() -> TEXT_EMPTY
-                textFieldName == REPEAT_PASSWORD && !doPasswordsMatch -> PASSWORDS_MUST_MATCH
-                else -> NO_ERROR
-            }
-
-            flowMap[textFieldName]?.update { oldState ->
-                oldState.copy(errorState = errorState)
-            }
+    fun validatePlatform(platform: String) {
+        val error = if (platform.isEmpty()) SaveAccountError.EmptyInputError else SaveAccountError.None
+        _stateFlow.update {
+            it.copy(platformError = error)
         }
     }
 
-    fun validateAll() {
-        for (map in flowMap) {
-            validate(map.key)
+    fun validateUsername(username: String) {
+        val error = if (username.isEmpty()) SaveAccountError.EmptyInputError else SaveAccountError.None
+        _stateFlow.update {
+            it.copy(usernameError = error)
         }
     }
 
-    fun onTextChange(textFieldName: TextFieldName, newText: String) {
-        flowMap[textFieldName]?.update { oldState ->
-            oldState.copy(text = newText)
+    fun validatePassword(password: String, repeatPassword: String) {
+        val error = if (password.isEmpty()) SaveAccountError.EmptyInputError else SaveAccountError.None
+        _stateFlow.update {
+            it.copy(passwordError = error)
+        }
+        validateRepeatPassword(password, repeatPassword)
+    }
+
+    fun validateRepeatPassword(password: String, repeatPassword: String) {
+        val error = when {
+            repeatPassword.isEmpty() -> SaveAccountError.EmptyInputError
+            repeatPassword != password -> SaveAccountError.PasswordMismatchError
+            else -> SaveAccountError.None
+        }
+        _stateFlow.update {
+            it.copy(repeatPasswordError = error)
         }
     }
 
-    suspend fun saveAccount(): Boolean {
-        val hasNoErrors = flowMap.values.all { it.value.errorState == NO_ERROR }
-        if (hasNoErrors) {
-            val account = Account(
-                platform = platformFlow.value.text,
-                username = usernameFlow.value.text,
-                password = passwordFlow.value.text,
-            )
 
-            return if (insertAccount(account)) {
-                clearStates()
-                true
+    fun saveAccount(account: Account) {
+        scope.launch {
+            if (insertAccount(account)) {
+                resetErrors()
+                sendEvent(SimpleToastEvent.ShowSucceeded)
             } else {
-                false
+                sendEvent(SimpleToastEvent.ShowFailed)
             }
         }
-        return false
     }
 
-    private fun clearStates() {
-        flowMap.values.forEach {
-            it.value = TextFieldState()
-        }
+    private fun resetErrors() {
+        _stateFlow.update { SaveAccountState() }
     }
 }

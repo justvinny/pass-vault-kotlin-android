@@ -1,6 +1,5 @@
 package com.vinsonb.password.manager.kotlin.utilities
 
-import com.vinsonb.password.manager.kotlin.utilities.PasswordGenerator
 import com.vinsonb.password.manager.kotlin.utilities.PasswordGenerator.DEFAULT_LENGTH
 import junitparams.JUnitParamsRunner
 import junitparams.Parameters
@@ -13,7 +12,10 @@ import org.junit.runner.RunWith
 class PasswordGeneratorTest {
     @Test
     fun passwordGenerated_givenNonNegativeLength_returnsPasswordString() {
+        // Arrange
         val expectedLength = DEFAULT_LENGTH
+
+        // Act
         val actualLength = PasswordGenerator.createPassword(
             length = DEFAULT_LENGTH,
             hasUppercaseLetters = true,
@@ -21,12 +23,17 @@ class PasswordGeneratorTest {
             hasNumbers = false,
             hasSpecialSymbols = false
         ).length
+
+        // Assert
         assertEquals(expectedLength, actualLength)
     }
 
     @Test
     fun passwordGenerated_givenNegativeLength_returnsEmptyString() {
+        // Arrange
         val expectedLength = 0
+
+        // Act
         val actualLength = PasswordGenerator.createPassword(
             length = -99,
             hasUppercaseLetters = true,
@@ -34,12 +41,17 @@ class PasswordGeneratorTest {
             hasNumbers = false,
             hasSpecialSymbols = false
         ).length
+
+        // Assert
         assertEquals(expectedLength, actualLength)
     }
 
     @Test
     fun passwordGenerated_givenAllFalseValues_returnsEmptyString() {
+        // Arrange
         val expectedLength = 0
+
+        // Act
         val actualLength = PasswordGenerator.createPassword(
             length = DEFAULT_LENGTH,
             hasUppercaseLetters = false,
@@ -47,6 +59,8 @@ class PasswordGeneratorTest {
             hasNumbers = false,
             hasSpecialSymbols = false
         ).length
+
+        // Assert
         assertEquals(expectedLength, actualLength)
     }
 
@@ -67,8 +81,12 @@ class PasswordGeneratorTest {
     @TestCaseName("GIVEN {0} password length WHEN getValidPasswordLength invoked THEN return valid length {1}")
     fun `getValidPasswordLength parameterised test`(
         passwordLength: Int,
-        expected: Int,
+        expectedLength: Int,
     ) {
-        assertEquals(PasswordGenerator.getValidPasswordLength(passwordLength), expected)
+        // Act
+        val actualLength = PasswordGenerator.getValidPasswordLength(passwordLength)
+
+        // Assert
+        assertEquals(expectedLength, actualLength)
     }
 }

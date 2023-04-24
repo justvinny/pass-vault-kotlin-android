@@ -2,10 +2,8 @@ package com.vinsonb.password.manager.kotlin.ui.features.forgotpasscode
 
 import app.cash.turbine.test
 import com.vinsonb.password.manager.kotlin.runCancellingTest
-import com.vinsonb.password.manager.kotlin.ui.features.forgotpasscode.ForgotPasscodeErrors
-import com.vinsonb.password.manager.kotlin.ui.features.forgotpasscode.ForgotPasscodeState
-import com.vinsonb.password.manager.kotlin.ui.features.forgotpasscode.ForgotPasscodeViewModel
 import com.vinsonb.password.manager.kotlin.utilities.Constants.Password.PASSCODE_MAX_LENGTH
+import com.vinsonb.password.manager.kotlin.utilities.SimpleToastEvent
 import junitparams.JUnitParamsRunner
 import junitparams.Parameters
 import junitparams.naming.TestCaseName
@@ -15,8 +13,6 @@ import kotlinx.coroutines.test.TestScope
 import org.junit.Assert.assertEquals
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.mockito.Mockito.*
-import org.mockito.kotlin.mock
 
 @OptIn(ExperimentalCoroutinesApi::class)
 @RunWith(JUnitParamsRunner::class)
@@ -121,50 +117,42 @@ class ForgotPasscodeViewModelTest {
     }
 
     @Test
-    fun `GIVEN saveNewPasscode succeeded WHEN resetPasscode invoked THEN verify state changed to hidden and showSucceededToast invoked`() =
+    fun `GIVEN saveNewPasscode succeeded WHEN resetPasscode invoked THEN verify state changed to hidden and toast event succeeded`() =
         runCancellingTest {
             // Arrange
-            val mockShowSucceededToast: () -> Unit = mock()
-            val mockShowFailedToast: () -> Unit = mock()
-            val viewModel = provideViewModel(
-                showSucceededToast = mockShowSucceededToast,
-                showFailedToast = mockShowFailedToast,
-            )
+            val viewModel = provideViewModel()
             viewModel.showDialog()
             assertEquals(ForgotPasscodeState.Visible(), viewModel.stateFlow.first())
 
-            // Act
-            viewModel.resetPasscode("secret")
+            viewModel.eventFlow.test {
+                // Act
+                viewModel.resetPasscode("secret")
 
-            // Assert
+                // Assert
+                assertEquals(SimpleToastEvent.ShowSucceeded, awaitItem())
+            }
+
+            // Assert dialog also dismissed
             viewModel.stateFlow.test {
                 assertEquals(ForgotPasscodeState.Hidden, awaitItem())
-                verify(mockShowSucceededToast, times(1)).invoke()
-                verify(mockShowFailedToast, times(0)).invoke()
             }
         }
 
     @Test
-    fun `GIVEN saveNewPasscode failed WHEN resetPasscode invoked THEN verify showFailedToast invoked`() =
+    fun `GIVEN saveNewPasscode failed WHEN resetPasscode invoked THEN verify toast event failed`() =
         runCancellingTest {
             // Arrange
-            val mockShowSucceededToast: () -> Unit = mock()
-            val mockShowFailedToast: () -> Unit = mock()
             val viewModel = provideViewModel(
                 saveNewPasscodeReturn = false,
-                showSucceededToast = mockShowSucceededToast,
-                showFailedToast = mockShowFailedToast,
             )
             viewModel.showDialog()
 
-            // Act
-            viewModel.resetPasscode("secret")
+            viewModel.eventFlow.test {
+                // Act
+                viewModel.resetPasscode("secret")
 
-            // Assert
-            viewModel.stateFlow.test {
-                assertEquals(ForgotPasscodeState.Visible(), awaitItem())
-                verify(mockShowSucceededToast, times(0)).invoke()
-                verify(mockShowFailedToast, times(1)).invoke()
+                // Assert
+                assertEquals(SimpleToastEvent.ShowFailed, awaitItem())
             }
         }
 
@@ -234,14 +222,10 @@ class ForgotPasscodeViewModelTest {
 
     private fun TestScope.provideViewModel(
         saveNewPasscodeReturn: Boolean = true,
-        showSucceededToast: () -> Unit = {},
-        showFailedToast: () -> Unit = {},
     ) = ForgotPasscodeViewModel(
         scope = this,
         savedSecretAnswer = "secret",
         saveNewPasscode = { saveNewPasscodeReturn },
-        showSucceededToast = showSucceededToast,
-        showFailedToast = showFailedToast,
     )
 
     private fun provideArgsValidateSecretAnswer() = arrayOf(
