@@ -2,10 +2,12 @@ package com.vinsonb.password.manager.kotlin.ui.features.forgotpasscode
 
 import androidx.lifecycle.ViewModel
 import com.vinsonb.password.manager.kotlin.di.CoroutineDispatchers
+import com.vinsonb.password.manager.kotlin.extensions.stateIn
 import com.vinsonb.password.manager.kotlin.utilities.Constants.Password.PASSCODE_MAX_LENGTH
 import com.vinsonb.password.manager.kotlin.utilities.Constants.Password.PASSCODE_REGEX_PATTERN
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.update
 
 class ForgotPasscodeViewModel(
     private val scope: CoroutineScope,
@@ -30,13 +32,7 @@ class ForgotPasscodeViewModel(
     )
 
     private val _stateFlow = MutableStateFlow<ForgotPasscodeState>(ForgotPasscodeState.Hidden)
-    val stateFlow = _stateFlow
-        .asStateFlow()
-        .stateIn(
-            scope = scope,
-            started = SharingStarted.WhileSubscribed(5000),
-            initialValue = ForgotPasscodeState.Hidden,
-        )
+    val stateFlow = _stateFlow.stateIn(scope = scope, initialValue = ForgotPasscodeState.Hidden)
 
     fun validateSecretAnswer(secretAnswer: String) {
         if (_stateFlow.value is ForgotPasscodeState.Visible) {

@@ -4,11 +4,15 @@ import androidx.lifecycle.ViewModel
 import com.vinsonb.password.manager.kotlin.database.AccountRepository
 import com.vinsonb.password.manager.kotlin.database.enitities.Account
 import com.vinsonb.password.manager.kotlin.di.CoroutineDispatchers
+import com.vinsonb.password.manager.kotlin.extensions.stateIn
 import com.vinsonb.password.manager.kotlin.utilities.Constants
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -37,7 +41,8 @@ class ViewAccountViewModel(
         _stateFlow,
     ) { accounts, state ->
         state.copy(accounts = accounts.filterByPlatformOrUsername(state.searchQuery))
-    }.stateIn(scope, SharingStarted.WhileSubscribed(5000L), ViewAccountState())
+    }
+        .stateIn(scope = scope, initialValue = ViewAccountState())
 
     fun onSearch(query: String) {
         _stateFlow.update { it.copy(searchQuery = query) }

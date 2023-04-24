@@ -2,10 +2,12 @@ package com.vinsonb.password.manager.kotlin.ui.features.login
 
 import androidx.lifecycle.ViewModel
 import com.vinsonb.password.manager.kotlin.di.CoroutineDispatchers
+import com.vinsonb.password.manager.kotlin.extensions.stateIn
 import com.vinsonb.password.manager.kotlin.ui.features.login.LoginState.Companion.MAX_PASSCODE_DIGITS
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.update
 import javax.inject.Inject
 
 @HiltViewModel
@@ -22,12 +24,7 @@ class LoginViewModel(
 
     private val passcodeDigitsEntered = ArrayDeque<Int>()
     private val _stateFlow = MutableStateFlow(LoginState())
-    val stateFlow = _stateFlow.asStateFlow()
-        .stateIn(
-            scope = scope,
-            started = SharingStarted.WhileSubscribed(5000),
-            initialValue = LoginState(),
-        )
+    val stateFlow = _stateFlow.stateIn(scope = scope, initialValue = LoginState())
 
     fun onEnterPasscodeDigit(digit: Int) {
         if (passcodeDigitsEntered.size < MAX_PASSCODE_DIGITS) {
