@@ -1,4 +1,4 @@
-package com.vinsonb.password.manager.kotlin.ui.features
+package com.vinsonb.password.manager.kotlin.ui.features.forgotpasscode
 
 import app.cash.turbine.test
 import com.vinsonb.password.manager.kotlin.runCancellingTest

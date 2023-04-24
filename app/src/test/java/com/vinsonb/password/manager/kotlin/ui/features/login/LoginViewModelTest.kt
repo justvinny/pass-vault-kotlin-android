@@ -30,7 +30,7 @@ class LoginViewModelTest {
         ]
     )
     @TestCaseName("GIVEN {0} number of digits entered WHEN onEnterPasscodeDigit invoked THEN expect {1} as passcode and {2} as passcodeLength")
-    fun `onEnterPasscodeDigit parameterized test`(
+    fun `onEnterPasscodeDigit parameterised test`(
         digitsEntered: Int,
         expectedPasscode: String,
         expectedPasscodeLength: Int,
@@ -67,7 +67,7 @@ class LoginViewModelTest {
         ]
     )
     @TestCaseName("GIVEN {0} number of digits entered WHEN onClearLastDigit invoked THEN expect {1} as passcodeLength and {2} as passcode")
-    fun `onClearLastDigit parameterized test`(
+    fun `onClearLastDigit parameterised test`(
         digitsEntered: Int,
         expectedPasscodeLength: Int,
         expectedPasscode: String = "",
@@ -104,7 +104,7 @@ class LoginViewModelTest {
         ]
     )
     @TestCaseName("GIVEN {0} number of digits entered WHEN onClearAllDigits invoked THEN expect {1} as passcodeLength and passcode must be empty")
-    fun `onClearALlDigits parameterized test`(
+    fun `onClearALlDigits parameterised test`(
         digitsEntered: Int,
         expectedPasscodeLength: Int,
     ) = runCancellingTest {

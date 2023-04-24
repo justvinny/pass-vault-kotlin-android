@@ -1,4 +1,4 @@
-package com.vinsonb.password.manager.kotlin
+package com.vinsonb.password.manager.kotlin.utilities
 
 import com.vinsonb.password.manager.kotlin.utilities.PasswordGenerator
 import com.vinsonb.password.manager.kotlin.utilities.PasswordGenerator.DEFAULT_LENGTH

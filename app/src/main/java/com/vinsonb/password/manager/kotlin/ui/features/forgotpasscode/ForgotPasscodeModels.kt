@@ -3,6 +3,7 @@ package com.vinsonb.password.manager.kotlin.ui.features.forgotpasscode
 import com.vinsonb.password.manager.kotlin.R
 import com.vinsonb.password.manager.kotlin.ui.features.forgotpasscode.ForgotPasscodeErrors.EmptyInputError
 import com.vinsonb.password.manager.kotlin.utilities.TextResIdProvider
+import com.vinsonb.password.manager.kotlin.utilities.textResIdEmptyInputProvider
 import com.vinsonb.password.manager.kotlin.utilities.textResIdProvider
 
 sealed interface ForgotPasscodeState {
@@ -27,5 +28,5 @@ sealed interface ForgotPasscodeErrors {
         TextResIdProvider by textResIdProvider(R.string.error_passcode_length)
 
     object EmptyInputError : ForgotPasscodeErrors,
-        TextResIdProvider by textResIdProvider(R.string.error_text_empty)
+        TextResIdProvider by textResIdEmptyInputProvider()
 }
