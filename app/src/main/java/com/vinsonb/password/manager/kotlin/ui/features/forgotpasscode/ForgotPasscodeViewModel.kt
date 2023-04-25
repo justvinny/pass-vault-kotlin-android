@@ -3,6 +3,7 @@ package com.vinsonb.password.manager.kotlin.ui.features.forgotpasscode
 import androidx.lifecycle.ViewModel
 import com.vinsonb.password.manager.kotlin.di.CoroutineDispatchers
 import com.vinsonb.password.manager.kotlin.extensions.stateIn
+import com.vinsonb.password.manager.kotlin.ui.features.createlogin.CreateLoginViewModel
 import com.vinsonb.password.manager.kotlin.utilities.Constants.Password.PASSCODE_MAX_LENGTH
 import com.vinsonb.password.manager.kotlin.utilities.Constants.Password.PASSCODE_REGEX_PATTERN
 import com.vinsonb.password.manager.kotlin.utilities.EventFlow
@@ -12,6 +13,9 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
 
+/**
+ * TODO: Can be refactored. Shares a lot of similarities with [CreateLoginViewModel].
+ */
 class ForgotPasscodeViewModel(
     private val scope: CoroutineScope,
     private val savedSecretAnswer: String,

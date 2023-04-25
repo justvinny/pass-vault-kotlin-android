@@ -16,8 +16,6 @@ import com.vinsonb.password.manager.kotlin.utilities.withComposeView
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
-private const val TAG = "SaveAccountFragment"
-
 @AndroidEntryPoint
 class SaveAccountFragment : Fragment() {
     private val viewModel: SaveAccountViewModel by viewModels()

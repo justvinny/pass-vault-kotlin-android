@@ -9,7 +9,7 @@ import com.vinsonb.password.manager.kotlin.utilities.textResIdProvider
 sealed interface ForgotPasscodeState {
     object Hidden : ForgotPasscodeState
 
-    data class Visible(
+    data class Visible( // TODO change to Error only
         val secretAnswerErrorState: ForgotPasscodeErrors = EmptyInputError,
         val passcodeErrorState: ForgotPasscodeErrors = EmptyInputError,
         val repeatPasscodeErrorState: ForgotPasscodeErrors = EmptyInputError,
