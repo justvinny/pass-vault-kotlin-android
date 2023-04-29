@@ -7,10 +7,10 @@ import com.vinsonb.password.manager.kotlin.utilities.textResIdEmptyInputProvider
 import com.vinsonb.password.manager.kotlin.utilities.textResIdProvider
 
 data class CreateLoginState(
-    val passcode: CreateLoginError = EmptyInputError,
-    val repeatPasscode: CreateLoginError = EmptyInputError,
-    val secretQuestion: CreateLoginError = EmptyInputError,
-    val secretAnswer: CreateLoginError = EmptyInputError,
+    val passcodeError: CreateLoginError = EmptyInputError,
+    val repeatPasscodeError: CreateLoginError = EmptyInputError,
+    val secretQuestionError: CreateLoginError = EmptyInputError,
+    val secretAnswerError: CreateLoginError = EmptyInputError,
 )
 
 sealed interface CreateLoginError {

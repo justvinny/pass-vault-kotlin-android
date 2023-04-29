@@ -29,7 +29,7 @@ class CreateLoginViewModel(
             passcode.length != PASSCODE_MAX_LENGTH -> CreateLoginError.InvalidDigitsError
             else -> CreateLoginError.None
         }
-        _stateFlow.update { it.copy(passcode = error) }
+        _stateFlow.update { it.copy(passcodeError = error) }
         validateRepeatPasscode(passcode, repeatPasscode)
     }
 
@@ -40,7 +40,7 @@ class CreateLoginViewModel(
             passcode != repeatPasscode -> CreateLoginError.PasscodeMismatchError
             else -> CreateLoginError.None
         }
-        _stateFlow.update { it.copy(repeatPasscode = error) }
+        _stateFlow.update { it.copy(repeatPasscodeError = error) }
     }
 
     fun validateSecretQuestion(secretQuestion: String) {
@@ -49,7 +49,7 @@ class CreateLoginViewModel(
         } else {
             CreateLoginError.None
         }
-        _stateFlow.update { it.copy(secretQuestion = error) }
+        _stateFlow.update { it.copy(secretQuestionError = error) }
     }
 
     fun validateSecretAnswer(secretAnswer: String) {
@@ -58,7 +58,7 @@ class CreateLoginViewModel(
         } else {
             CreateLoginError.None
         }
-        _stateFlow.update { it.copy(secretAnswer = error) }
+        _stateFlow.update { it.copy(secretAnswerError = error) }
     }
 
     fun isValidPasscodeInput(passcode: String): Boolean {

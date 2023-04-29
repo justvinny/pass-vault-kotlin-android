@@ -20,9 +20,9 @@ class ForgotPasscodeViewModelTest {
 
     /**
      * Test Cases:
-     *  1. Test for [ForgotPasscodeErrors.EmptyInputError]
-     *  2. Test for [ForgotPasscodeErrors.SecretAnswerMismatchError]
-     *  3. Test for [ForgotPasscodeErrors.None]
+     *  1. Test for [ForgotPasscodeError.EmptyInputError]
+     *  2. Test for [ForgotPasscodeError.SecretAnswerMismatchError]
+     *  3. Test for [ForgotPasscodeError.None]
      *
      *  Method source: [provideArgsValidateSecretAnswer]
      */
@@ -33,7 +33,7 @@ class ForgotPasscodeViewModelTest {
     @TestCaseName("GIVEN {0} as secret answer WHEN validateSecretAnswer invoked THEN expect {1} as expected error state")
     fun `validateSecretAnswer parameterised test`(
         secretAnswer: String,
-        expectedError: ForgotPasscodeErrors,
+        expectedError: ForgotPasscodeError,
     ) = runCancellingTest {
         // Arrange
         val viewModel = provideViewModel()
@@ -44,17 +44,17 @@ class ForgotPasscodeViewModelTest {
 
         // Assert
         viewModel.stateFlow.test {
-            val actualError = (awaitItem() as ForgotPasscodeState.Visible).secretAnswerErrorState
+            val actualError = (awaitItem() as ForgotPasscodeState.Visible).secretAnswerError
             assertEquals(expectedError, actualError)
         }
     }
 
     /**
      * Test Cases:
-     *  1. Test for [ForgotPasscodeErrors.EmptyInputError]
-     *  2. Test for [ForgotPasscodeErrors.InvalidDigitsError] when < [PASSCODE_MAX_LENGTH]
-     *  3. Test for [ForgotPasscodeErrors.InvalidDigitsError] when > [PASSCODE_MAX_LENGTH]
-     *  4. Test for [ForgotPasscodeErrors.None]
+     *  1. Test for [ForgotPasscodeError.EmptyInputError]
+     *  2. Test for [ForgotPasscodeError.InvalidDigitsError] when < [PASSCODE_MAX_LENGTH]
+     *  3. Test for [ForgotPasscodeError.InvalidDigitsError] when > [PASSCODE_MAX_LENGTH]
+     *  4. Test for [ForgotPasscodeError.None]
      *
      *  Method source: [provideArgsValidatePasscode]
      */
@@ -66,7 +66,7 @@ class ForgotPasscodeViewModelTest {
     fun `validatePasscode parameterised test`(
         passcode: String,
         repeatPasscode: String,
-        expectedError: ForgotPasscodeErrors,
+        expectedError: ForgotPasscodeError,
     ) = runCancellingTest {
         // Arrange
         val viewModel = provideViewModel()
@@ -77,18 +77,18 @@ class ForgotPasscodeViewModelTest {
 
         // Assert
         viewModel.stateFlow.test {
-            val actualError = (awaitItem() as ForgotPasscodeState.Visible).passcodeErrorState
+            val actualError = (awaitItem() as ForgotPasscodeState.Visible).passcodeError
             assertEquals(expectedError, actualError)
         }
     }
 
     /**
      * Test Cases:
-     *  1. Test for [ForgotPasscodeErrors.EmptyInputError]
-     *  2. Test for [ForgotPasscodeErrors.InvalidDigitsError] when < [PASSCODE_MAX_LENGTH]
-     *  3. Test for [ForgotPasscodeErrors.InvalidDigitsError] when > [PASSCODE_MAX_LENGTH]
-     *  4. Test for [ForgotPasscodeErrors.PasscodeMismatchError]
-     *  5. Test for [ForgotPasscodeErrors.None]
+     *  1. Test for [ForgotPasscodeError.EmptyInputError]
+     *  2. Test for [ForgotPasscodeError.InvalidDigitsError] when < [PASSCODE_MAX_LENGTH]
+     *  3. Test for [ForgotPasscodeError.InvalidDigitsError] when > [PASSCODE_MAX_LENGTH]
+     *  4. Test for [ForgotPasscodeError.PasscodeMismatchError]
+     *  5. Test for [ForgotPasscodeError.None]
      *
      *  Method source: [provideArgsValidateRepeatPasscode]
      */
@@ -100,7 +100,7 @@ class ForgotPasscodeViewModelTest {
     fun `validateRepeatPasscode parameterised test`(
         passcode: String,
         repeatPasscode: String,
-        expectedError: ForgotPasscodeErrors,
+        expectedError: ForgotPasscodeError,
     ) = runCancellingTest {
         // Arrange
         val viewModel = provideViewModel()
@@ -111,7 +111,7 @@ class ForgotPasscodeViewModelTest {
 
         // Assert
         viewModel.stateFlow.test {
-            val actualError = (awaitItem() as ForgotPasscodeState.Visible).repeatPasscodeErrorState
+            val actualError = (awaitItem() as ForgotPasscodeState.Visible).repeatPasscodeError
             assertEquals(expectedError, actualError)
         }
     }
@@ -229,23 +229,23 @@ class ForgotPasscodeViewModelTest {
     )
 
     private fun provideArgsValidateSecretAnswer() = arrayOf(
-        arrayOf("", ForgotPasscodeErrors.EmptyInputError),
-        arrayOf("wrong", ForgotPasscodeErrors.SecretAnswerMismatchError),
-        arrayOf("secret", ForgotPasscodeErrors.None),
+        arrayOf("", ForgotPasscodeError.EmptyInputError),
+        arrayOf("wrong", ForgotPasscodeError.SecretAnswerMismatchError),
+        arrayOf("secret", ForgotPasscodeError.None),
     )
 
     private fun provideArgsValidatePasscode() = arrayOf(
-        arrayOf("", "", ForgotPasscodeErrors.EmptyInputError),
-        arrayOf("123", "", ForgotPasscodeErrors.InvalidDigitsError),
-        arrayOf("123456", "", ForgotPasscodeErrors.InvalidDigitsError),
-        arrayOf("12345", "12345", ForgotPasscodeErrors.None),
+        arrayOf("", "", ForgotPasscodeError.EmptyInputError),
+        arrayOf("123", "", ForgotPasscodeError.InvalidDigitsError),
+        arrayOf("123456", "", ForgotPasscodeError.InvalidDigitsError),
+        arrayOf("12345", "12345", ForgotPasscodeError.None),
     )
 
     private fun provideArgsValidateRepeatPasscode() = arrayOf(
-        arrayOf("", "", ForgotPasscodeErrors.EmptyInputError),
-        arrayOf("", "123", ForgotPasscodeErrors.InvalidDigitsError),
-        arrayOf("", "123456", ForgotPasscodeErrors.InvalidDigitsError),
-        arrayOf("12345", "12346", ForgotPasscodeErrors.PasscodeMismatchError),
-        arrayOf("12345", "12345", ForgotPasscodeErrors.None),
+        arrayOf("", "", ForgotPasscodeError.EmptyInputError),
+        arrayOf("", "123", ForgotPasscodeError.InvalidDigitsError),
+        arrayOf("", "123456", ForgotPasscodeError.InvalidDigitsError),
+        arrayOf("12345", "12346", ForgotPasscodeError.PasscodeMismatchError),
+        arrayOf("12345", "12345", ForgotPasscodeError.None),
     )
 }

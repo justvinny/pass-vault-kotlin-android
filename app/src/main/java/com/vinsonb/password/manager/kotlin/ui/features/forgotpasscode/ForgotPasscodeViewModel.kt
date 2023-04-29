@@ -38,12 +38,12 @@ class ForgotPasscodeViewModel(
     fun validateSecretAnswer(secretAnswer: String) {
         if (_stateFlow.value is ForgotPasscodeState.Visible) {
             val errorState = when {
-                secretAnswer.isBlank() -> ForgotPasscodeErrors.EmptyInputError
-                secretAnswer != savedSecretAnswer -> ForgotPasscodeErrors.SecretAnswerMismatchError
-                else -> ForgotPasscodeErrors.None
+                secretAnswer.isBlank() -> ForgotPasscodeError.EmptyInputError
+                secretAnswer != savedSecretAnswer -> ForgotPasscodeError.SecretAnswerMismatchError
+                else -> ForgotPasscodeError.None
             }
             _stateFlow.update {
-                (it as ForgotPasscodeState.Visible).copy(secretAnswerErrorState = errorState)
+                (it as ForgotPasscodeState.Visible).copy(secretAnswerError = errorState)
             }
         }
     }
@@ -51,13 +51,13 @@ class ForgotPasscodeViewModel(
     fun validatePasscode(passcode: String, repeatPasscode: String) {
         if (_stateFlow.value is ForgotPasscodeState.Visible) {
             val errorState = when {
-                passcode.isBlank() -> ForgotPasscodeErrors.EmptyInputError
+                passcode.isBlank() -> ForgotPasscodeError.EmptyInputError
                 passcode.length != PASSCODE_MAX_LENGTH ->
-                    ForgotPasscodeErrors.InvalidDigitsError
-                else -> ForgotPasscodeErrors.None
+                    ForgotPasscodeError.InvalidDigitsError
+                else -> ForgotPasscodeError.None
             }
             _stateFlow.update {
-                (it as ForgotPasscodeState.Visible).copy(passcodeErrorState = errorState)
+                (it as ForgotPasscodeState.Visible).copy(passcodeError = errorState)
             }
             validateRepeatPasscode(passcode, repeatPasscode)
         }
@@ -66,14 +66,14 @@ class ForgotPasscodeViewModel(
     fun validateRepeatPasscode(passcode: String, repeatPasscode: String) {
         if (_stateFlow.value is ForgotPasscodeState.Visible) {
             val errorState = when {
-                repeatPasscode.isBlank() -> ForgotPasscodeErrors.EmptyInputError
+                repeatPasscode.isBlank() -> ForgotPasscodeError.EmptyInputError
                 repeatPasscode.length != PASSCODE_MAX_LENGTH ->
-                    ForgotPasscodeErrors.InvalidDigitsError
-                passcode != repeatPasscode -> ForgotPasscodeErrors.PasscodeMismatchError
-                else -> ForgotPasscodeErrors.None
+                    ForgotPasscodeError.InvalidDigitsError
+                passcode != repeatPasscode -> ForgotPasscodeError.PasscodeMismatchError
+                else -> ForgotPasscodeError.None
             }
             _stateFlow.update {
-                (it as ForgotPasscodeState.Visible).copy(repeatPasscodeErrorState = errorState)
+                (it as ForgotPasscodeState.Visible).copy(repeatPasscodeError = errorState)
             }
         }
     }

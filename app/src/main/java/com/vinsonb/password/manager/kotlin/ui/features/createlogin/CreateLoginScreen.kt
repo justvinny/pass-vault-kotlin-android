@@ -64,8 +64,8 @@ private fun CreateLoginContent(
                 }
             },
             label = stringResource(id = R.string.hint_passcode),
-            isError = state.passcode != CreateLoginError.None,
-            errorText = state.passcode.getErrorText(labelRes = R.string.hint_passcode),
+            isError = state.passcodeError != CreateLoginError.None,
+            errorText = state.passcodeError.getErrorText(labelRes = R.string.hint_passcode),
             keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
         )
 
@@ -78,8 +78,8 @@ private fun CreateLoginContent(
                 }
             },
             label = stringResource(id = R.string.hint_repeat_passcode),
-            isError = state.repeatPasscode != CreateLoginError.None,
-            errorText = state.repeatPasscode.getErrorText(labelRes = R.string.hint_repeat_passcode),
+            isError = state.repeatPasscodeError != CreateLoginError.None,
+            errorText = state.repeatPasscodeError.getErrorText(labelRes = R.string.hint_repeat_passcode),
             keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
         )
 
@@ -91,8 +91,8 @@ private fun CreateLoginContent(
                 validateSecretQuestion(it)
             },
             label = stringResource(id = R.string.hint_secret_question),
-            isError = state.secretQuestion != CreateLoginError.None,
-            errorText = state.secretQuestion.getErrorText(labelRes = R.string.hint_secret_question),
+            isError = state.secretQuestionError != CreateLoginError.None,
+            errorText = state.secretQuestionError.getErrorText(labelRes = R.string.hint_secret_question),
             keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
         )
 
@@ -104,8 +104,8 @@ private fun CreateLoginContent(
                 validateSecretAnswer(it)
             },
             label = stringResource(id = R.string.hint_secret_answer),
-            isError = state.secretAnswer != CreateLoginError.None,
-            errorText = state.secretAnswer.getErrorText(labelRes = R.string.hint_secret_answer),
+            isError = state.secretAnswerError != CreateLoginError.None,
+            errorText = state.secretAnswerError.getErrorText(labelRes = R.string.hint_secret_answer),
             keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
         )
 
@@ -132,10 +132,10 @@ fun CreateLoginError.getErrorText(@StringRes labelRes: Int) =
 
 @ReadOnlyComposable
 @Composable
-fun CreateLoginState.hasNoErrors() = this.passcode == CreateLoginError.None
-        && this.repeatPasscode == CreateLoginError.None
-        && this.secretQuestion == CreateLoginError.None
-        && this.secretAnswer == CreateLoginError.None
+fun CreateLoginState.hasNoErrors() = this.passcodeError == CreateLoginError.None
+        && this.repeatPasscodeError == CreateLoginError.None
+        && this.secretQuestionError == CreateLoginError.None
+        && this.secretAnswerError == CreateLoginError.None
 
 @ScreenPreviews
 @Composable
@@ -156,10 +156,10 @@ fun PreviewCreateLogin() = PassVaultTheme {
 fun PreviewCreateLoginNoErrors() = PassVaultTheme {
     CreateLoginContent(
         state = CreateLoginState(
-            passcode = CreateLoginError.None,
-            repeatPasscode = CreateLoginError.None,
-            secretQuestion = CreateLoginError.None,
-            secretAnswer = CreateLoginError.None,
+            passcodeError = CreateLoginError.None,
+            repeatPasscodeError = CreateLoginError.None,
+            secretQuestionError = CreateLoginError.None,
+            secretAnswerError = CreateLoginError.None,
         ),
         validatePasscode = { _, _ -> },
         validateRepeatPasscode = { _, _ -> },
