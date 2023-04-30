@@ -5,7 +5,6 @@ import com.vinsonb.password.manager.kotlin.di.CoroutineDispatchers
 import com.vinsonb.password.manager.kotlin.extensions.stateIn
 import com.vinsonb.password.manager.kotlin.ui.features.createlogin.CreateLoginViewModel
 import com.vinsonb.password.manager.kotlin.utilities.Constants.Password.PASSCODE_MAX_LENGTH
-import com.vinsonb.password.manager.kotlin.utilities.Constants.Password.PASSCODE_REGEX_PATTERN
 import com.vinsonb.password.manager.kotlin.utilities.EventFlow
 import com.vinsonb.password.manager.kotlin.utilities.SimpleToastEvent
 import com.vinsonb.password.manager.kotlin.utilities.simpleToastEventFlow
@@ -76,10 +75,6 @@ class ForgotPasscodeViewModel(
                 (it as ForgotPasscodeState.Visible).copy(repeatPasscodeError = errorState)
             }
         }
-    }
-
-    fun isValidPasscodeInput(passcode: String): Boolean {
-        return passcode.matches(Regex(PASSCODE_REGEX_PATTERN))
     }
 
     fun resetPasscode(passcode: String) {

@@ -4,6 +4,7 @@ import app.cash.turbine.test
 import com.vinsonb.password.manager.kotlin.runCancellingTest
 import com.vinsonb.password.manager.kotlin.utilities.Constants.Password.PASSCODE_MAX_LENGTH
 import com.vinsonb.password.manager.kotlin.utilities.SimpleToastEvent
+import com.vinsonb.password.manager.kotlin.utilities.isValidPasscodeInput
 import junitparams.JUnitParamsRunner
 import junitparams.Parameters
 import junitparams.naming.TestCaseName
@@ -178,7 +179,7 @@ class ForgotPasscodeViewModelTest {
         val viewModel = provideViewModel()
 
         // Act
-        val result = viewModel.isValidPasscodeInput(passcode)
+        val result = isValidPasscodeInput(passcode)
 
         // Assert
         assertEquals(expected, result)

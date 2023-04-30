@@ -18,6 +18,7 @@ import com.vinsonb.password.manager.kotlin.ui.components.CustomTextField
 import com.vinsonb.password.manager.kotlin.ui.theme.PassVaultTheme
 import com.vinsonb.password.manager.kotlin.utilities.ScreenPreviews
 import com.vinsonb.password.manager.kotlin.utilities.TextResIdProvider
+import com.vinsonb.password.manager.kotlin.utilities.isValidPasscodeInput
 
 @Composable
 fun CreateLoginScreen(viewModel: CreateLoginViewModel) {
@@ -29,7 +30,6 @@ fun CreateLoginScreen(viewModel: CreateLoginViewModel) {
         validateRepeatPasscode = viewModel::validateRepeatPasscode,
         validateSecretQuestion = viewModel::validateSecretQuestion,
         validateSecretAnswer = viewModel::validateSecretAnswer,
-        isValidPasscodeInput = viewModel::isValidPasscodeInput,
         createLogin = viewModel::createLogin,
     )
 }
@@ -41,7 +41,6 @@ private fun CreateLoginContent(
     validateRepeatPasscode: (String, String) -> Unit,
     validateSecretQuestion: (String) -> Unit,
     validateSecretAnswer: (String) -> Unit,
-    isValidPasscodeInput: (String) -> Boolean,
     createLogin: (String, String, String) -> Unit,
 ) {
     Column(
@@ -146,7 +145,6 @@ fun PreviewCreateLogin() = PassVaultTheme {
         validateRepeatPasscode = { _, _ -> },
         validateSecretQuestion = {},
         validateSecretAnswer = {},
-        isValidPasscodeInput = { true },
         createLogin = { _, _, _ -> },
     )
 }
@@ -165,7 +163,6 @@ fun PreviewCreateLoginNoErrors() = PassVaultTheme {
         validateRepeatPasscode = { _, _ -> },
         validateSecretQuestion = {},
         validateSecretAnswer = {},
-        isValidPasscodeInput = { true },
         createLogin = { _, _, _ -> },
     )
 }

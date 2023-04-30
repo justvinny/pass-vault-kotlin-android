@@ -19,8 +19,8 @@ import com.vinsonb.password.manager.kotlin.ui.features.forgotpasscode.ForgotPass
 import com.vinsonb.password.manager.kotlin.ui.features.forgotpasscode.ForgotPasscodeState
 import com.vinsonb.password.manager.kotlin.ui.features.forgotpasscode.ForgotPasscodeViewModel
 import com.vinsonb.password.manager.kotlin.ui.features.login.LoginScreen
-import com.vinsonb.password.manager.kotlin.ui.features.login.LoginState.Companion.MAX_PASSCODE_DIGITS
 import com.vinsonb.password.manager.kotlin.ui.features.login.LoginViewModel
+import com.vinsonb.password.manager.kotlin.utilities.Constants.Password.PASSCODE_MAX_LENGTH
 import com.vinsonb.password.manager.kotlin.utilities.Constants.Password.SharedPreferenceKeys.AUTHENTICATED_KEY
 import com.vinsonb.password.manager.kotlin.utilities.Constants.Password.SharedPreferenceKeys.PASSCODE_KEY
 import com.vinsonb.password.manager.kotlin.utilities.Constants.Password.SharedPreferenceKeys.SECRET_ANSWER_KEY
@@ -55,7 +55,7 @@ class LoginFragment : Fragment() {
 
         lifecycleScope.launch {
             loginViewModel.stateFlow.collect { state ->
-                if (state.passcodeLength == MAX_PASSCODE_DIGITS) {
+                if (state.passcodeLength == PASSCODE_MAX_LENGTH) {
                     loginViewModel.onClearAllDigits()
 
                     if (passcodeMatches(state.passcode) && login()) {

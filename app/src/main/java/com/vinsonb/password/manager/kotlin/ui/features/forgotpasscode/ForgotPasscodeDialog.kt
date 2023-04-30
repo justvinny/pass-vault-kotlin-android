@@ -23,6 +23,7 @@ import com.vinsonb.password.manager.kotlin.ui.components.CustomTextField
 import com.vinsonb.password.manager.kotlin.ui.theme.PassVaultTheme
 import com.vinsonb.password.manager.kotlin.utilities.ScreenPreviews
 import com.vinsonb.password.manager.kotlin.utilities.TextResIdProvider
+import com.vinsonb.password.manager.kotlin.utilities.isValidPasscodeInput
 
 @Composable
 fun ForgotPasscodeDialog(
@@ -38,7 +39,6 @@ fun ForgotPasscodeDialog(
             validateSecretAnswer = viewModel::validateSecretAnswer,
             validatePasscode = viewModel::validatePasscode,
             validateRepeatPasscode = viewModel::validateRepeatPasscode,
-            isValidPasscodeInput = viewModel::isValidPasscodeInput,
         )
     }
 }
@@ -51,7 +51,6 @@ private fun ForgotPasscodeContent(
     validateSecretAnswer: (String) -> Unit,
     validatePasscode: (String, String) -> Unit,
     validateRepeatPasscode: (String, String) -> Unit,
-    isValidPasscodeInput: (String) -> Boolean,
 ) {
     Dialog(onDismissRequest = dismissDialog) {
         Card(modifier = Modifier.fillMaxWidth()) {
@@ -161,7 +160,6 @@ fun PreviewForgotPasswordDialogHasErrors() = PassVaultTheme {
         validateSecretAnswer = {},
         validatePasscode = { _, _ -> },
         validateRepeatPasscode = { _, _ -> },
-        isValidPasscodeInput = { true },
     )
 }
 
@@ -179,6 +177,5 @@ fun PreviewForgotPasswordDialogNoErrors() = PassVaultTheme {
         validateSecretAnswer = {},
         validatePasscode = { _, _ -> },
         validateRepeatPasscode = { _, _ -> },
-        isValidPasscodeInput = { true },
     )
 }

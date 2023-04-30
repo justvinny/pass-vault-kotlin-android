@@ -3,7 +3,6 @@ package com.vinsonb.password.manager.kotlin.ui.features.createlogin
 import androidx.lifecycle.ViewModel
 import com.vinsonb.password.manager.kotlin.extensions.stateIn
 import com.vinsonb.password.manager.kotlin.ui.features.forgotpasscode.ForgotPasscodeViewModel
-import com.vinsonb.password.manager.kotlin.utilities.Constants
 import com.vinsonb.password.manager.kotlin.utilities.Constants.Password.PASSCODE_MAX_LENGTH
 import com.vinsonb.password.manager.kotlin.utilities.EventFlow
 import com.vinsonb.password.manager.kotlin.utilities.SimpleToastEvent
@@ -59,10 +58,6 @@ class CreateLoginViewModel(
             CreateLoginError.None
         }
         _stateFlow.update { it.copy(secretAnswerError = error) }
-    }
-
-    fun isValidPasscodeInput(passcode: String): Boolean {
-        return passcode.matches(Regex(Constants.Password.PASSCODE_REGEX_PATTERN))
     }
 
     fun createLogin(passcode: String, secretQuestion: String, secretAnswer: String) {
