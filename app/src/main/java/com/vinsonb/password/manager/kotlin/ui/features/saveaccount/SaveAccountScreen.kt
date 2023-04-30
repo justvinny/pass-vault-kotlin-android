@@ -37,6 +37,7 @@ fun SaveAccountScreen(viewModel: SaveAccountViewModel) {
         validatePassword = viewModel::validatePassword,
         validateRepeatPassword = viewModel::validateRepeatPassword,
         saveAccount = viewModel::saveAccount,
+        resetEvent = viewModel::resetEvent,
     )
 }
 
@@ -49,6 +50,7 @@ private fun SaveAccountContent(
     validatePassword: (String, String) -> Unit,
     validateRepeatPassword: (String, String) -> Unit,
     saveAccount: (Account) -> Unit,
+    resetEvent: () -> Unit,
 ) {
     val platform = rememberSaveable { mutableStateOf("") }
     val username = rememberSaveable { mutableStateOf("") }
@@ -57,6 +59,7 @@ private fun SaveAccountContent(
 
     if (shouldClearAllInput) {
         clearMutableStateStrings(platform, username, password, repeatPassword)
+        resetEvent()
     }
 
     Column(
@@ -166,7 +169,8 @@ private fun PreviewSaveAccountScreen() = PassVaultTheme {
         validateUsername = {},
         validatePassword = { _, _ -> },
         validateRepeatPassword = { _, _ -> },
-        saveAccount = {}
+        saveAccount = {},
+        resetEvent = {},
     )
 }
 
@@ -185,6 +189,7 @@ private fun PreviewSaveAccountScreenNoErrors() = PassVaultTheme {
         validateUsername = {},
         validatePassword = { _, _ -> },
         validateRepeatPassword = { _, _ -> },
-        saveAccount = {}
+        saveAccount = {},
+        resetEvent = {},
     )
 }
