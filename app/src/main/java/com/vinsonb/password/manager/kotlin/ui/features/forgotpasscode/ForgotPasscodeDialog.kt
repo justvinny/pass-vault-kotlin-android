@@ -28,6 +28,7 @@ import com.vinsonb.password.manager.kotlin.utilities.isValidPasscodeInput
 @Composable
 fun ForgotPasscodeDialog(
     viewModel: ForgotPasscodeViewModel,
+    secretQuestion: String,
 ) {
     val state by viewModel.stateFlow.collectAsState()
 
@@ -39,6 +40,7 @@ fun ForgotPasscodeDialog(
             validateSecretAnswer = viewModel::validateSecretAnswer,
             validatePasscode = viewModel::validatePasscode,
             validateRepeatPasscode = viewModel::validateRepeatPasscode,
+            secretQuestion = secretQuestion,
         )
     }
 }
@@ -51,6 +53,7 @@ private fun ForgotPasscodeContent(
     validateSecretAnswer: (String) -> Unit,
     validatePasscode: (String, String) -> Unit,
     validateRepeatPasscode: (String, String) -> Unit,
+    secretQuestion: String,
 ) {
     Dialog(onDismissRequest = dismissDialog) {
         Card(modifier = Modifier.fillMaxWidth()) {
@@ -71,7 +74,7 @@ private fun ForgotPasscodeContent(
                     secretAnswer = it
                     validateSecretAnswer(it)
                 },
-                label = stringResource(id = R.string.hint_secret_question),
+                label = secretQuestion,
                 isError = state.secretAnswerError != ForgotPasscodeError.None,
                 errorText = state.secretAnswerError.getErrorText(R.string.hint_secret_answer),
                 keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
@@ -160,6 +163,7 @@ fun PreviewForgotPasswordDialogHasErrors() = PassVaultTheme {
         validateSecretAnswer = {},
         validatePasscode = { _, _ -> },
         validateRepeatPasscode = { _, _ -> },
+        secretQuestion = "Secret Question",
     )
 }
 
@@ -177,5 +181,6 @@ fun PreviewForgotPasswordDialogNoErrors() = PassVaultTheme {
         validateSecretAnswer = {},
         validatePasscode = { _, _ -> },
         validateRepeatPasscode = { _, _ -> },
+        secretQuestion = "Secret Question",
     )
 }

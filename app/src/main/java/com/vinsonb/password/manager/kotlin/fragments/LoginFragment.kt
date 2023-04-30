@@ -85,7 +85,10 @@ class LoginFragment : Fragment() {
 
             val isDialogShown by forgotPasscodeViewModel.stateFlow.collectAsState()
             if (isDialogShown is ForgotPasscodeState.Visible) {
-                ForgotPasscodeDialog(viewModel = forgotPasscodeViewModel)
+                ForgotPasscodeDialog(
+                    viewModel = forgotPasscodeViewModel,
+                    secretQuestion = getSecretQuestion(),
+                )
             }
         }
     }
@@ -124,4 +127,6 @@ class LoginFragment : Fragment() {
             return commit()
         }
     }
+
+    private fun getSecretQuestion() = sharedPreferences.getString(SECRET_QUESTION_KEY, "") ?: ""
 }
