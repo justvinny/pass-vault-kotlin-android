@@ -1,18 +1,19 @@
-## Description
+### Description
 - Include summary of changes in bullet point format
 - Change 1
 - Change 2
 - and so on
 
-### Trello Ticket
-[Trello Ticket Name](https://trello.com/b/UGu9TQYG/password-manager-kotlin)
-
 ### Type of Change
-- [ ] Bug fix 
+- [ ] Bug fix
+- [ ] Refactor
+- [ ] Added Tests
 - [ ] New feature 
-- [ ] Breaking change 
+- [ ] Breaking change
 
-## Checklist
+Note: Feel free to add / remove choices above.
+
+### Checklist
 - [ ] My code follows the style guidelines of this project
 - [ ] I have performed a self-review of my own code
 - [ ] I have commented my code, particularly in hard-to-understand areas
