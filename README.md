@@ -28,7 +28,7 @@ My main goal is to release an MVP to the PlayStore once everything in [In-Progre
 
 ### In-progress
 - Adding non-intrusive ads. Big focus on **non-intrusive** as I hate all the annoying ads that plague freemium mobile applications with a passion.
-- Migrate all screens to Compose (7 of 9 currently migrated).
+- Migrate all screens to Compose (8 of 9 currently migrated).
 - Allow username editing
 
 ### Features that I might add in the future (No timeline)

@@ -23,10 +23,12 @@ import com.vinsonb.password.manager.kotlin.ui.components.CustomTextField
 import com.vinsonb.password.manager.kotlin.ui.theme.PassVaultTheme
 import com.vinsonb.password.manager.kotlin.utilities.ScreenPreviews
 import com.vinsonb.password.manager.kotlin.utilities.TextResIdProvider
+import com.vinsonb.password.manager.kotlin.utilities.isValidPasscodeInput
 
 @Composable
 fun ForgotPasscodeDialog(
     viewModel: ForgotPasscodeViewModel,
+    secretQuestion: String,
 ) {
     val state by viewModel.stateFlow.collectAsState()
 
@@ -38,7 +40,7 @@ fun ForgotPasscodeDialog(
             validateSecretAnswer = viewModel::validateSecretAnswer,
             validatePasscode = viewModel::validatePasscode,
             validateRepeatPasscode = viewModel::validateRepeatPasscode,
-            isValidPasscodeInput = viewModel::isValidPasscodeInput,
+            secretQuestion = secretQuestion,
         )
     }
 }
@@ -51,7 +53,7 @@ private fun ForgotPasscodeContent(
     validateSecretAnswer: (String) -> Unit,
     validatePasscode: (String, String) -> Unit,
     validateRepeatPasscode: (String, String) -> Unit,
-    isValidPasscodeInput: (String) -> Boolean,
+    secretQuestion: String,
 ) {
     Dialog(onDismissRequest = dismissDialog) {
         Card(modifier = Modifier.fillMaxWidth()) {
@@ -72,9 +74,9 @@ private fun ForgotPasscodeContent(
                     secretAnswer = it
                     validateSecretAnswer(it)
                 },
-                label = stringResource(id = R.string.hint_secret_question),
-                isError = state.secretAnswerErrorState != ForgotPasscodeErrors.None,
-                errorText = state.secretAnswerErrorState.getErrorText(R.string.hint_secret_answer),
+                label = secretQuestion,
+                isError = state.secretAnswerError != ForgotPasscodeError.None,
+                errorText = state.secretAnswerError.getErrorText(R.string.hint_secret_answer),
                 keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
             )
 
@@ -90,8 +92,8 @@ private fun ForgotPasscodeContent(
                     }
                 },
                 label = stringResource(id = R.string.hint_new_passcode),
-                isError = state.passcodeErrorState != ForgotPasscodeErrors.None,
-                errorText = state.passcodeErrorState.getErrorText(R.string.hint_passcode),
+                isError = state.passcodeError != ForgotPasscodeError.None,
+                errorText = state.passcodeError.getErrorText(R.string.hint_passcode),
                 keyboardOptions = KeyboardOptions(
                     keyboardType = KeyboardType.Number,
                     imeAction = ImeAction.Next,
@@ -107,8 +109,8 @@ private fun ForgotPasscodeContent(
                     }
                 },
                 label = stringResource(id = R.string.hint_new_repeat_passcode),
-                isError = state.repeatPasscodeErrorState != ForgotPasscodeErrors.None,
-                errorText = state.repeatPasscodeErrorState.getErrorText(R.string.hint_new_passcode),
+                isError = state.repeatPasscodeError != ForgotPasscodeError.None,
+                errorText = state.repeatPasscodeError.getErrorText(R.string.hint_new_passcode),
                 keyboardOptions = KeyboardOptions(
                     keyboardType = KeyboardType.Number,
                     imeAction = ImeAction.Done,
@@ -137,14 +139,14 @@ private fun ForgotPasscodeContent(
 @ReadOnlyComposable
 @Composable
 private fun ForgotPasscodeState.Visible.hasNoErrors() = (
-        this.secretAnswerErrorState == ForgotPasscodeErrors.None
-                && this.passcodeErrorState == ForgotPasscodeErrors.None
-                && this.repeatPasscodeErrorState == ForgotPasscodeErrors.None
+        this.secretAnswerError == ForgotPasscodeError.None
+                && this.passcodeError == ForgotPasscodeError.None
+                && this.repeatPasscodeError == ForgotPasscodeError.None
         )
 
 @ReadOnlyComposable
 @Composable
-private fun ForgotPasscodeErrors.getErrorText(@StringRes labelRes: Int) =
+private fun ForgotPasscodeError.getErrorText(@StringRes labelRes: Int) =
     if (this is TextResIdProvider) {
         stringResource(id = this.getTextResId(), stringResource(id = labelRes))
     } else {
@@ -161,7 +163,7 @@ fun PreviewForgotPasswordDialogHasErrors() = PassVaultTheme {
         validateSecretAnswer = {},
         validatePasscode = { _, _ -> },
         validateRepeatPasscode = { _, _ -> },
-        isValidPasscodeInput = { true },
+        secretQuestion = "Secret Question",
     )
 }
 
@@ -170,15 +172,15 @@ fun PreviewForgotPasswordDialogHasErrors() = PassVaultTheme {
 fun PreviewForgotPasswordDialogNoErrors() = PassVaultTheme {
     ForgotPasscodeContent(
         state = ForgotPasscodeState.Visible(
-            secretAnswerErrorState = ForgotPasscodeErrors.None,
-            passcodeErrorState = ForgotPasscodeErrors.None,
-            repeatPasscodeErrorState = ForgotPasscodeErrors.None,
+            secretAnswerError = ForgotPasscodeError.None,
+            passcodeError = ForgotPasscodeError.None,
+            repeatPasscodeError = ForgotPasscodeError.None,
         ),
         dismissDialog = {},
         resetPasscode = {},
         validateSecretAnswer = {},
         validatePasscode = { _, _ -> },
         validateRepeatPasscode = { _, _ -> },
-        isValidPasscodeInput = { true },
+        secretQuestion = "Secret Question",
     )
 }

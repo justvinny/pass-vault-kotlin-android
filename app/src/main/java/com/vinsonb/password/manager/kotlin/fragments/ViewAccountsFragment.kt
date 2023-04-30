@@ -11,8 +11,6 @@ import com.vinsonb.password.manager.kotlin.ui.features.viewaccount.ViewAccountVi
 import com.vinsonb.password.manager.kotlin.utilities.withComposeView
 import dagger.hilt.android.AndroidEntryPoint
 
-private const val TAG = "ViewAccountsFragment"
-
 @AndroidEntryPoint
 class ViewAccountsFragment : Fragment() {
     private val viewModel: ViewAccountViewModel by viewModels()

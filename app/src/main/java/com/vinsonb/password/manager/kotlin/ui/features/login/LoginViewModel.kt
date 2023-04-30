@@ -3,7 +3,7 @@ package com.vinsonb.password.manager.kotlin.ui.features.login
 import androidx.lifecycle.ViewModel
 import com.vinsonb.password.manager.kotlin.di.CoroutineDispatchers
 import com.vinsonb.password.manager.kotlin.extensions.stateIn
-import com.vinsonb.password.manager.kotlin.ui.features.login.LoginState.Companion.MAX_PASSCODE_DIGITS
+import com.vinsonb.password.manager.kotlin.utilities.Constants.Password.PASSCODE_MAX_LENGTH
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -27,7 +27,7 @@ class LoginViewModel(
     val stateFlow = _stateFlow.stateIn(scope = scope, initialValue = LoginState())
 
     fun onEnterPasscodeDigit(digit: Int) {
-        if (passcodeDigitsEntered.size < MAX_PASSCODE_DIGITS) {
+        if (passcodeDigitsEntered.size < PASSCODE_MAX_LENGTH) {
             passcodeDigitsEntered.addLast(digit)
             _stateFlow.update {
                 it.copy(

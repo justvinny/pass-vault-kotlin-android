@@ -25,8 +25,8 @@ import com.vinsonb.password.manager.kotlin.ui.features.login.LoginState.Companio
 import com.vinsonb.password.manager.kotlin.ui.features.login.LoginState.Companion.BUTTON_GROUP_ROW_N_ITEMS
 import com.vinsonb.password.manager.kotlin.ui.features.login.LoginState.Companion.BUTTON_GROUP_ROW_N_ITEMS_LAST_INDEX
 import com.vinsonb.password.manager.kotlin.ui.features.login.LoginState.Companion.BUTTON_LABEL_LIST
-import com.vinsonb.password.manager.kotlin.ui.features.login.LoginState.Companion.MAX_PASSCODE_DIGITS
 import com.vinsonb.password.manager.kotlin.ui.theme.PassVaultTheme
+import com.vinsonb.password.manager.kotlin.utilities.Constants.Password.PASSCODE_MAX_LENGTH
 import com.vinsonb.password.manager.kotlin.utilities.ScreenPreviews
 
 @Composable
@@ -63,7 +63,7 @@ private fun PasscodeCircleGroup(loginState: LoginState) {
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.Center,
     ) {
-        repeat(MAX_PASSCODE_DIGITS) { index ->
+        repeat(PASSCODE_MAX_LENGTH) { index ->
             val nonZeroIndex = index + 1
             Icon(
                 modifier = Modifier.padding(vertical = 32.dp, horizontal = 16.dp),

@@ -7,7 +7,6 @@ data class LoginState(
     val passcodeLength: Int = 0,
 ) {
     companion object {
-        const val MAX_PASSCODE_DIGITS = 5
         const val BUTTON_GROUP_ROW_COUNT = 4
         const val BUTTON_GROUP_ROW_N_ITEMS = 3
         const val BUTTON_GROUP_ROW_N_ITEMS_LAST_INDEX = BUTTON_GROUP_ROW_N_ITEMS - 1

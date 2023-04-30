@@ -3,8 +3,8 @@ package com.vinsonb.password.manager.kotlin.ui.features.forgotpasscode
 import androidx.lifecycle.ViewModel
 import com.vinsonb.password.manager.kotlin.di.CoroutineDispatchers
 import com.vinsonb.password.manager.kotlin.extensions.stateIn
+import com.vinsonb.password.manager.kotlin.ui.features.createlogin.CreateLoginViewModel
 import com.vinsonb.password.manager.kotlin.utilities.Constants.Password.PASSCODE_MAX_LENGTH
-import com.vinsonb.password.manager.kotlin.utilities.Constants.Password.PASSCODE_REGEX_PATTERN
 import com.vinsonb.password.manager.kotlin.utilities.EventFlow
 import com.vinsonb.password.manager.kotlin.utilities.SimpleToastEvent
 import com.vinsonb.password.manager.kotlin.utilities.simpleToastEventFlow
@@ -12,6 +12,9 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
 
+/**
+ * TODO: Can be refactored. Shares a lot of similarities with [CreateLoginViewModel].
+ */
 class ForgotPasscodeViewModel(
     private val scope: CoroutineScope,
     private val savedSecretAnswer: String,
@@ -34,12 +37,12 @@ class ForgotPasscodeViewModel(
     fun validateSecretAnswer(secretAnswer: String) {
         if (_stateFlow.value is ForgotPasscodeState.Visible) {
             val errorState = when {
-                secretAnswer.isBlank() -> ForgotPasscodeErrors.EmptyInputError
-                secretAnswer != savedSecretAnswer -> ForgotPasscodeErrors.SecretAnswerMismatchError
-                else -> ForgotPasscodeErrors.None
+                secretAnswer.isBlank() -> ForgotPasscodeError.EmptyInputError
+                secretAnswer != savedSecretAnswer -> ForgotPasscodeError.SecretAnswerMismatchError
+                else -> ForgotPasscodeError.None
             }
             _stateFlow.update {
-                (it as ForgotPasscodeState.Visible).copy(secretAnswerErrorState = errorState)
+                (it as ForgotPasscodeState.Visible).copy(secretAnswerError = errorState)
             }
         }
     }
@@ -47,13 +50,13 @@ class ForgotPasscodeViewModel(
     fun validatePasscode(passcode: String, repeatPasscode: String) {
         if (_stateFlow.value is ForgotPasscodeState.Visible) {
             val errorState = when {
-                passcode.isBlank() -> ForgotPasscodeErrors.EmptyInputError
+                passcode.isBlank() -> ForgotPasscodeError.EmptyInputError
                 passcode.length != PASSCODE_MAX_LENGTH ->
-                    ForgotPasscodeErrors.InvalidDigitsError
-                else -> ForgotPasscodeErrors.None
+                    ForgotPasscodeError.InvalidDigitsError
+                else -> ForgotPasscodeError.None
             }
             _stateFlow.update {
-                (it as ForgotPasscodeState.Visible).copy(passcodeErrorState = errorState)
+                (it as ForgotPasscodeState.Visible).copy(passcodeError = errorState)
             }
             validateRepeatPasscode(passcode, repeatPasscode)
         }
@@ -62,20 +65,16 @@ class ForgotPasscodeViewModel(
     fun validateRepeatPasscode(passcode: String, repeatPasscode: String) {
         if (_stateFlow.value is ForgotPasscodeState.Visible) {
             val errorState = when {
-                repeatPasscode.isBlank() -> ForgotPasscodeErrors.EmptyInputError
+                repeatPasscode.isBlank() -> ForgotPasscodeError.EmptyInputError
                 repeatPasscode.length != PASSCODE_MAX_LENGTH ->
-                    ForgotPasscodeErrors.InvalidDigitsError
-                passcode != repeatPasscode -> ForgotPasscodeErrors.PasscodeMismatchError
-                else -> ForgotPasscodeErrors.None
+                    ForgotPasscodeError.InvalidDigitsError
+                passcode != repeatPasscode -> ForgotPasscodeError.PasscodeMismatchError
+                else -> ForgotPasscodeError.None
             }
             _stateFlow.update {
-                (it as ForgotPasscodeState.Visible).copy(repeatPasscodeErrorState = errorState)
+                (it as ForgotPasscodeState.Visible).copy(repeatPasscodeError = errorState)
             }
         }
-    }
-
-    fun isValidPasscodeInput(passcode: String): Boolean {
-        return passcode.matches(Regex(PASSCODE_REGEX_PATTERN))
     }
 
     fun resetPasscode(passcode: String) {

@@ -11,17 +11,7 @@ interface EventFlow<T> {
     val eventFlow: SharedFlow<T>
 
     fun sendEvent(event: T)
-}
-
-fun <T> eventFlow(scope: CoroutineScope) = object : EventFlow<T> {
-    private val mutableEventFlow = MutableSharedFlow<T>()
-    override val eventFlow = mutableEventFlow.asSharedFlow().shareIn(scope)
-
-    override fun sendEvent(event: T) {
-        scope.launch{
-            mutableEventFlow.emit(event)
-        }
-    }
+    fun resetEvent()
 }
 
 sealed interface SimpleToastEvent {
@@ -37,6 +27,12 @@ fun simpleToastEventFlow(scope: CoroutineScope) = object : EventFlow<SimpleToast
     override fun sendEvent(event: SimpleToastEvent) {
         scope.launch {
             mutableEventFlow.emit(event)
+        }
+    }
+
+    override fun resetEvent() {
+        scope.launch {
+            mutableEventFlow.emit(SimpleToastEvent.None)
         }
     }
 }
