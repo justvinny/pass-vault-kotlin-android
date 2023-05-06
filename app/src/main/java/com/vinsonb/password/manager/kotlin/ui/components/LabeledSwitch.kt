@@ -2,6 +2,7 @@ package com.vinsonb.password.manager.kotlin.ui.components
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -21,7 +22,11 @@ fun LabeledSwitch(
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        Text(label)
+        Text(
+            text = label,
+            style = MaterialTheme.typography.bodyMedium
+                .copy(color = MaterialTheme.colorScheme.onSurface),
+        )
         Switch(
             checked = checked,
             onCheckedChange = onCheckedChange,
