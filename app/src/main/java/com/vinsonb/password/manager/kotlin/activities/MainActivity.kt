@@ -2,7 +2,6 @@ package com.vinsonb.password.manager.kotlin.activities
 
 import android.content.SharedPreferences
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import androidx.activity.compose.setContent
 import androidx.activity.result.ActivityResultLauncher
@@ -16,14 +15,14 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.viewinterop.AndroidViewBinding
 import androidx.core.view.forEach
 import androidx.navigation.NavController
-import androidx.navigation.findNavController
-import androidx.navigation.ui.setupWithNavController
+import androidx.navigation.fragment.findNavController
 import androidx.preference.PreferenceManager
 import com.vinsonb.password.manager.kotlin.R
 import com.vinsonb.password.manager.kotlin.database.enitities.Account
 import com.vinsonb.password.manager.kotlin.databinding.ActivityMainBinding
 import com.vinsonb.password.manager.kotlin.extensions.SESSION_EXPIRED_KEY
 import com.vinsonb.password.manager.kotlin.extensions.hasSessionExpired
+import com.vinsonb.password.manager.kotlin.ui.features.bottomnavmenu.BottomNavMenu
 import com.vinsonb.password.manager.kotlin.ui.features.credits.CreditsDialog
 import com.vinsonb.password.manager.kotlin.ui.theme.PassVaultTheme
 import com.vinsonb.password.manager.kotlin.utilities.Constants
@@ -36,10 +35,11 @@ import java.time.LocalTime
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
     private var accounts: List<Account> = listOf()
-    private var isDialogShown by mutableStateOf(false)
+    private var isDialogVisibile by mutableStateOf(false)
+    private var isBottomNavMenuVisible by mutableStateOf(true)
+    private var navController: NavController? = null
     private lateinit var binding: ActivityMainBinding
     private lateinit var sharedPreferences: SharedPreferences
-    private lateinit var navController: NavController
     private lateinit var csvLauncher: ActivityResultLauncher<String>
     private lateinit var createCsvLauncher: ActivityResultLauncher<String>
 
@@ -57,25 +57,31 @@ class MainActivity : AppCompatActivity() {
                 binding = this@AndroidViewBinding
 
                 // Setup for bottom navigation bar to use navigation controller.
-                navController = binding.navHostFragment.findNavController()
-                binding.bottomNavigation.setupWithNavController(navController)
+                navController = supportFragmentManager.findFragmentById(R.id.nav_host_fragment)?.findNavController()
+                binding.bottomNavigation.setContent {
+                    if (isBottomNavMenuVisible) {
+                        PassVaultTheme {
+                            BottomNavMenu(navigateTo = ::navigateTo)
+                        }
+                    }
+                }
 
                 // Hide navigation bars if not authenticated.
-                navController.addOnDestinationChangedListener { _, destination, _ ->
+                navController?.addOnDestinationChangedListener { _, destination, _ ->
                     when (destination.id) {
                         R.id.login_fragment -> {
                             binding.topNavigation.visibility = View.GONE
-                            binding.bottomNavigation.visibility = View.GONE
+                            isBottomNavMenuVisible = false
                         }
                         R.id.create_login_fragment -> {
                             binding.topNavigation.visibility = View.VISIBLE
                             binding.topNavigation.menu.forEach { it.isVisible = false }
-                            binding.bottomNavigation.visibility = View.GONE
+                            isBottomNavMenuVisible = false
                         }
                         else -> {
                             binding.topNavigation.visibility = View.VISIBLE
                             binding.topNavigation.menu.forEach { it.isVisible = true }
-                            binding.bottomNavigation.visibility = View.VISIBLE
+                            isBottomNavMenuVisible = true
                         }
                     }
                 }
@@ -92,7 +98,7 @@ class MainActivity : AppCompatActivity() {
                             true
                         }
                         R.id.menu_item_credits -> {
-                            isDialogShown = true
+                            isDialogVisibile = true
                             true
                         }
                         R.id.menu_item_logout -> {
@@ -108,10 +114,10 @@ class MainActivity : AppCompatActivity() {
                 }
             }
 
-            if (isDialogShown) {
-                PassVaultTheme {
+            PassVaultTheme {
+                if (isDialogVisibile) {
                     CreditsDialog {
-                        isDialogShown = false
+                        isDialogVisibile = false
                     }
                 }
             }
@@ -157,8 +163,8 @@ class MainActivity : AppCompatActivity() {
      */
     private fun logout() {
         if (removeAuthenticatedStatus()) {
-            navController.popBackStack()
-            navController.navigate(R.id.login_fragment)
+            navController?.popBackStack()
+            navController?.navigate(R.id.login_fragment)
         }
     }
 
@@ -199,8 +205,6 @@ class MainActivity : AppCompatActivity() {
      * Logouts the user if authentication has expired due to time elapsed.
      */
     private fun logoutIfAuthenticationExpired() {
-        if (!this::navController.isInitialized) return
-        Log.d(this::class.simpleName, "NavController initialised")
         val isAuthenticated = sharedPreferences.getBoolean(AUTHENTICATED_KEY, false)
         val hasSessionExpired = sharedPreferences.getString(SESSION_EXPIRED_KEY, "")?.let {
             it.isNotBlank() && LocalTime.now().hasSessionExpired(it)
@@ -209,5 +213,10 @@ class MainActivity : AppCompatActivity() {
         if (!isAuthenticated || hasSessionExpired) {
             logout()
         }
+    }
+
+    private fun navigateTo(navDestination: Int) {
+        navController?.popBackStack()
+        navController?.navigate(navDestination)
     }
 }

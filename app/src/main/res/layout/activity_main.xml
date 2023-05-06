@@ -28,9 +28,10 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/top_navigation"
-        app:navGraph="@navigation/nav_graph" />
+        app:navGraph="@navigation/nav_graph"
+        tools:layout="@android:layout/expandable_list_content" />
 
-    <com.google.android.material.bottomnavigation.BottomNavigationView
+    <androidx.compose.ui.platform.ComposeView
         android:id="@+id/bottom_navigation"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
