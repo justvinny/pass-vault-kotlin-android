@@ -15,7 +15,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.viewinterop.AndroidViewBinding
 import androidx.core.view.forEach
 import androidx.navigation.NavController
-import androidx.navigation.findNavController
+import androidx.navigation.fragment.findNavController
 import androidx.preference.PreferenceManager
 import com.vinsonb.password.manager.kotlin.R
 import com.vinsonb.password.manager.kotlin.database.enitities.Account
@@ -37,9 +37,9 @@ class MainActivity : AppCompatActivity() {
     private var accounts: List<Account> = listOf()
     private var isDialogVisibile by mutableStateOf(false)
     private var isBottomNavMenuVisible by mutableStateOf(true)
+    private var navController: NavController? = null
     private lateinit var binding: ActivityMainBinding
     private lateinit var sharedPreferences: SharedPreferences
-    private lateinit var navController: NavController
     private lateinit var csvLauncher: ActivityResultLauncher<String>
     private lateinit var createCsvLauncher: ActivityResultLauncher<String>
 
@@ -53,12 +53,11 @@ class MainActivity : AppCompatActivity() {
         createCsvLauncher = createDocumentCsv()
 
         setContent {
-
             AndroidViewBinding(ActivityMainBinding::inflate) {
                 binding = this@AndroidViewBinding
 
                 // Setup for bottom navigation bar to use navigation controller.
-                navController = binding.navHostFragment.findNavController()
+                navController = supportFragmentManager.findFragmentById(R.id.nav_host_fragment)?.findNavController()
                 binding.bottomNavigation.setContent {
                     if (isBottomNavMenuVisible) {
                         PassVaultTheme {
@@ -68,7 +67,7 @@ class MainActivity : AppCompatActivity() {
                 }
 
                 // Hide navigation bars if not authenticated.
-                navController.addOnDestinationChangedListener { _, destination, _ ->
+                navController?.addOnDestinationChangedListener { _, destination, _ ->
                     when (destination.id) {
                         R.id.login_fragment -> {
                             binding.topNavigation.visibility = View.GONE
@@ -164,8 +163,8 @@ class MainActivity : AppCompatActivity() {
      */
     private fun logout() {
         if (removeAuthenticatedStatus()) {
-            navController.popBackStack()
-            navController.navigate(R.id.login_fragment)
+            navController?.popBackStack()
+            navController?.navigate(R.id.login_fragment)
         }
     }
 
@@ -206,7 +205,6 @@ class MainActivity : AppCompatActivity() {
      * Logouts the user if authentication has expired due to time elapsed.
      */
     private fun logoutIfAuthenticationExpired() {
-        if (!this::navController.isInitialized) return
         val isAuthenticated = sharedPreferences.getBoolean(AUTHENTICATED_KEY, false)
         val hasSessionExpired = sharedPreferences.getString(SESSION_EXPIRED_KEY, "")?.let {
             it.isNotBlank() && LocalTime.now().hasSessionExpired(it)
@@ -218,8 +216,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun navigateTo(navDestination: Int) {
-        if (!this::navController.isInitialized) return
-        navController.popBackStack()
-        navController.navigate(navDestination)
+        navController?.popBackStack()
+        navController?.navigate(navDestination)
     }
 }
