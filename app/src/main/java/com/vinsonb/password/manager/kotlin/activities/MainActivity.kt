@@ -2,7 +2,6 @@ package com.vinsonb.password.manager.kotlin.activities
 
 import android.content.SharedPreferences
 import android.os.Bundle
-import android.view.View
 import androidx.activity.compose.setContent
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
@@ -13,7 +12,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.viewinterop.AndroidViewBinding
-import androidx.core.view.forEach
 import androidx.navigation.NavController
 import androidx.navigation.fragment.findNavController
 import androidx.preference.PreferenceManager
@@ -24,6 +22,8 @@ import com.vinsonb.password.manager.kotlin.extensions.SESSION_EXPIRED_KEY
 import com.vinsonb.password.manager.kotlin.extensions.hasSessionExpired
 import com.vinsonb.password.manager.kotlin.ui.features.bottomnavmenu.BottomNavMenu
 import com.vinsonb.password.manager.kotlin.ui.features.credits.CreditsDialog
+import com.vinsonb.password.manager.kotlin.ui.features.topnavmenu.TopNavMenu
+import com.vinsonb.password.manager.kotlin.ui.features.topnavmenu.TopNavMenuItem
 import com.vinsonb.password.manager.kotlin.ui.theme.PassVaultTheme
 import com.vinsonb.password.manager.kotlin.utilities.Constants
 import com.vinsonb.password.manager.kotlin.utilities.Constants.MimeType.CSV
@@ -35,8 +35,11 @@ import java.time.LocalTime
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
     private var accounts: List<Account> = listOf()
-    private var isDialogVisibile by mutableStateOf(false)
+    private var isDialogVisible by mutableStateOf(false)
     private var isBottomNavMenuVisible by mutableStateOf(true)
+    private var isTopNavMenuVisible by mutableStateOf(true)
+    private var isTopNavMenuItemsVisble by mutableStateOf(true)
+    private var topNavMenuTitle by mutableStateOf("")
     private var navController: NavController? = null
     private lateinit var binding: ActivityMainBinding
     private lateinit var sharedPreferences: SharedPreferences
@@ -44,6 +47,24 @@ class MainActivity : AppCompatActivity() {
     private lateinit var createCsvLauncher: ActivityResultLauncher<String>
 
     private val viewModel: AccountViewModel by viewModels()
+    private val topNavMenuItems = arrayOf(
+        TopNavMenuItem(
+            itemNameRes = R.string.menu_item_import_csv,
+            action = ::importCsv,
+        ),
+        TopNavMenuItem(
+            itemNameRes = R.string.menu_item_export_csv,
+            action = ::exportCsv,
+        ),
+        TopNavMenuItem(
+            itemNameRes = R.string.menu_item_credits,
+            action = ::showCreditsDialog,
+        ),
+        TopNavMenuItem(
+            itemNameRes = R.string.menu_item_logout,
+            action = ::logout,
+        ),
+    )
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -66,46 +87,55 @@ class MainActivity : AppCompatActivity() {
                     }
                 }
 
-                // Hide navigation bars if not authenticated.
+                // Top Nav Menu Items
+                binding.topNavigation.setContent {
+                    if (isTopNavMenuVisible) {
+                        PassVaultTheme {
+                            TopNavMenu(
+                                title = topNavMenuTitle,
+                                menuItems = topNavMenuItems,
+                                isMenuVisible = isTopNavMenuItemsVisble,
+                            )
+                        }
+                    }
+                }
+
+                // Show or hide navigation bars or its elements depending on the current screen being shown.
                 navController?.addOnDestinationChangedListener { _, destination, _ ->
                     when (destination.id) {
                         R.id.login_fragment -> {
-                            binding.topNavigation.visibility = View.GONE
+                            isTopNavMenuVisible = false
                             isBottomNavMenuVisible = false
                         }
                         R.id.create_login_fragment -> {
-                            binding.topNavigation.visibility = View.VISIBLE
-                            binding.topNavigation.menu.forEach { it.isVisible = false }
+                            isTopNavMenuVisible = true
+                            isTopNavMenuItemsVisble = false
                             isBottomNavMenuVisible = false
                         }
                         else -> {
-                            binding.topNavigation.visibility = View.VISIBLE
-                            binding.topNavigation.menu.forEach { it.isVisible = true }
+                            isTopNavMenuVisible = true
+                            isTopNavMenuItemsVisble = true
                             isBottomNavMenuVisible = true
                         }
                     }
                 }
 
-                // Top Bar Menu Items
-                binding.topNavigation.setOnMenuItemClickListener {
-                    when (it.itemId) {
-                        R.id.menu_item_import_csv -> {
-                            csvLauncher.launch(CSV)
-                            true
+                // Change App Bar Title depending on the current screen being shown.
+                navController?.addOnDestinationChangedListener { _, destination, _ ->
+                    topNavMenuTitle = when (destination.id) {
+                        R.id.create_login_fragment -> {
+                            getString(R.string.title_create_login)
                         }
-                        R.id.menu_item_export_csv -> {
-                            createCsvLauncher.launch(Constants.FileName.DEFAULT_FILENAME)
-                            true
+                        R.id.view_accounts_fragment -> {
+                            getString(R.string.title_view_accounts)
                         }
-                        R.id.menu_item_credits -> {
-                            isDialogVisibile = true
-                            true
+                        R.id.save_account_fragment -> {
+                            getString(R.string.title_save_account)
                         }
-                        R.id.menu_item_logout -> {
-                            logout()
-                            true
+                        R.id.generate_password_fragment -> {
+                            getString(R.string.title_generate_password)
                         }
-                        else -> false
+                        else -> ""
                     }
                 }
 
@@ -115,9 +145,9 @@ class MainActivity : AppCompatActivity() {
             }
 
             PassVaultTheme {
-                if (isDialogVisibile) {
+                if (isDialogVisible) {
                     CreditsDialog {
-                        isDialogVisibile = false
+                        isDialogVisible = false
                     }
                 }
             }
@@ -153,6 +183,18 @@ class MainActivity : AppCompatActivity() {
         registerForActivityResult(ActivityResultContracts.CreateDocument(CSV)) {
             if (it != null) viewModel.saveAccountsAsCsv(contentResolver, it, accounts)
         }
+
+    private fun importCsv() {
+        if (::csvLauncher.isInitialized) {
+            csvLauncher.launch(CSV)
+        }
+    }
+
+    private fun exportCsv() {
+        if (::createCsvLauncher.isInitialized) {
+            createCsvLauncher.launch(Constants.FileName.DEFAULT_FILENAME)
+        }
+    }
 
     /**
      * Logs out the user using [removeAuthenticatedStatus].
@@ -218,5 +260,9 @@ class MainActivity : AppCompatActivity() {
     private fun navigateTo(navDestination: Int) {
         navController?.popBackStack()
         navController?.navigate(navDestination)
+    }
+
+    private fun showCreditsDialog() {
+        isDialogVisible = true
     }
 }

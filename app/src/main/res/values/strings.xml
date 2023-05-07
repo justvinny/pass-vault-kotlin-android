@@ -54,7 +54,7 @@
     <string name="error_wrong_secret_answer">Secret answer is incorrect.</string>
     <string name="error_reset_unsuccessful">Something went wrong with the passcode reset. Try again!</string>
 
-    <!-- Bottom Navigation Menu Item Labels   -->
+    <!-- Bottom / Top Navigation Menu Item Labels   -->
     <string name="menu_item_view">View</string>
     <string name="menu_item_save">Save</string>
     <string name="menu_item_generate_pass">Generator</string>
@@ -68,8 +68,6 @@
     <string name="content_maximize_account">Maximize account icon</string>
     <string name="content_platform_icon">Platform icon</string>
     <string name="content_username_icon">Username icon</string>
-    <string name="content_menu_item_logout">Logout menu item</string>
-    <string name="content_menu_item_credits">Credits menu item</string>
     <string name="content_open_link">Open link</string>
     <string name="content_show_password">Show Password</string>
     <string name="content_hide_password">Hide Password</string>
@@ -80,7 +78,14 @@
     <string name="content_clear_search">Clear Search Query</string>
     <string name="content_passcode_digit_circle_filled">Passcode digit number %d is filled</string>
     <string name="content_passcode_digit_circle_empty">Passcode digit number %d is empty</string>
+    <string name="content_menu">Menu</string>
 
     <!-- Text -->
     <string name="text_title_forgot">Forgot your password?</string>
+
+    <!-- Top Nav Menu Titles -->
+    <string name="title_create_login">Create Login</string>
+    <string name="title_view_accounts">View Accounts</string>
+    <string name="title_save_account">Save New Account</string>
+    <string name="title_generate_password">Generate Password</string>
 </resources>
