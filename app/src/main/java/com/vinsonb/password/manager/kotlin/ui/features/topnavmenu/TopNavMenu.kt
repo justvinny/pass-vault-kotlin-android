@@ -48,7 +48,6 @@ fun TopNavMenu(
         actions = {
             if (isMenuVisible) {
                 Row(
-                    modifier = Modifier.fillMaxHeight(),
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
                     IconButton(onClick = { isMenuExpanded = !isMenuExpanded }) {
