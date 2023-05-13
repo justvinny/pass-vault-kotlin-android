@@ -44,7 +44,7 @@ private fun ViewAccountContent(
     state: ViewAccountState,
     onSearch: (String) -> Unit,
     onSelectAccount: (Account) -> Unit,
-    onUpdate: (Account) -> Unit,
+    onUpdate: (Account, Account) -> Unit,
     onDelete: (Account) -> Unit,
     onClearSearch: () -> Unit,
 ) {
@@ -115,7 +115,7 @@ private fun ViewAccountDialogHandler(
     context: Context,
     state: ViewAccountState,
     isDialogVisible: MutableState<Boolean>,
-    onUpdate: (Account) -> Unit,
+    onUpdate: (Account, Account) -> Unit,
     onDelete: (Account) -> Unit,
 ) {
     LaunchedEffect(state.toastState) {
@@ -125,7 +125,7 @@ private fun ViewAccountDialogHandler(
                 context.showToast((state.toastState as TextResIdProvider).getTextResId())
                 isDialogVisible.value = false
             }
-            ViewAccountToastState.SuccessfullyUpdated -> {
+            else -> {
                 context.showToast((state.toastState as TextResIdProvider).getTextResId())
             }
         }
@@ -155,7 +155,7 @@ private fun PreviewViewAccountScreen() = PassVaultTheme {
         ),
         onSearch = {},
         onSelectAccount = {},
-        onUpdate = {},
+        onUpdate = { _, _ -> },
         onDelete = {},
         onClearSearch = {},
     )

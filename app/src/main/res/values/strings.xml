@@ -44,8 +44,9 @@
     <string name="success_copied_to_clipboard">Successfully copied %1$s to the clipboard!</string>
     <string name="success_passcode_reset">Passcode changed successfully!</string>
     <string name="success_deleted_account">Account deleted successfully!</string>
-    <string name="success_updated_password">Password updated successfully!</string>
+    <string name="success_updated_account">Account updated successfully!</string>
     <string name="error_save_unsuccessful">Account already exists! Use a different username.</string>
+    <string name="error_update_unsuccessful">Account failed to update! Please try again.</string>
     <string name="error_passcode_length">Passcode must be 5 digits</string>
     <string name="error_text_empty">%1$s must not be empty</string>
     <string name="error_password_must_match">Passwords must match</string>

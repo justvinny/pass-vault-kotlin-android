@@ -30,7 +30,7 @@ import com.vinsonb.password.manager.kotlin.utilities.ComponentPreviews
 @Composable
 fun ViewAccountItemDialog(
     account: Account,
-    onUpdate: (Account) -> Unit,
+    onUpdate: (Account, Account) -> Unit,
     onDelete: (Account) -> Unit,
     dismissDialog: () -> Unit,
 ) {
@@ -39,6 +39,7 @@ fun ViewAccountItemDialog(
     Dialog(onDismissRequest = dismissDialog) {
         Card(modifier = Modifier.fillMaxWidth()) {
             val isEditEnabled = rememberSaveable { mutableStateOf(false) }
+            val username = rememberSaveable { mutableStateOf(account.username) }
             val password = rememberSaveable { mutableStateOf(account.password) }
 
             Row(
@@ -62,9 +63,10 @@ fun ViewAccountItemDialog(
                             onUpdate(
                                 Account(
                                     platform = account.platform,
-                                    username = account.username,
+                                    username = username.value,
                                     password = password.value,
                                 ),
+                                account,
                             )
                         }
                         isEditEnabled.value = !isEditEnabled.value
@@ -84,9 +86,9 @@ fun ViewAccountItemDialog(
 
             CustomTextField.Normal(
                 modifier = Modifier.padding(horizontal = 16.dp),
-                text = account.username,
-                onTextChange = {},
-                enabled = false,
+                text = username.value,
+                onTextChange = { username.value = it },
+                enabled = isEditEnabled.value,
                 leadingIcon = {
                     Icon(
                         imageVector = Icons.Filled.Person,
@@ -100,7 +102,7 @@ fun ViewAccountItemDialog(
                             ClipboardUtilities.copyToClipboard(
                                 context = context,
                                 clipLabel = ClipboardUtilities.CLIP_USERNAME_LABEL,
-                                toCopy = account.username,
+                                toCopy = username.value,
                             )
                         },
                     ) {
@@ -133,7 +135,7 @@ fun ViewAccountItemDialog(
                                 context = context,
                                 clipLabel = ClipboardUtilities.CLIP_PASSWORD_LABEL,
                                 toCopy = password.value,
-                                username = account.username,
+                                username = username.value,
                             )
                         },
                     ) {
@@ -173,7 +175,7 @@ private fun PreviewViewAccountItemDialog() = PassVaultTheme {
             username = "Username@email.com",
             password = "Password",
         ),
-        onUpdate = {},
+        onUpdate = { _, _ -> },
         onDelete = {},
         dismissDialog = {},
     )

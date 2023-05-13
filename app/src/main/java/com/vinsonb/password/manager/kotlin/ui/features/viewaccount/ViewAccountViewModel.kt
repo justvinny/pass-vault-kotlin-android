@@ -20,6 +20,7 @@ import javax.inject.Inject
 class ViewAccountViewModel(
     private val scope: CoroutineScope,
     private val getAllAccounts: () -> Flow<List<Account>>,
+    private val insertAccount: suspend (Account) -> Boolean,
     private val updateAccount: suspend (Account) -> Boolean,
     private val deleteAccount: suspend (Account) -> Boolean,
 ) : ViewModel() {
@@ -30,6 +31,7 @@ class ViewAccountViewModel(
     ) : this(
         scope = CoroutineScope(dispatchers.default),
         getAllAccounts = accountRepository::getAll,
+        insertAccount = accountRepository::insertAccount,
         updateAccount = accountRepository::updateAccount,
         deleteAccount = accountRepository::deleteAccount,
     )
@@ -56,11 +58,40 @@ class ViewAccountViewModel(
         _stateFlow.update { it.copy(selectedAccount = account) }
     }
 
-    fun onUpdateAccount(account: Account) {
+    fun onUpdateAccount(account: Account, originalAccount: Account) {
         scope.launch {
-            if (updateAccount(account)) {
+            val hasSucceeded = if (originalAccount.username != account.username) {
+                handleUsernameChange(account, originalAccount)
+            } else {
+                handlePasswordOnlyChange(account)
+            }
+
+            if (hasSucceeded) {
                 _stateFlow.update { it.copy(toastState = ViewAccountToastState.SuccessfullyUpdated) }
-                changeToIdleAfterDelay()
+            }
+
+            changeToIdleAfterDelay()
+        }
+    }
+
+    private suspend fun handleUsernameChange(account: Account, originalAccount: Account): Boolean {
+        val isInserted = insertAccount(account)
+        val isDeleted = isInserted && deleteAccount(originalAccount)
+
+        if (!isInserted) {
+            _stateFlow.update { it.copy(toastState = ViewAccountToastState.FailedUsernameUpdate) }
+        } else if (!isDeleted) {
+            deleteAccount(account)
+            _stateFlow.update { it.copy(toastState = ViewAccountToastState.FailedAccountUpdate) }
+        }
+
+        return isInserted && isDeleted
+    }
+
+    private suspend fun handlePasswordOnlyChange(account: Account): Boolean {
+        return updateAccount(account).also { isUpdated ->
+            if (!isUpdated) {
+                _stateFlow.update { it.copy(toastState = ViewAccountToastState.FailedAccountUpdate) }
             }
         }
     }

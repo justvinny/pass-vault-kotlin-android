@@ -17,7 +17,13 @@ sealed interface ViewAccountToastState {
         TextResIdProvider by textResIdProvider(R.string.success_deleted_account)
 
     object SuccessfullyUpdated : ViewAccountToastState,
-        TextResIdProvider by textResIdProvider(R.string.success_updated_password)
+        TextResIdProvider by textResIdProvider(R.string.success_updated_account)
+
+    object FailedAccountUpdate : ViewAccountToastState,
+        TextResIdProvider by textResIdProvider(R.string.error_update_unsuccessful)
+
+    object FailedUsernameUpdate : ViewAccountToastState,
+        TextResIdProvider by textResIdProvider(R.string.error_save_unsuccessful)
 
     object Idle : ViewAccountToastState
 }
