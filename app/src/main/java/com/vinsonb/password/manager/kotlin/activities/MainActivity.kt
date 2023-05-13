@@ -2,51 +2,74 @@ package com.vinsonb.password.manager.kotlin.activities
 
 import android.content.SharedPreferences
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.compose.setContent
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
-import androidx.compose.ui.viewinterop.AndroidViewBinding
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Scaffold
+import androidx.compose.runtime.*
+import androidx.compose.ui.Modifier
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
-import androidx.navigation.fragment.findNavController
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
 import androidx.preference.PreferenceManager
 import com.vinsonb.password.manager.kotlin.R
 import com.vinsonb.password.manager.kotlin.database.enitities.Account
-import com.vinsonb.password.manager.kotlin.databinding.ActivityMainBinding
+import com.vinsonb.password.manager.kotlin.di.CoroutineModule
 import com.vinsonb.password.manager.kotlin.extensions.SESSION_EXPIRED_KEY
 import com.vinsonb.password.manager.kotlin.extensions.hasSessionExpired
+import com.vinsonb.password.manager.kotlin.extensions.showToast
 import com.vinsonb.password.manager.kotlin.ui.features.bottomnavmenu.BottomNavMenu
+import com.vinsonb.password.manager.kotlin.ui.features.createlogin.CreateLoginScreen
+import com.vinsonb.password.manager.kotlin.ui.features.createlogin.CreateLoginViewModel
 import com.vinsonb.password.manager.kotlin.ui.features.credits.CreditsDialog
+import com.vinsonb.password.manager.kotlin.ui.features.forgotpasscode.ForgotPasscodeDialog
+import com.vinsonb.password.manager.kotlin.ui.features.forgotpasscode.ForgotPasscodeState
+import com.vinsonb.password.manager.kotlin.ui.features.forgotpasscode.ForgotPasscodeViewModel
+import com.vinsonb.password.manager.kotlin.ui.features.login.LoginScreen
+import com.vinsonb.password.manager.kotlin.ui.features.login.LoginViewModel
+import com.vinsonb.password.manager.kotlin.ui.features.navigation.NavigationDestination
+import com.vinsonb.password.manager.kotlin.ui.features.navigation.NavigationDestination.*
+import com.vinsonb.password.manager.kotlin.ui.features.passwordgenerator.PasswordGeneratorScreen
+import com.vinsonb.password.manager.kotlin.ui.features.saveaccount.SaveAccountScreen
+import com.vinsonb.password.manager.kotlin.ui.features.saveaccount.SaveAccountViewModel
 import com.vinsonb.password.manager.kotlin.ui.features.topnavmenu.TopNavMenu
 import com.vinsonb.password.manager.kotlin.ui.features.topnavmenu.TopNavMenuItem
+import com.vinsonb.password.manager.kotlin.ui.features.viewaccount.ViewAccountScreen
 import com.vinsonb.password.manager.kotlin.ui.theme.PassVaultTheme
 import com.vinsonb.password.manager.kotlin.utilities.Constants
 import com.vinsonb.password.manager.kotlin.utilities.Constants.MimeType.CSV
 import com.vinsonb.password.manager.kotlin.utilities.Constants.Password.SharedPreferenceKeys.AUTHENTICATED_KEY
+import com.vinsonb.password.manager.kotlin.utilities.SimpleToastEvent
 import com.vinsonb.password.manager.kotlin.viewmodels.AccountViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
 import java.time.LocalTime
 
+@OptIn(ExperimentalMaterial3Api::class)
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
     private var accounts: List<Account> = listOf()
-    private var isDialogVisible by mutableStateOf(false)
+    private var isCreditsDialogVisible by mutableStateOf(false)
     private var isBottomNavMenuVisible by mutableStateOf(true)
     private var isTopNavMenuVisible by mutableStateOf(true)
-    private var isTopNavMenuItemsVisble by mutableStateOf(true)
+    private var isTopNavMenuItemsVisible by mutableStateOf(true)
     private var topNavMenuTitle by mutableStateOf("")
     private var navController: NavController? = null
-    private lateinit var binding: ActivityMainBinding
+
     private lateinit var sharedPreferences: SharedPreferences
     private lateinit var csvLauncher: ActivityResultLauncher<String>
     private lateinit var createCsvLauncher: ActivityResultLauncher<String>
 
-    private val viewModel: AccountViewModel by viewModels()
     private val topNavMenuItems = arrayOf(
         TopNavMenuItem(
             itemNameRes = R.string.menu_item_import_csv,
@@ -66,6 +89,40 @@ class MainActivity : AppCompatActivity() {
         ),
     )
 
+    private val accountViewModel: AccountViewModel by viewModels()
+    private val loginViewModel: LoginViewModel by viewModels()
+    private val saveAccountViewModel: SaveAccountViewModel by viewModels()
+    private val createLoginViewModel by lazy {
+        CreateLoginViewModel(
+            scope = CoroutineScope(CoroutineModule.providesCoroutineDispatchers().default),
+            _createLogin = ::saveLoginDetails,
+        )
+    }
+    private val forgotPasscodeViewModel by lazy {
+        ForgotPasscodeViewModel(
+            dispatchers = CoroutineModule.providesCoroutineDispatchers(),
+            savedSecretAnswer = getSecretAnswer(),
+            saveNewPasscode = ::saveNewPasscode,
+        )
+    }
+
+    // region start lifecycle methods
+
+    override fun onResume() {
+        super.onResume()
+        if (!isAccountNotCreated()) {
+            logoutIfAuthenticationExpired()
+        }
+    }
+
+    override fun onPause() {
+        super.onPause()
+        if (!isAccountNotCreated()) {
+            saveTimeNowToPreferences()
+            removeAuthenticationOnFinish()
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -73,127 +130,133 @@ class MainActivity : AppCompatActivity() {
         csvLauncher = getCsvContent()
         createCsvLauncher = createDocumentCsv()
 
-        setContent {
-            AndroidViewBinding(ActivityMainBinding::inflate) {
-                binding = this@AndroidViewBinding
+        accountViewModel.accounts.observe(this) {
+            accounts = it
+        }
 
-                // Setup for bottom navigation bar to use navigation controller.
-                navController = supportFragmentManager.findFragmentById(R.id.nav_host_fragment)?.findNavController()
-                binding.bottomNavigation.setContent {
-                    if (isBottomNavMenuVisible) {
-                        PassVaultTheme {
-                            BottomNavMenu(navigateTo = ::navigateTo)
-                        }
-                    }
+        lifecycleScope.launch {
+            saveAccountViewModel.eventFlow.collect {
+                when (it) {
+                    SimpleToastEvent.None -> {}
+                    SimpleToastEvent.ShowFailed ->
+                        applicationContext.showToast(R.string.error_save_unsuccessful)
+                    SimpleToastEvent.ShowSucceeded ->
+                        applicationContext.showToast(R.string.success_save_account)
                 }
+            }
+        }
 
-                // Top Nav Menu Items
-                binding.topNavigation.setContent {
-                    if (isTopNavMenuVisible) {
-                        PassVaultTheme {
+        lifecycleScope.launch {
+            loginViewModel.stateFlow.collect { state ->
+                if (state.passcodeLength == Constants.Password.PASSCODE_MAX_LENGTH) {
+                    if (passcodeMatches(state.passcode)) {
+                        login()
+                    } else {
+                        applicationContext.showToast(R.string.error_wrong_passcode)
+                    }
+
+                    loginViewModel.onClearAllDigits()
+                }
+            }
+        }
+
+        lifecycleScope.launch {
+            forgotPasscodeViewModel.eventFlow.collect {
+                when (it) {
+                    SimpleToastEvent.None -> {}
+                    SimpleToastEvent.ShowFailed ->
+                        applicationContext.showToast(R.string.error_reset_unsuccessful)
+                    SimpleToastEvent.ShowSucceeded ->
+                        applicationContext.showToast(R.string.success_passcode_reset)
+                }
+            }
+        }
+
+        setContent {
+            PassVaultTheme {
+                Scaffold(
+                    topBar = {
+                        if (isTopNavMenuVisible) {
                             TopNavMenu(
                                 title = topNavMenuTitle,
                                 menuItems = topNavMenuItems,
-                                isMenuVisible = isTopNavMenuItemsVisble,
+                                isMenuVisible = isTopNavMenuItemsVisible,
                             )
                         }
+                    },
+                    bottomBar = {
+                        if (isBottomNavMenuVisible) {
+                            BottomNavMenu(navigateTo = ::navigateTo)
+                        }
+                    }
+                ) { innerPadding ->
+                    Column(
+                        modifier = Modifier.padding(innerPadding),
+                    ) {
+                        val navController = rememberNavController()
+                        this@MainActivity.navController = navController
+
+                        navController.addOnDestinationChangedListener { _, destination, _ ->
+                            destination.route?.also { route ->
+                                toggleNavBarsOnNavigate(route)
+                                changeTitleOnNavigate(route)
+                            }
+                        }
+
+                        NavHost(
+                            navController = navController,
+                            startDestination = getStartDestination(),
+                        ) {
+                            composable(CREATE_LOGIN.destination) {
+                                CreateLoginScreen(createLoginViewModel)
+                            }
+
+                            composable(LOGIN.destination) {
+                                LoginScreen(loginViewModel, forgotPasscodeViewModel::showDialog)
+                            }
+
+                            composable(VIEW_ACCOUNTS.destination) {
+                                ViewAccountScreen(hiltViewModel())
+                            }
+
+                            composable(SAVE_ACCOUNT.destination) {
+                                SaveAccountScreen(saveAccountViewModel)
+                            }
+
+                            composable(GENERATE_PASSWORD.destination) {
+                                PasswordGeneratorScreen()
+                            }
+                        }
                     }
                 }
 
-                // Show or hide navigation bars or its elements depending on the current screen being shown.
-                navController?.addOnDestinationChangedListener { _, destination, _ ->
-                    when (destination.id) {
-                        R.id.login_fragment -> {
-                            isTopNavMenuVisible = false
-                            isBottomNavMenuVisible = false
-                        }
-                        R.id.create_login_fragment -> {
-                            isTopNavMenuVisible = true
-                            isTopNavMenuItemsVisble = false
-                            isBottomNavMenuVisible = false
-                        }
-                        else -> {
-                            isTopNavMenuVisible = true
-                            isTopNavMenuItemsVisble = true
-                            isBottomNavMenuVisible = true
-                        }
-                    }
-                }
-
-                // Change App Bar Title depending on the current screen being shown.
-                navController?.addOnDestinationChangedListener { _, destination, _ ->
-                    topNavMenuTitle = when (destination.id) {
-                        R.id.create_login_fragment -> {
-                            getString(R.string.title_create_login)
-                        }
-                        R.id.view_accounts_fragment -> {
-                            getString(R.string.title_view_accounts)
-                        }
-                        R.id.save_account_fragment -> {
-                            getString(R.string.title_save_account)
-                        }
-                        R.id.generate_password_fragment -> {
-                            getString(R.string.title_generate_password)
-                        }
-                        else -> ""
-                    }
-                }
-
-                viewModel.accounts.observe(this@MainActivity) {
-                    accounts = it
-                }
-            }
-
-            PassVaultTheme {
-                if (isDialogVisible) {
+                if (isCreditsDialogVisible) {
                     CreditsDialog {
-                        isDialogVisible = false
+                        isCreditsDialogVisible = false
                     }
                 }
+
+                val isDialogShown by forgotPasscodeViewModel.stateFlow.collectAsState()
+                if (isDialogShown is ForgotPasscodeState.Visible) {
+                    ForgotPasscodeDialog(
+                        viewModel = forgotPasscodeViewModel,
+                        secretQuestion = getSecretQuestion(),
+                    )
+                }
             }
-
-            LaunchedEffect(Unit) {
-                logoutIfAuthenticationExpired()
-            }
         }
     }
 
-    override fun onResume() {
-        super.onResume()
-        logoutIfAuthenticationExpired()
-    }
+    // region end lifecycle methods
 
-    override fun onPause() {
-        super.onPause()
-        saveTimeNowToPreferences()
-        removeAuthenticationOnFinish()
-    }
+    // region start navigation methods
 
-    /**
-     * Launcher to use when loading CSV content from the system's file picker.
-     */
-    private fun getCsvContent() = registerForActivityResult(ActivityResultContracts.GetContent()) {
-        if (it != null) viewModel.loadAccountsFromCsv(contentResolver, it, accounts)
-    }
-
-    /**
-     * Launcher to use when saving Accounts to a CSV file using the system's file picker.
-     */
-    private fun createDocumentCsv() =
-        registerForActivityResult(ActivityResultContracts.CreateDocument(CSV)) {
-            if (it != null) viewModel.saveAccountsAsCsv(contentResolver, it, accounts)
-        }
-
-    private fun importCsv() {
-        if (::csvLauncher.isInitialized) {
-            csvLauncher.launch(CSV)
-        }
-    }
-
-    private fun exportCsv() {
-        if (::createCsvLauncher.isInitialized) {
-            createCsvLauncher.launch(Constants.FileName.DEFAULT_FILENAME)
-        }
+    private fun getStartDestination(): String {
+        return when {
+            isAccountNotCreated() -> CREATE_LOGIN
+            isAuthenticationExpired() -> LOGIN
+            else -> VIEW_ACCOUNTS
+        }.destination
     }
 
     /**
@@ -205,10 +268,80 @@ class MainActivity : AppCompatActivity() {
      */
     private fun logout() {
         if (removeAuthenticatedStatus()) {
-            navController?.popBackStack()
-            navController?.navigate(R.id.login_fragment)
+            navigateTo(LOGIN, true)
         }
     }
+
+    /**
+     * Logouts the user if authentication has expired due to time elapsed.
+     */
+    private fun logoutIfAuthenticationExpired() {
+        if (isAuthenticationExpired()) {
+            logout()
+        }
+    }
+
+    private fun navigateTo(navDestination: NavigationDestination, popBackStack: Boolean = false) {
+        navController?.run {
+            if (popBackStack) {
+                popBackStack()
+            }
+
+            navigate(navDestination.destination) {
+                launchSingleTop = true
+            }
+
+            Log.d(
+                this::class.java.simpleName,
+                "Test test $navDestination $isTopNavMenuVisible $isBottomNavMenuVisible"
+            )
+        }
+    }
+
+    private fun toggleNavBarsOnNavigate(currentDestination: String) {
+        when (currentDestination) {
+            CREATE_LOGIN.destination -> {
+                isTopNavMenuVisible = true
+                isTopNavMenuItemsVisible = false
+                isBottomNavMenuVisible = false
+            }
+            LOGIN.destination -> {
+                isTopNavMenuVisible = false
+                isBottomNavMenuVisible = false
+            }
+            else -> {
+                isTopNavMenuVisible = true
+                isTopNavMenuItemsVisible = true
+                isBottomNavMenuVisible = true
+            }
+        }
+    }
+
+    private fun changeTitleOnNavigate(currentDestination: String) {
+        topNavMenuTitle = when (currentDestination) {
+            CREATE_LOGIN.destination -> {
+                getString(R.string.title_create_login)
+            }
+            VIEW_ACCOUNTS.destination -> {
+                getString(R.string.title_view_accounts)
+            }
+            SAVE_ACCOUNT.destination -> {
+                getString(R.string.title_save_account)
+            }
+            GENERATE_PASSWORD.destination -> {
+                getString(R.string.title_generate_password)
+            }
+            else -> ""
+        }
+    }
+
+    private fun showCreditsDialog() {
+        isCreditsDialogVisible = true
+    }
+
+    // region end navigation methods
+
+    // region start SharedPreferences methods
 
     /**
      * Change authenticated value to false in SharedPreferences.
@@ -243,26 +376,130 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    /**
-     * Logouts the user if authentication has expired due to time elapsed.
-     */
-    private fun logoutIfAuthenticationExpired() {
+    private fun isAuthenticationExpired(): Boolean {
         val isAuthenticated = sharedPreferences.getBoolean(AUTHENTICATED_KEY, false)
         val hasSessionExpired = sharedPreferences.getString(SESSION_EXPIRED_KEY, "")?.let {
-            it.isNotBlank() && LocalTime.now().hasSessionExpired(it)
-        } ?: false
+            when {
+                it.isBlank() -> true
+                else -> LocalTime.now().hasSessionExpired(it)
+            }
+        } ?: true
 
-        if (!isAuthenticated || hasSessionExpired) {
-            logout()
+        return !isAuthenticated || hasSessionExpired
+    }
+
+    private fun saveLoginDetails(passcode: String, secretQuestion: String, secretAnswer: String) {
+        with(sharedPreferences.edit()) {
+            putString(
+                Constants.Password.SharedPreferenceKeys.PASSCODE_KEY,
+                passcode
+            )
+            putString(
+                Constants.Password.SharedPreferenceKeys.SECRET_QUESTION_KEY,
+                secretQuestion
+            )
+            putString(
+                Constants.Password.SharedPreferenceKeys.SECRET_ANSWER_KEY,
+                secretAnswer
+            )
+            if (commit()) {
+                navigateTo(LOGIN, true)
+            } else {
+                applicationContext.showToast(R.string.error_save_unsuccessful)
+            }
         }
     }
 
-    private fun navigateTo(navDestination: Int) {
-        navController?.popBackStack()
-        navController?.navigate(navDestination)
+    private fun passcodeMatches(passcode: String): Boolean {
+        return sharedPreferences.getString(
+            Constants.Password.SharedPreferenceKeys.PASSCODE_KEY,
+            ""
+        ) == passcode
     }
 
-    private fun showCreditsDialog() {
-        isDialogVisible = true
+    private fun login() {
+        val isSuccessful = with(sharedPreferences.edit()) {
+            putBoolean(AUTHENTICATED_KEY, true)
+            commit()
+        }
+
+        if (isSuccessful) {
+            navigateTo(VIEW_ACCOUNTS, true)
+        }
     }
+
+    private fun getSecretAnswer(): String {
+        return sharedPreferences.getString(
+            Constants.Password.SharedPreferenceKeys.SECRET_ANSWER_KEY,
+            "",
+        ) ?: ""
+    }
+
+    private fun getSecretQuestion(): String {
+        return sharedPreferences.getString(
+            Constants.Password.SharedPreferenceKeys.SECRET_QUESTION_KEY,
+            "",
+        ) ?: ""
+    }
+
+    private fun saveNewPasscode(newPasscode: String): Boolean {
+        return with(sharedPreferences.edit()) {
+            putString(
+                Constants.Password.SharedPreferenceKeys.PASSCODE_KEY,
+                newPasscode
+            )
+            commit()
+        }
+    }
+
+    private fun isAccountNotCreated(): Boolean {
+        val passcode = sharedPreferences.getString(
+            Constants.Password.SharedPreferenceKeys.PASSCODE_KEY,
+            ""
+        )
+        val secretQuestion = sharedPreferences.getString(
+            Constants.Password.SharedPreferenceKeys.SECRET_QUESTION_KEY,
+            ""
+        )
+        val secretAnswer = sharedPreferences.getString(
+            Constants.Password.SharedPreferenceKeys.SECRET_ANSWER_KEY,
+            ""
+        )
+        return passcode.isNullOrBlank()
+                && secretQuestion.isNullOrBlank()
+                && secretAnswer.isNullOrBlank()
+    }
+
+    // region end SharedPreferences methods
+
+    // region start CSV methods
+
+    /**
+     * Launcher to use when loading CSV content from the system's file picker.
+     */
+    private fun getCsvContent() = registerForActivityResult(ActivityResultContracts.GetContent()) {
+        if (it != null) accountViewModel.loadAccountsFromCsv(contentResolver, it, accounts)
+    }
+
+    /**
+     * Launcher to use when saving Accounts to a CSV file using the system's file picker.
+     */
+    private fun createDocumentCsv() =
+        registerForActivityResult(ActivityResultContracts.CreateDocument(CSV)) {
+            if (it != null) accountViewModel.saveAccountsAsCsv(contentResolver, it, accounts)
+        }
+
+    private fun importCsv() {
+        if (::csvLauncher.isInitialized) {
+            csvLauncher.launch(CSV)
+        }
+    }
+
+    private fun exportCsv() {
+        if (::createCsvLauncher.isInitialized) {
+            createCsvLauncher.launch(Constants.FileName.DEFAULT_FILENAME)
+        }
+    }
+
+    // region end CSV methods
 }

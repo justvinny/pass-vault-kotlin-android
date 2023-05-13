@@ -17,6 +17,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.vinsonb.password.manager.kotlin.R
+import com.vinsonb.password.manager.kotlin.ui.features.navigation.NavigationDestination
 import com.vinsonb.password.manager.kotlin.ui.theme.PassVaultTheme
 import com.vinsonb.password.manager.kotlin.utilities.ComponentPreviews
 
@@ -24,22 +25,22 @@ private val MENU_ITEMS = arrayOf(
     BottomNavMenuItem(
         icon = Icons.Filled.ManageAccounts,
         labelRes = R.string.menu_item_view,
-        navDestination = R.id.view_accounts_fragment,
+        navDestination = NavigationDestination.VIEW_ACCOUNTS,
     ),
     BottomNavMenuItem(
         icon = Icons.Filled.Save,
         labelRes = R.string.menu_item_save,
-        navDestination = R.id.save_account_fragment,
+        navDestination = NavigationDestination.SAVE_ACCOUNT,
     ),
     BottomNavMenuItem(
         icon = Icons.Filled.Factory,
         labelRes = R.string.menu_item_generate_pass,
-        navDestination = R.id.generate_password_fragment,
+        navDestination = NavigationDestination.GENERATE_PASSWORD,
     ),
 )
 
 @Composable
-fun BottomNavMenu(navigateTo: (Int) -> Unit) {
+fun BottomNavMenu(navigateTo: (NavigationDestination) -> Unit) {
     BottomAppBar(
         contentPadding = PaddingValues(0.dp),
     ) {
