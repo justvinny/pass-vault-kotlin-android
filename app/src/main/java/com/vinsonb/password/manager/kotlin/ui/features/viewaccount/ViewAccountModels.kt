@@ -9,7 +9,6 @@ data class ViewAccountState(
     val accounts: List<Account> = emptyList(),
     val searchQuery: String = "",
     val selectedAccount: Account? = null,
-    val toastState: ViewAccountToastState = ViewAccountToastState.Idle,
 )
 
 sealed interface ViewAccountToastState {

@@ -5,8 +5,8 @@ import com.vinsonb.password.manager.kotlin.di.CoroutineDispatchers
 import com.vinsonb.password.manager.kotlin.extensions.stateIn
 import com.vinsonb.password.manager.kotlin.ui.features.createlogin.CreateLoginViewModel
 import com.vinsonb.password.manager.kotlin.utilities.Constants.Password.PASSCODE_MAX_LENGTH
-import com.vinsonb.password.manager.kotlin.utilities.EventFlow
 import com.vinsonb.password.manager.kotlin.utilities.SimpleToastEvent
+import com.vinsonb.password.manager.kotlin.utilities.SimpleToastEventFlow
 import com.vinsonb.password.manager.kotlin.utilities.simpleToastEventFlow
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -19,7 +19,7 @@ class ForgotPasscodeViewModel(
     private val scope: CoroutineScope,
     private val savedSecretAnswer: String,
     private val saveNewPasscode: (String) -> Boolean,
-) : ViewModel(), EventFlow<SimpleToastEvent> by simpleToastEventFlow(scope) {
+) : ViewModel(), SimpleToastEventFlow by simpleToastEventFlow(scope) {
 
     constructor(
         dispatchers: CoroutineDispatchers,

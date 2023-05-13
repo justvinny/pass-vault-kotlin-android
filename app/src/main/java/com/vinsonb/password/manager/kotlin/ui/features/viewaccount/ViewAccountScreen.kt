@@ -1,6 +1,5 @@
 package com.vinsonb.password.manager.kotlin.ui.features.viewaccount
 
-import android.content.Context
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -27,10 +26,25 @@ import com.vinsonb.password.manager.kotlin.utilities.TextResIdProvider
 
 @Composable
 fun ViewAccountScreen(viewModel: ViewAccountViewModel) {
-    val state = viewModel.stateFlow.collectAsState()
+    val context = LocalContext.current
+    val state by viewModel.stateFlow.collectAsState()
+    val toastState by viewModel.eventFlow.collectAsState(ViewAccountToastState.Idle)
+    val isDialogVisible = rememberSaveable { mutableStateOf(false) }
+
+    when (toastState) {
+        ViewAccountToastState.Idle -> {}
+        else -> {
+            if (toastState is ViewAccountToastState.SuccessfullyDeleted) {
+                isDialogVisible.value = false
+            }
+
+            context.showToast(stringResource(id = (toastState as TextResIdProvider).getTextResId()))
+        }
+    }
 
     ViewAccountContent(
-        state = state.value,
+        state = state,
+        isDialogVisible = isDialogVisible,
         onSearch = viewModel::onSearch,
         onSelectAccount = viewModel::onSelectAccount,
         onUpdate = viewModel::onUpdateAccount,
@@ -42,17 +56,15 @@ fun ViewAccountScreen(viewModel: ViewAccountViewModel) {
 @Composable
 private fun ViewAccountContent(
     state: ViewAccountState,
+    isDialogVisible: MutableState<Boolean>,
     onSearch: (String) -> Unit,
     onSelectAccount: (Account) -> Unit,
     onUpdate: (Account, Account) -> Unit,
     onDelete: (Account) -> Unit,
     onClearSearch: () -> Unit,
 ) {
-    val context = LocalContext.current
-    val isDialogVisible = rememberSaveable { mutableStateOf(false) }
 
     ViewAccountDialogHandler(
-        context = context,
         state = state,
         isDialogVisible = isDialogVisible,
         onUpdate = onUpdate,
@@ -112,25 +124,11 @@ private fun ViewAccountContent(
 
 @Composable
 private fun ViewAccountDialogHandler(
-    context: Context,
     state: ViewAccountState,
     isDialogVisible: MutableState<Boolean>,
     onUpdate: (Account, Account) -> Unit,
     onDelete: (Account) -> Unit,
 ) {
-    LaunchedEffect(state.toastState) {
-        when (state.toastState) {
-            ViewAccountToastState.Idle -> {}
-            ViewAccountToastState.SuccessfullyDeleted -> {
-                context.showToast((state.toastState as TextResIdProvider).getTextResId())
-                isDialogVisible.value = false
-            }
-            else -> {
-                context.showToast((state.toastState as TextResIdProvider).getTextResId())
-            }
-        }
-    }
-
     if (isDialogVisible.value) {
         state.selectedAccount?.let {
             ViewAccountItemDialog(
@@ -145,6 +143,7 @@ private fun ViewAccountDialogHandler(
 @ScreenPreviews
 @Composable
 private fun PreviewViewAccountScreen() = PassVaultTheme {
+    val isDialogVisible = remember { mutableStateOf(false) }
     ViewAccountContent(
         state = ViewAccountState(
             listOf(
@@ -153,6 +152,7 @@ private fun PreviewViewAccountScreen() = PassVaultTheme {
                 Account("Platform2", "Username2@email.com", "bfzbxdfbngdfxafaf"),
             )
         ),
+        isDialogVisible = isDialogVisible,
         onSearch = {},
         onSelectAccount = {},
         onUpdate = { _, _ -> },

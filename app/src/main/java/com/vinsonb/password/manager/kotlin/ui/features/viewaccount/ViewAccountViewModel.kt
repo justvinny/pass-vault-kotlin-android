@@ -5,10 +5,10 @@ import com.vinsonb.password.manager.kotlin.database.AccountRepository
 import com.vinsonb.password.manager.kotlin.database.enitities.Account
 import com.vinsonb.password.manager.kotlin.di.CoroutineDispatchers
 import com.vinsonb.password.manager.kotlin.extensions.stateIn
-import com.vinsonb.password.manager.kotlin.utilities.Constants
+import com.vinsonb.password.manager.kotlin.utilities.EventFlow
+import com.vinsonb.password.manager.kotlin.utilities.eventFlowDelegate
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.combine
@@ -23,7 +23,7 @@ class ViewAccountViewModel(
     private val insertAccount: suspend (Account) -> Boolean,
     private val updateAccount: suspend (Account) -> Boolean,
     private val deleteAccount: suspend (Account) -> Boolean,
-) : ViewModel() {
+) : ViewModel(), EventFlow<ViewAccountToastState> by eventFlowDelegate(scope) {
     @Inject
     constructor(
         accountRepository: AccountRepository,
@@ -67,10 +67,8 @@ class ViewAccountViewModel(
             }
 
             if (hasSucceeded) {
-                _stateFlow.update { it.copy(toastState = ViewAccountToastState.SuccessfullyUpdated) }
+                sendEvent(ViewAccountToastState.SuccessfullyUpdated)
             }
-
-            changeToIdleAfterDelay()
         }
     }
 
@@ -79,10 +77,12 @@ class ViewAccountViewModel(
         val isDeleted = isInserted && deleteAccount(originalAccount)
 
         if (!isInserted) {
-            _stateFlow.update { it.copy(toastState = ViewAccountToastState.FailedUsernameUpdate) }
+            sendEvent(ViewAccountToastState.FailedUsernameUpdate)
         } else if (!isDeleted) {
             deleteAccount(account)
-            _stateFlow.update { it.copy(toastState = ViewAccountToastState.FailedAccountUpdate) }
+            sendEvent(ViewAccountToastState.FailedAccountUpdate)
+        } else {
+            onSelectAccount(account)
         }
 
         return isInserted && isDeleted
@@ -91,7 +91,7 @@ class ViewAccountViewModel(
     private suspend fun handlePasswordOnlyChange(account: Account): Boolean {
         return updateAccount(account).also { isUpdated ->
             if (!isUpdated) {
-                _stateFlow.update { it.copy(toastState = ViewAccountToastState.FailedAccountUpdate) }
+                sendEvent(ViewAccountToastState.FailedAccountUpdate)
             }
         }
     }
@@ -99,15 +99,9 @@ class ViewAccountViewModel(
     fun onDeleteAccount(account: Account) {
         scope.launch {
             if (deleteAccount(account)) {
-                _stateFlow.update { it.copy(toastState = ViewAccountToastState.SuccessfullyDeleted) }
-                changeToIdleAfterDelay()
+                sendEvent(ViewAccountToastState.SuccessfullyDeleted)
             }
         }
-    }
-
-    private suspend fun changeToIdleAfterDelay() {
-        delay(Constants.Toast.SHORT_DELAY)
-        _stateFlow.update { it.copy(toastState = ViewAccountToastState.Idle) }
     }
 
     fun onClearSearch() {

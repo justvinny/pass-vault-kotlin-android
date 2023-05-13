@@ -4,6 +4,7 @@ import app.cash.turbine.test
 import com.vinsonb.password.manager.kotlin.database.enitities.Account
 import com.vinsonb.password.manager.kotlin.runCancellingTest
 import junit.framework.TestCase.assertEquals
+import junit.framework.TestCase.assertNotSame
 import junitparams.JUnitParamsRunner
 import junitparams.Parameters
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -75,24 +76,23 @@ class ViewAccountViewModelTest {
                 updateAccount = mockFunctions::updateAccount,
             )
 
-            // Act
-            viewModel.onUpdateAccount(
-                account = Account(
-                    platform = "Platform",
-                    username = "Username1",
-                    password = "NewPassword"
-                ),
-                originalAccount = Account(
-                    platform = "Platform",
-                    username = "Username1",
-                    password = "Password"
-                ),
-            )
+            viewModel.eventFlow.test {
+                // Act
+                viewModel.onUpdateAccount(
+                    account = Account(
+                        platform = "Platform",
+                        username = "Username1",
+                        password = "NewPassword"
+                    ),
+                    originalAccount = Account(
+                        platform = "Platform",
+                        username = "Username1",
+                        password = "Password"
+                    ),
+                )
 
-            // Assert
-            viewModel.stateFlow.test {
-                assertEquals(ViewAccountToastState.SuccessfullyUpdated, awaitItem().toastState)
-                assertEquals(ViewAccountToastState.Idle, awaitItem().toastState)
+                // Assert
+                assertEquals(ViewAccountToastState.SuccessfullyUpdated, awaitItem())
             }
 
             verify(mockFunctions, times(0)).deleteAccount(any())
@@ -110,25 +110,29 @@ class ViewAccountViewModelTest {
                 insertAccount = mockFunctions::insertAccount,
                 updateAccount = mockFunctions::updateAccount,
             )
-
-            // Act
-            viewModel.onUpdateAccount(
-                account = Account(
-                    platform = "Platform",
-                    username = "NewUsername",
-                    password = "NewPassword"
-                ),
-                originalAccount = Account(
-                    platform = "Platform",
-                    username = "Username1",
-                    password = "Password"
-                ),
+            val account = Account(
+                platform = "Platform",
+                username = "NewUsername",
+                password = "NewPassword"
             )
 
-            // Assert
+            viewModel.eventFlow.test {
+                // Act
+                viewModel.onUpdateAccount(
+                    account = account,
+                    originalAccount = Account(
+                        platform = "Platform",
+                        username = "Username1",
+                        password = "Password"
+                    ),
+                )
+
+                // Assert
+                assertEquals(ViewAccountToastState.SuccessfullyUpdated, awaitItem())
+            }
+
             viewModel.stateFlow.test {
-                assertEquals(ViewAccountToastState.SuccessfullyUpdated, awaitItem().toastState)
-                assertEquals(ViewAccountToastState.Idle, awaitItem().toastState)
+                assertEquals(account, awaitItem().selectedAccount)
             }
 
             verify(mockFunctions, times(1)).deleteAccount(any())
@@ -149,24 +153,23 @@ class ViewAccountViewModelTest {
                 updateAccount = mockFunctions::updateAccount,
             )
 
-            // Act
-            viewModel.onUpdateAccount(
-                account = Account(
-                    platform = "Platform",
-                    username = "Username1",
-                    password = "NewPassword"
-                ),
-                originalAccount = Account(
-                    platform = "Platform",
-                    username = "Username1",
-                    password = "Password"
-                ),
-            )
+            viewModel.eventFlow.test {
+                // Act
+                viewModel.onUpdateAccount(
+                    account = Account(
+                        platform = "Platform",
+                        username = "Username1",
+                        password = "NewPassword"
+                    ),
+                    originalAccount = Account(
+                        platform = "Platform",
+                        username = "Username1",
+                        password = "Password"
+                    ),
+                )
 
-            // Assert
-            viewModel.stateFlow.test {
-                assertEquals(ViewAccountToastState.FailedAccountUpdate, awaitItem().toastState)
-                assertEquals(ViewAccountToastState.Idle, awaitItem().toastState)
+                // Assert
+                assertEquals(ViewAccountToastState.FailedAccountUpdate, awaitItem())
             }
 
             verify(mockFunctions, times(0)).deleteAccount(any())
@@ -186,25 +189,29 @@ class ViewAccountViewModelTest {
                 insertAccount = mockFunctions::insertAccount,
                 updateAccount = mockFunctions::updateAccount,
             )
-
-            // Act
-            viewModel.onUpdateAccount(
-                Account(
-                    platform = "Platform",
-                    username = "NewUsername",
-                    password = "NewPassword"
-                ),
-                Account(
-                    platform = "Platform",
-                    username = "Username1",
-                    password = "Password"
-                ),
+            val account = Account(
+                platform = "Platform",
+                username = "NewUsername",
+                password = "NewPassword"
             )
 
-            // Assert
+            viewModel.eventFlow.test {
+                // Act
+                viewModel.onUpdateAccount(
+                    account = account,
+                    originalAccount = Account(
+                        platform = "Platform",
+                        username = "Username1",
+                        password = "Password"
+                    ),
+                )
+
+                // Assert
+                assertEquals(ViewAccountToastState.FailedUsernameUpdate, awaitItem())
+            }
+
             viewModel.stateFlow.test {
-                assertEquals(ViewAccountToastState.FailedUsernameUpdate, awaitItem().toastState)
-                assertEquals(ViewAccountToastState.Idle, awaitItem().toastState)
+                assertNotSame(account, awaitItem().selectedAccount)
             }
 
             verify(mockFunctions, times(0)).deleteAccount(any())
@@ -224,25 +231,29 @@ class ViewAccountViewModelTest {
                 insertAccount = mockFunctions::insertAccount,
                 updateAccount = mockFunctions::updateAccount,
             )
-
-            // Act
-            viewModel.onUpdateAccount(
-                Account(
-                    platform = "Platform",
-                    username = "NewUsername",
-                    password = "NewPassword"
-                ),
-                Account(
-                    platform = "Platform",
-                    username = "Username1",
-                    password = "Password"
-                ),
+            val account = Account(
+                platform = "Platform",
+                username = "NewUsername",
+                password = "NewPassword"
             )
 
-            // Assert
+            viewModel.eventFlow.test {
+                // Act
+                viewModel.onUpdateAccount(
+                    account = account,
+                    originalAccount = Account(
+                        platform = "Platform",
+                        username = "Username1",
+                        password = "Password"
+                    ),
+                )
+
+                // Assert
+                assertEquals(ViewAccountToastState.FailedAccountUpdate, awaitItem())
+            }
+
             viewModel.stateFlow.test {
-                assertEquals(ViewAccountToastState.FailedAccountUpdate, awaitItem().toastState)
-                assertEquals(ViewAccountToastState.Idle, awaitItem().toastState)
+                assertNotSame(account, awaitItem().selectedAccount)
             }
 
             verify(mockFunctions, times(2)).deleteAccount(any())
@@ -256,19 +267,18 @@ class ViewAccountViewModelTest {
             // Arrange
             val viewModel = provideViewModel()
 
-            // Act
-            viewModel.onDeleteAccount(
-                Account(
-                    platform = "NewPlatform",
-                    username = "NewUsername",
-                    password = "NewPassword"
+            viewModel.eventFlow.test {
+                // Act
+                viewModel.onDeleteAccount(
+                    Account(
+                        platform = "NewPlatform",
+                        username = "NewUsername",
+                        password = "NewPassword"
+                    )
                 )
-            )
 
-            // Assert
-            viewModel.stateFlow.test {
-                assertEquals(ViewAccountToastState.SuccessfullyDeleted, awaitItem().toastState)
-                assertEquals(ViewAccountToastState.Idle, awaitItem().toastState)
+                // Assert
+                assertEquals(ViewAccountToastState.SuccessfullyDeleted, awaitItem())
             }
         }
 
