@@ -10,11 +10,13 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import com.vinsonb.password.manager.kotlin.R
 import com.vinsonb.password.manager.kotlin.database.enitities.Account
+import com.vinsonb.password.manager.kotlin.extensions.showToast
 import com.vinsonb.password.manager.kotlin.ui.components.CustomTextField
 import com.vinsonb.password.manager.kotlin.ui.theme.PassVaultTheme
 import com.vinsonb.password.manager.kotlin.utilities.ScreenPreviews
@@ -24,6 +26,12 @@ import com.vinsonb.password.manager.kotlin.utilities.clearMutableStateStrings
 
 @Composable
 fun SaveAccountScreen(viewModel: SaveAccountViewModel) {
+    val toastState by viewModel.eventFlow.collectAsState(initial = SimpleToastEvent.None)
+    ToastHandler(
+        toastState = toastState,
+        resetToastState = { viewModel.sendEvent(SimpleToastEvent.None) },
+    )
+
     val state by viewModel.stateFlow.collectAsState()
     val shouldClearAllInput = viewModel.eventFlow.collectAsState(
         initial = SimpleToastEvent.None
@@ -39,6 +47,25 @@ fun SaveAccountScreen(viewModel: SaveAccountViewModel) {
         saveAccount = viewModel::saveAccount,
         resetEvent = viewModel::resetEvent,
     )
+}
+
+@Composable
+private fun ToastHandler(
+    toastState: SimpleToastEvent,
+    resetToastState: () -> Unit,
+) {
+    val context = LocalContext.current
+
+    LaunchedEffect(toastState) {
+        when (toastState) {
+            SimpleToastEvent.None -> {}
+            SimpleToastEvent.ShowFailed ->
+                context.showToast(R.string.error_save_unsuccessful)
+            SimpleToastEvent.ShowSucceeded ->
+                context.showToast(R.string.success_save_account)
+        }
+        resetToastState()
+    }
 }
 
 @Composable

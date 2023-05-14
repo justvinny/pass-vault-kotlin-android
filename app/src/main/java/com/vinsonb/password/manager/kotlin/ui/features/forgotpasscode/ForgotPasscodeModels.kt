@@ -1,20 +1,15 @@
 package com.vinsonb.password.manager.kotlin.ui.features.forgotpasscode
 
 import com.vinsonb.password.manager.kotlin.R
-import com.vinsonb.password.manager.kotlin.ui.features.forgotpasscode.ForgotPasscodeError.EmptyInputError
 import com.vinsonb.password.manager.kotlin.utilities.TextResIdProvider
 import com.vinsonb.password.manager.kotlin.utilities.textResIdEmptyInputProvider
 import com.vinsonb.password.manager.kotlin.utilities.textResIdProvider
 
-sealed interface ForgotPasscodeState {
-    object Hidden : ForgotPasscodeState
-
-    data class Visible(
-        val secretAnswerError: ForgotPasscodeError = EmptyInputError,
-        val passcodeError: ForgotPasscodeError = EmptyInputError,
-        val repeatPasscodeError: ForgotPasscodeError = EmptyInputError,
-    ) : ForgotPasscodeState
-}
+data class ForgotPasscodeState(
+    val secretAnswerError: ForgotPasscodeError = ForgotPasscodeError.EmptyInputError,
+    val passcodeError: ForgotPasscodeError = ForgotPasscodeError.EmptyInputError,
+    val repeatPasscodeError: ForgotPasscodeError = ForgotPasscodeError.EmptyInputError,
+)
 
 sealed interface ForgotPasscodeError {
     object None : ForgotPasscodeError

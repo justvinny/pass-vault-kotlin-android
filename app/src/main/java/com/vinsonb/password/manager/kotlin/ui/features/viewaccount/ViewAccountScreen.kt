@@ -26,22 +26,15 @@ import com.vinsonb.password.manager.kotlin.utilities.TextResIdProvider
 
 @Composable
 fun ViewAccountScreen(viewModel: ViewAccountViewModel) {
-    val context = LocalContext.current
-    val state by viewModel.stateFlow.collectAsState()
-    val toastState by viewModel.eventFlow.collectAsState(ViewAccountToastState.Idle)
+    val toastState by viewModel.eventFlow.collectAsState(ViewAccountToastState.None)
     val isDialogVisible = rememberSaveable { mutableStateOf(false) }
+    ToastHandler(
+        toastState = toastState,
+        dismissDialog = { isDialogVisible.value = false },
+        resetToastState = { viewModel.sendEvent(ViewAccountToastState.None) },
+    )
 
-    when (toastState) {
-        ViewAccountToastState.Idle -> {}
-        else -> {
-            if (toastState is ViewAccountToastState.SuccessfullyDeleted) {
-                isDialogVisible.value = false
-            }
-
-            context.showToast(stringResource(id = (toastState as TextResIdProvider).getTextResId()))
-        }
-    }
-
+    val state by viewModel.stateFlow.collectAsState()
     ViewAccountContent(
         state = state,
         isDialogVisible = isDialogVisible,
@@ -51,6 +44,29 @@ fun ViewAccountScreen(viewModel: ViewAccountViewModel) {
         onDelete = viewModel::onDeleteAccount,
         onClearSearch = viewModel::onClearSearch,
     )
+}
+
+@Composable
+private fun ToastHandler(
+    toastState: ViewAccountToastState,
+    dismissDialog: () -> Unit,
+    resetToastState: () -> Unit,
+) {
+    val context = LocalContext.current
+
+    LaunchedEffect(toastState) {
+        when (toastState) {
+            ViewAccountToastState.None -> {}
+            else -> {
+                if (toastState is ViewAccountToastState.SuccessfullyDeleted) {
+                    dismissDialog()
+                }
+
+                context.showToast((toastState as TextResIdProvider).getTextResId())
+            }
+        }
+        resetToastState()
+    }
 }
 
 @Composable

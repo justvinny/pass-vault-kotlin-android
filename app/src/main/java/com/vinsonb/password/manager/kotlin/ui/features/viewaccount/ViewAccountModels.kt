@@ -24,5 +24,5 @@ sealed interface ViewAccountToastState {
     object FailedUsernameUpdate : ViewAccountToastState,
         TextResIdProvider by textResIdProvider(R.string.error_save_unsuccessful)
 
-    object Idle : ViewAccountToastState
+    object None : ViewAccountToastState
 }

@@ -9,18 +9,20 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.vinsonb.password.manager.kotlin.R
+import com.vinsonb.password.manager.kotlin.extensions.showToast
 import com.vinsonb.password.manager.kotlin.ui.components.HorizontalFillSpacer
 import com.vinsonb.password.manager.kotlin.ui.components.VerticalFillSpacer
+import com.vinsonb.password.manager.kotlin.ui.features.forgotpasscode.ForgotPasscodeDialog
+import com.vinsonb.password.manager.kotlin.ui.features.forgotpasscode.ForgotPasscodeViewModel
 import com.vinsonb.password.manager.kotlin.ui.features.login.LoginState.Companion.BUTTON_GROUP_ROW_COUNT
 import com.vinsonb.password.manager.kotlin.ui.features.login.LoginState.Companion.BUTTON_GROUP_ROW_N_ITEMS
 import com.vinsonb.password.manager.kotlin.ui.features.login.LoginState.Companion.BUTTON_GROUP_ROW_N_ITEMS_LAST_INDEX
@@ -28,10 +30,39 @@ import com.vinsonb.password.manager.kotlin.ui.features.login.LoginState.Companio
 import com.vinsonb.password.manager.kotlin.ui.theme.PassVaultTheme
 import com.vinsonb.password.manager.kotlin.utilities.Constants.Password.PASSCODE_MAX_LENGTH
 import com.vinsonb.password.manager.kotlin.utilities.ScreenPreviews
+import com.vinsonb.password.manager.kotlin.utilities.SimpleToastEvent
 
 @Composable
-fun LoginScreen(viewModel: LoginViewModel, showForgotPasswordDialog: () -> Unit) {
-    val state by viewModel.stateFlow.collectAsState()
+fun LoginScreen(
+    loginViewModel: LoginViewModel,
+    forgotPasscodeViewModel: ForgotPasscodeViewModel,
+    secretQuestion: String,
+    showToastFromActivity: (Int) -> Unit,
+    passcodeMatches: (String) -> Boolean,
+    login: () -> Unit,
+) {
+    val state by loginViewModel.stateFlow.collectAsState()
+    val forgotPasscodeToastState by forgotPasscodeViewModel.eventFlow.collectAsState(
+        SimpleToastEvent.None
+    )
+    val isDialogVisible = rememberSaveable { mutableStateOf(false) }
+
+    ToastHandler(
+        loginState = state,
+        forgotPasscodeToastState = forgotPasscodeToastState,
+        showToastFromActivity = showToastFromActivity,
+        passcodeMatches = passcodeMatches,
+        login = login,
+        onClearAllDigits = loginViewModel::onClearAllDigits,
+        dismissDialog = { isDialogVisible.value = false },
+        resetForgotPasscodeToastState = { forgotPasscodeViewModel.sendEvent(SimpleToastEvent.None) }
+    )
+
+    ForgotPasscodeDialogHandler(
+        isDialogVisible = isDialogVisible,
+        forgotPasscodeViewModel = forgotPasscodeViewModel,
+        secretQuestion = secretQuestion,
+    )
 
     Column(
         modifier = Modifier
@@ -50,10 +81,70 @@ fun LoginScreen(viewModel: LoginViewModel, showForgotPasswordDialog: () -> Unit)
         VerticalFillSpacer()
         PasscodeCircleGroup(state)
         PasscodeButtonGroup(
-            onEnterPasscodeDigit = viewModel::onEnterPasscodeDigit,
-            onClearLastDigit = viewModel::onClearLastDigit,
-            showForgotPasswordDialog = showForgotPasswordDialog,
+            onEnterPasscodeDigit = loginViewModel::onEnterPasscodeDigit,
+            onClearLastDigit = loginViewModel::onClearLastDigit,
+            showForgotPasswordDialog = { isDialogVisible.value = true },
         )
+    }
+}
+
+@Composable
+private fun ToastHandler(
+    loginState: LoginState,
+    forgotPasscodeToastState: SimpleToastEvent,
+    showToastFromActivity: (Int) -> Unit,
+    passcodeMatches: (String) -> Boolean,
+    login: () -> Unit,
+    onClearAllDigits: () -> Unit,
+    dismissDialog: () -> Unit,
+    resetForgotPasscodeToastState: () -> Unit,
+) {
+    LaunchedEffect(loginState) {
+        if (loginState.passcodeLength == PASSCODE_MAX_LENGTH) {
+            if (passcodeMatches(loginState.passcode)) {
+                login()
+            } else {
+                showToastFromActivity(R.string.error_wrong_passcode)
+            }
+
+            onClearAllDigits()
+        }
+    }
+
+    val context = LocalContext.current
+    LaunchedEffect(forgotPasscodeToastState) {
+        when (forgotPasscodeToastState) {
+            SimpleToastEvent.None -> {}
+            SimpleToastEvent.ShowFailed ->
+                context.showToast(R.string.error_reset_unsuccessful)
+            SimpleToastEvent.ShowSucceeded -> {
+                dismissDialog()
+                context.showToast(R.string.success_passcode_reset)
+            }
+        }
+        resetForgotPasscodeToastState()
+    }
+}
+
+@Composable
+private fun ForgotPasscodeDialogHandler(
+    isDialogVisible: MutableState<Boolean>,
+    forgotPasscodeViewModel: ForgotPasscodeViewModel,
+    secretQuestion: String,
+) {
+    val state by forgotPasscodeViewModel.stateFlow.collectAsState()
+
+    if (isDialogVisible.value) {
+        ForgotPasscodeDialog(
+            state = state,
+            resetPasscode = forgotPasscodeViewModel::resetPasscode,
+            validateSecretAnswer = forgotPasscodeViewModel::validateSecretAnswer,
+            validatePasscode = forgotPasscodeViewModel::validatePasscode,
+            validateRepeatPasscode = forgotPasscodeViewModel::validateRepeatPasscode,
+            secretQuestion = secretQuestion,
+        ) {
+            isDialogVisible.value = false
+        }
     }
 }
 
@@ -135,7 +226,15 @@ private fun PasscodeButtonGroup(
 @Composable
 private fun PreviewLoginScreen() = PassVaultTheme {
     LoginScreen(
-        viewModel = LoginViewModel(rememberCoroutineScope()),
-        showForgotPasswordDialog = {},
+        loginViewModel = LoginViewModel(rememberCoroutineScope()),
+        forgotPasscodeViewModel = ForgotPasscodeViewModel(
+            rememberCoroutineScope(),
+            "secretAnswer",
+            saveNewPasscode = { true },
+        ),
+        secretQuestion = "secretQuestion",
+        showToastFromActivity = {},
+        passcodeMatches = { true },
+        login = {},
     )
 }
