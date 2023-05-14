@@ -29,7 +29,6 @@ import com.vinsonb.password.manager.kotlin.extensions.showToast
 import com.vinsonb.password.manager.kotlin.ui.features.bottomnavmenu.BottomNavMenu
 import com.vinsonb.password.manager.kotlin.ui.features.createlogin.CreateLoginScreen
 import com.vinsonb.password.manager.kotlin.ui.features.createlogin.CreateLoginViewModel
-import com.vinsonb.password.manager.kotlin.ui.features.credits.CreditsDialog
 import com.vinsonb.password.manager.kotlin.ui.features.forgotpasscode.ForgotPasscodeViewModel
 import com.vinsonb.password.manager.kotlin.ui.features.login.LoginScreen
 import com.vinsonb.password.manager.kotlin.ui.features.login.LoginViewModel
@@ -39,7 +38,6 @@ import com.vinsonb.password.manager.kotlin.ui.features.passwordgenerator.Passwor
 import com.vinsonb.password.manager.kotlin.ui.features.saveaccount.SaveAccountScreen
 import com.vinsonb.password.manager.kotlin.ui.features.saveaccount.SaveAccountViewModel
 import com.vinsonb.password.manager.kotlin.ui.features.topnavmenu.TopNavMenu
-import com.vinsonb.password.manager.kotlin.ui.features.topnavmenu.TopNavMenuItem
 import com.vinsonb.password.manager.kotlin.ui.features.viewaccount.ViewAccountScreen
 import com.vinsonb.password.manager.kotlin.ui.theme.PassVaultTheme
 import com.vinsonb.password.manager.kotlin.utilities.Constants
@@ -54,7 +52,6 @@ import java.time.LocalTime
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
     private var accounts: List<Account> = listOf()
-    private var isCreditsDialogVisible by mutableStateOf(false)
     private var isBottomNavMenuVisible by mutableStateOf(true)
     private var isTopNavMenuVisible by mutableStateOf(true)
     private var isTopNavMenuItemsVisible by mutableStateOf(true)
@@ -64,25 +61,6 @@ class MainActivity : AppCompatActivity() {
     private lateinit var sharedPreferences: SharedPreferences
     private lateinit var csvLauncher: ActivityResultLauncher<String>
     private lateinit var createCsvLauncher: ActivityResultLauncher<String>
-
-    private val topNavMenuItems = arrayOf(
-        TopNavMenuItem(
-            itemNameRes = R.string.menu_item_import_csv,
-            action = ::importCsv,
-        ),
-        TopNavMenuItem(
-            itemNameRes = R.string.menu_item_export_csv,
-            action = ::exportCsv,
-        ),
-        TopNavMenuItem(
-            itemNameRes = R.string.menu_item_credits,
-            action = ::showCreditsDialog,
-        ),
-        TopNavMenuItem(
-            itemNameRes = R.string.menu_item_logout,
-            action = ::logout,
-        ),
-    )
 
     private val accountViewModel: AccountViewModel by viewModels()
     private val loginViewModel: LoginViewModel by viewModels()
@@ -136,8 +114,10 @@ class MainActivity : AppCompatActivity() {
                         if (isTopNavMenuVisible) {
                             TopNavMenu(
                                 title = topNavMenuTitle,
-                                menuItems = topNavMenuItems,
                                 isMenuVisible = isTopNavMenuItemsVisible,
+                                importCsv = ::importCsv,
+                                exportCsv = ::exportCsv,
+                                logout = ::logout,
                             )
                         }
                     },
@@ -192,10 +172,6 @@ class MainActivity : AppCompatActivity() {
                             }
                         }
                     }
-                }
-
-                if (isCreditsDialogVisible) {
-                    CreditsDialog { isCreditsDialogVisible = false }
                 }
             }
         }
@@ -287,10 +263,6 @@ class MainActivity : AppCompatActivity() {
             }
             else -> ""
         }
-    }
-
-    private fun showCreditsDialog() {
-        isCreditsDialogVisible = true
     }
 
     // region end navigation methods
