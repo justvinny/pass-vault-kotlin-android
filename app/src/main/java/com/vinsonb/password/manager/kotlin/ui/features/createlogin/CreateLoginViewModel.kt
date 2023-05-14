@@ -4,8 +4,7 @@ import androidx.lifecycle.ViewModel
 import com.vinsonb.password.manager.kotlin.extensions.stateIn
 import com.vinsonb.password.manager.kotlin.ui.features.forgotpasscode.ForgotPasscodeViewModel
 import com.vinsonb.password.manager.kotlin.utilities.Constants.Password.PASSCODE_MAX_LENGTH
-import com.vinsonb.password.manager.kotlin.utilities.EventFlow
-import com.vinsonb.password.manager.kotlin.utilities.SimpleToastEvent
+import com.vinsonb.password.manager.kotlin.utilities.SimpleToastEventFlow
 import com.vinsonb.password.manager.kotlin.utilities.simpleToastEventFlow
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -17,7 +16,7 @@ import kotlinx.coroutines.flow.update
 class CreateLoginViewModel(
     private val scope: CoroutineScope,
     private val _createLogin: (String, String, String) -> Unit,
-) : ViewModel(), EventFlow<SimpleToastEvent> by simpleToastEventFlow(scope) {
+) : ViewModel(), SimpleToastEventFlow by simpleToastEventFlow(scope) {
 
     private val _stateFlow = MutableStateFlow(CreateLoginState())
     val stateFlow = _stateFlow.stateIn(scope, CreateLoginState())

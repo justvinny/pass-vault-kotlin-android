@@ -15,7 +15,6 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -30,9 +29,6 @@ import com.vinsonb.password.manager.kotlin.extensions.showToast
 import com.vinsonb.password.manager.kotlin.ui.features.bottomnavmenu.BottomNavMenu
 import com.vinsonb.password.manager.kotlin.ui.features.createlogin.CreateLoginScreen
 import com.vinsonb.password.manager.kotlin.ui.features.createlogin.CreateLoginViewModel
-import com.vinsonb.password.manager.kotlin.ui.features.credits.CreditsDialog
-import com.vinsonb.password.manager.kotlin.ui.features.forgotpasscode.ForgotPasscodeDialog
-import com.vinsonb.password.manager.kotlin.ui.features.forgotpasscode.ForgotPasscodeState
 import com.vinsonb.password.manager.kotlin.ui.features.forgotpasscode.ForgotPasscodeViewModel
 import com.vinsonb.password.manager.kotlin.ui.features.login.LoginScreen
 import com.vinsonb.password.manager.kotlin.ui.features.login.LoginViewModel
@@ -42,24 +38,20 @@ import com.vinsonb.password.manager.kotlin.ui.features.passwordgenerator.Passwor
 import com.vinsonb.password.manager.kotlin.ui.features.saveaccount.SaveAccountScreen
 import com.vinsonb.password.manager.kotlin.ui.features.saveaccount.SaveAccountViewModel
 import com.vinsonb.password.manager.kotlin.ui.features.topnavmenu.TopNavMenu
-import com.vinsonb.password.manager.kotlin.ui.features.topnavmenu.TopNavMenuItem
 import com.vinsonb.password.manager.kotlin.ui.features.viewaccount.ViewAccountScreen
 import com.vinsonb.password.manager.kotlin.ui.theme.PassVaultTheme
 import com.vinsonb.password.manager.kotlin.utilities.Constants
 import com.vinsonb.password.manager.kotlin.utilities.Constants.MimeType.CSV
 import com.vinsonb.password.manager.kotlin.utilities.Constants.Password.SharedPreferenceKeys.AUTHENTICATED_KEY
-import com.vinsonb.password.manager.kotlin.utilities.SimpleToastEvent
 import com.vinsonb.password.manager.kotlin.viewmodels.AccountViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.launch
 import java.time.LocalTime
 
 @OptIn(ExperimentalMaterial3Api::class)
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
     private var accounts: List<Account> = listOf()
-    private var isCreditsDialogVisible by mutableStateOf(false)
     private var isBottomNavMenuVisible by mutableStateOf(true)
     private var isTopNavMenuVisible by mutableStateOf(true)
     private var isTopNavMenuItemsVisible by mutableStateOf(true)
@@ -69,25 +61,6 @@ class MainActivity : AppCompatActivity() {
     private lateinit var sharedPreferences: SharedPreferences
     private lateinit var csvLauncher: ActivityResultLauncher<String>
     private lateinit var createCsvLauncher: ActivityResultLauncher<String>
-
-    private val topNavMenuItems = arrayOf(
-        TopNavMenuItem(
-            itemNameRes = R.string.menu_item_import_csv,
-            action = ::importCsv,
-        ),
-        TopNavMenuItem(
-            itemNameRes = R.string.menu_item_export_csv,
-            action = ::exportCsv,
-        ),
-        TopNavMenuItem(
-            itemNameRes = R.string.menu_item_credits,
-            action = ::showCreditsDialog,
-        ),
-        TopNavMenuItem(
-            itemNameRes = R.string.menu_item_logout,
-            action = ::logout,
-        ),
-    )
 
     private val accountViewModel: AccountViewModel by viewModels()
     private val loginViewModel: LoginViewModel by viewModels()
@@ -134,44 +107,6 @@ class MainActivity : AppCompatActivity() {
             accounts = it
         }
 
-        lifecycleScope.launch {
-            saveAccountViewModel.eventFlow.collect {
-                when (it) {
-                    SimpleToastEvent.None -> {}
-                    SimpleToastEvent.ShowFailed ->
-                        applicationContext.showToast(R.string.error_save_unsuccessful)
-                    SimpleToastEvent.ShowSucceeded ->
-                        applicationContext.showToast(R.string.success_save_account)
-                }
-            }
-        }
-
-        lifecycleScope.launch {
-            loginViewModel.stateFlow.collect { state ->
-                if (state.passcodeLength == Constants.Password.PASSCODE_MAX_LENGTH) {
-                    if (passcodeMatches(state.passcode)) {
-                        login()
-                    } else {
-                        applicationContext.showToast(R.string.error_wrong_passcode)
-                    }
-
-                    loginViewModel.onClearAllDigits()
-                }
-            }
-        }
-
-        lifecycleScope.launch {
-            forgotPasscodeViewModel.eventFlow.collect {
-                when (it) {
-                    SimpleToastEvent.None -> {}
-                    SimpleToastEvent.ShowFailed ->
-                        applicationContext.showToast(R.string.error_reset_unsuccessful)
-                    SimpleToastEvent.ShowSucceeded ->
-                        applicationContext.showToast(R.string.success_passcode_reset)
-                }
-            }
-        }
-
         setContent {
             PassVaultTheme {
                 Scaffold(
@@ -179,8 +114,10 @@ class MainActivity : AppCompatActivity() {
                         if (isTopNavMenuVisible) {
                             TopNavMenu(
                                 title = topNavMenuTitle,
-                                menuItems = topNavMenuItems,
                                 isMenuVisible = isTopNavMenuItemsVisible,
+                                importCsv = ::importCsv,
+                                exportCsv = ::exportCsv,
+                                logout = ::logout,
                             )
                         }
                     },
@@ -212,7 +149,14 @@ class MainActivity : AppCompatActivity() {
                             }
 
                             composable(LOGIN.destination) {
-                                LoginScreen(loginViewModel, forgotPasscodeViewModel::showDialog)
+                                LoginScreen(
+                                    loginViewModel = loginViewModel,
+                                    forgotPasscodeViewModel = forgotPasscodeViewModel,
+                                    secretQuestion = getSecretQuestion(),
+                                    showToastFromActivity = applicationContext::showToast,
+                                    passcodeMatches = ::passcodeMatches,
+                                    login = ::login,
+                                )
                             }
 
                             composable(VIEW_ACCOUNTS.destination) {
@@ -228,20 +172,6 @@ class MainActivity : AppCompatActivity() {
                             }
                         }
                     }
-                }
-
-                if (isCreditsDialogVisible) {
-                    CreditsDialog {
-                        isCreditsDialogVisible = false
-                    }
-                }
-
-                val isDialogShown by forgotPasscodeViewModel.stateFlow.collectAsState()
-                if (isDialogShown is ForgotPasscodeState.Visible) {
-                    ForgotPasscodeDialog(
-                        viewModel = forgotPasscodeViewModel,
-                        secretQuestion = getSecretQuestion(),
-                    )
                 }
             }
         }
@@ -333,10 +263,6 @@ class MainActivity : AppCompatActivity() {
             }
             else -> ""
         }
-    }
-
-    private fun showCreditsDialog() {
-        isCreditsDialogVisible = true
     }
 
     // region end navigation methods

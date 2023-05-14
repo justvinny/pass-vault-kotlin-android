@@ -14,6 +14,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import com.vinsonb.password.manager.kotlin.R
+import com.vinsonb.password.manager.kotlin.ui.features.credits.CreditsDialog
 import com.vinsonb.password.manager.kotlin.ui.theme.PassVaultTheme
 import com.vinsonb.password.manager.kotlin.utilities.ComponentPreviews
 
@@ -21,11 +22,35 @@ import com.vinsonb.password.manager.kotlin.utilities.ComponentPreviews
 @Composable
 fun TopNavMenu(
     title: String,
-    menuItems: Array<TopNavMenuItem>,
-    isMenuVisible: Boolean = true,
+    isMenuVisible: Boolean,
+    importCsv: () -> Unit,
+    exportCsv: () -> Unit,
+    logout: () -> Unit,
 ) {
-    var isMenuExpanded by rememberSaveable { mutableStateOf(false) }
+    val isCreditsDialogVisible = rememberSaveable { mutableStateOf(false) }
+    DialogHandler(isDialogVisible = isCreditsDialogVisible)
 
+    val topNavMenuItems = remember {
+        arrayOf(
+            TopNavMenuItem(
+                itemNameRes = R.string.menu_item_import_csv,
+                action = importCsv,
+            ),
+            TopNavMenuItem(
+                itemNameRes = R.string.menu_item_export_csv,
+                action = exportCsv,
+            ),
+            TopNavMenuItem(
+                itemNameRes = R.string.menu_item_credits,
+                action = { isCreditsDialogVisible.value = true },
+            ),
+            TopNavMenuItem(
+                itemNameRes = R.string.menu_item_logout,
+                action = logout,
+            ),
+        )
+    }
+    var isMenuExpanded by rememberSaveable { mutableStateOf(false) }
     TopAppBar(
         title = {
             Column(
@@ -62,7 +87,7 @@ fun TopNavMenu(
                         expanded = isMenuExpanded,
                         onDismissRequest = dismissMenu,
                     ) {
-                        menuItems.forEach { menuItem ->
+                        topNavMenuItems.forEach { menuItem ->
                             DropdownMenuItem(
                                 text = { Text(stringResource(id = menuItem.itemNameRes)) },
                                 onClick = {
@@ -78,28 +103,23 @@ fun TopNavMenu(
     )
 }
 
+@Composable
+private fun DialogHandler(
+    isDialogVisible: MutableState<Boolean>,
+) {
+    if (isDialogVisible.value) {
+        CreditsDialog { isDialogVisible.value = false }
+    }
+}
+
 @ComponentPreviews
 @Composable
 private fun PreviewTopNavMenu() = PassVaultTheme {
     TopNavMenu(
         title = stringResource(id = R.string.app_name),
-        menuItems = arrayOf(
-            TopNavMenuItem(
-                itemNameRes = R.string.menu_item_import_csv,
-                action = {},
-            ),
-            TopNavMenuItem(
-                itemNameRes = R.string.menu_item_export_csv,
-                action = {},
-            ),
-            TopNavMenuItem(
-                itemNameRes = R.string.menu_item_credits,
-                action = {},
-            ),
-            TopNavMenuItem(
-                itemNameRes = R.string.menu_item_logout,
-                action = {},
-            ),
-        )
+        isMenuVisible = true,
+        importCsv = {},
+        exportCsv = {},
+        logout = {},
     )
 }

@@ -21,7 +21,7 @@ class PasscodeUtilitiesTest {
             "wrong,false",
             "-=2as,false",
             "123456,false",
-            ",true",
+            ",false",
             "123,true",
             "12345,true",
         ]

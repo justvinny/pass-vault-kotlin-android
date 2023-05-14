@@ -19,6 +19,7 @@ completed.
 - Copying usernames and passwords to the clipboard.
 - Password generator that creates randomised and complex passwords.
 - Saving passwords for different accounts.
+- Editing saved usernames and passwords.
 - Login using a passcode to protect your passwords from people snooping on your phone. If a user is
   inactive for more than 10 minutes, you will be automatically logged out.
 - All data is stored offline using a SQLite database.
@@ -49,7 +50,6 @@ completed.
 
 - Adding non-intrusive ads. Big focus on **non-intrusive** as I hate all the annoying ads that
   plague freemium mobile applications with a passion.
-- Allow username editing
 
 ### Features that I might add in the future (No timeline)
 

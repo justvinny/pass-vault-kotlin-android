@@ -27,33 +27,13 @@ import com.vinsonb.password.manager.kotlin.utilities.isValidPasscodeInput
 
 @Composable
 fun ForgotPasscodeDialog(
-    viewModel: ForgotPasscodeViewModel,
-    secretQuestion: String,
-) {
-    val state by viewModel.stateFlow.collectAsState()
-
-    if (state is ForgotPasscodeState.Visible) {
-        ForgotPasscodeContent(
-            state = state as ForgotPasscodeState.Visible,
-            dismissDialog = viewModel::dismissDialog,
-            resetPasscode = viewModel::resetPasscode,
-            validateSecretAnswer = viewModel::validateSecretAnswer,
-            validatePasscode = viewModel::validatePasscode,
-            validateRepeatPasscode = viewModel::validateRepeatPasscode,
-            secretQuestion = secretQuestion,
-        )
-    }
-}
-
-@Composable
-private fun ForgotPasscodeContent(
-    state: ForgotPasscodeState.Visible,
-    dismissDialog: () -> Unit,
-    resetPasscode: (String) -> Unit,
+    state: ForgotPasscodeState,
+    resetPasscode: (String) -> Boolean,
     validateSecretAnswer: (String) -> Unit,
     validatePasscode: (String, String) -> Unit,
     validateRepeatPasscode: (String, String) -> Unit,
     secretQuestion: String,
+    dismissDialog: () -> Unit,
 ) {
     Dialog(onDismissRequest = dismissDialog) {
         Card(modifier = Modifier.fillMaxWidth()) {
@@ -127,7 +107,13 @@ private fun ForgotPasscodeContent(
             ) {
                 Button(
                     enabled = state.hasNoErrors(),
-                    onClick = { resetPasscode(newPasscode) },
+                    onClick = {
+                        if (resetPasscode(newPasscode)) {
+                            newPasscode = ""
+                            repeatNewPasscode = ""
+                            dismissDialog()
+                        }
+                    },
                 ) {
                     Text(stringResource(id = R.string.button_reset))
                 }
@@ -138,7 +124,7 @@ private fun ForgotPasscodeContent(
 
 @ReadOnlyComposable
 @Composable
-private fun ForgotPasscodeState.Visible.hasNoErrors() = (
+private fun ForgotPasscodeState.hasNoErrors() = (
         this.secretAnswerError == ForgotPasscodeError.None
                 && this.passcodeError == ForgotPasscodeError.None
                 && this.repeatPasscodeError == ForgotPasscodeError.None
@@ -156,10 +142,10 @@ private fun ForgotPasscodeError.getErrorText(@StringRes labelRes: Int) =
 @ScreenPreviews
 @Composable
 fun PreviewForgotPasswordDialogHasErrors() = PassVaultTheme {
-    ForgotPasscodeContent(
-        state = ForgotPasscodeState.Visible(),
+    ForgotPasscodeDialog(
+        state = ForgotPasscodeState(),
         dismissDialog = {},
-        resetPasscode = {},
+        resetPasscode = { true },
         validateSecretAnswer = {},
         validatePasscode = { _, _ -> },
         validateRepeatPasscode = { _, _ -> },
@@ -170,14 +156,14 @@ fun PreviewForgotPasswordDialogHasErrors() = PassVaultTheme {
 @ScreenPreviews
 @Composable
 fun PreviewForgotPasswordDialogNoErrors() = PassVaultTheme {
-    ForgotPasscodeContent(
-        state = ForgotPasscodeState.Visible(
+    ForgotPasscodeDialog(
+        state = ForgotPasscodeState(
             secretAnswerError = ForgotPasscodeError.None,
             passcodeError = ForgotPasscodeError.None,
             repeatPasscodeError = ForgotPasscodeError.None,
         ),
         dismissDialog = {},
-        resetPasscode = {},
+        resetPasscode = { true },
         validateSecretAnswer = {},
         validatePasscode = { _, _ -> },
         validateRepeatPasscode = { _, _ -> },

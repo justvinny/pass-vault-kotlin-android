@@ -3,7 +3,7 @@ package com.vinsonb.password.manager.kotlin.utilities
 object Constants {
     object Password {
         const val PASSCODE_MAX_LENGTH = 5
-        const val PASSCODE_REGEX_PATTERN = "\\d{0,$PASSCODE_MAX_LENGTH}"
+        const val PASSCODE_REGEX_PATTERN = "\\d{1,$PASSCODE_MAX_LENGTH}"
 
         object SharedPreferenceKeys {
             const val PASSCODE_KEY = "passcode"

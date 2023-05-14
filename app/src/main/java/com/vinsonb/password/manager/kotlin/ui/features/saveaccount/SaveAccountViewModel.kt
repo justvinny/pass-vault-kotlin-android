@@ -5,8 +5,8 @@ import com.vinsonb.password.manager.kotlin.database.AccountRepository
 import com.vinsonb.password.manager.kotlin.database.enitities.Account
 import com.vinsonb.password.manager.kotlin.di.CoroutineDispatchers
 import com.vinsonb.password.manager.kotlin.extensions.stateIn
-import com.vinsonb.password.manager.kotlin.utilities.EventFlow
 import com.vinsonb.password.manager.kotlin.utilities.SimpleToastEvent
+import com.vinsonb.password.manager.kotlin.utilities.SimpleToastEventFlow
 import com.vinsonb.password.manager.kotlin.utilities.simpleToastEventFlow
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
@@ -19,7 +19,7 @@ import javax.inject.Inject
 class SaveAccountViewModel(
     private val scope: CoroutineScope,
     private val insertAccount: suspend (Account) -> Boolean,
-) : ViewModel(), EventFlow<SimpleToastEvent> by simpleToastEventFlow(scope) {
+) : ViewModel(), SimpleToastEventFlow by simpleToastEventFlow(scope) {
 
     @Inject
     constructor(

@@ -4,12 +4,10 @@ import app.cash.turbine.test
 import com.vinsonb.password.manager.kotlin.runCancellingTest
 import com.vinsonb.password.manager.kotlin.utilities.Constants.Password.PASSCODE_MAX_LENGTH
 import com.vinsonb.password.manager.kotlin.utilities.SimpleToastEvent
-import com.vinsonb.password.manager.kotlin.utilities.isValidPasscodeInput
 import junitparams.JUnitParamsRunner
 import junitparams.Parameters
 import junitparams.naming.TestCaseName
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.TestScope
 import org.junit.Assert.assertEquals
 import org.junit.Test
@@ -38,15 +36,13 @@ class ForgotPasscodeViewModelTest {
     ) = runCancellingTest {
         // Arrange
         val viewModel = provideViewModel()
-        viewModel.showDialog()
 
         // Act
         viewModel.validateSecretAnswer(secretAnswer)
 
         // Assert
         viewModel.stateFlow.test {
-            val actualError = (awaitItem() as ForgotPasscodeState.Visible).secretAnswerError
-            assertEquals(expectedError, actualError)
+            assertEquals(expectedError, awaitItem().secretAnswerError)
         }
     }
 
@@ -71,15 +67,13 @@ class ForgotPasscodeViewModelTest {
     ) = runCancellingTest {
         // Arrange
         val viewModel = provideViewModel()
-        viewModel.showDialog()
 
         // Act
         viewModel.validatePasscode(passcode, repeatPasscode)
 
         // Assert
         viewModel.stateFlow.test {
-            val actualError = (awaitItem() as ForgotPasscodeState.Visible).passcodeError
-            assertEquals(expectedError, actualError)
+            assertEquals(expectedError, awaitItem().passcodeError)
         }
     }
 
@@ -105,25 +99,21 @@ class ForgotPasscodeViewModelTest {
     ) = runCancellingTest {
         // Arrange
         val viewModel = provideViewModel()
-        viewModel.showDialog()
 
         // Act
         viewModel.validateRepeatPasscode(passcode, repeatPasscode)
 
         // Assert
         viewModel.stateFlow.test {
-            val actualError = (awaitItem() as ForgotPasscodeState.Visible).repeatPasscodeError
-            assertEquals(expectedError, actualError)
+            assertEquals(expectedError, awaitItem().repeatPasscodeError)
         }
     }
 
     @Test
-    fun `GIVEN saveNewPasscode succeeded WHEN resetPasscode invoked THEN verify state changed to hidden and toast event succeeded`() =
+    fun `GIVEN saveNewPasscode succeeded WHEN resetPasscode invoked THEN verify toast event succeeded`() =
         runCancellingTest {
             // Arrange
             val viewModel = provideViewModel()
-            viewModel.showDialog()
-            assertEquals(ForgotPasscodeState.Visible(), viewModel.stateFlow.first())
 
             viewModel.eventFlow.test {
                 // Act
@@ -131,11 +121,6 @@ class ForgotPasscodeViewModelTest {
 
                 // Assert
                 assertEquals(SimpleToastEvent.ShowSucceeded, awaitItem())
-            }
-
-            // Assert dialog also dismissed
-            viewModel.stateFlow.test {
-                assertEquals(ForgotPasscodeState.Hidden, awaitItem())
             }
         }
 
@@ -146,7 +131,6 @@ class ForgotPasscodeViewModelTest {
             val viewModel = provideViewModel(
                 saveNewPasscodeReturn = false,
             )
-            viewModel.showDialog()
 
             viewModel.eventFlow.test {
                 // Act
@@ -154,66 +138,6 @@ class ForgotPasscodeViewModelTest {
 
                 // Assert
                 assertEquals(SimpleToastEvent.ShowFailed, awaitItem())
-            }
-        }
-
-    @Test
-    @Parameters(
-        value = [
-            "asf,false",
-            "aasffsafs,false",
-            "wrong,false",
-            "-=2as,false",
-            "123456,false",
-            ",true",
-            "123,true",
-            "12345,true",
-        ]
-    )
-    @TestCaseName("GIVEN {0} as passcode WHEN isValidPasscodeInput invoked THEN return {1}")
-    fun `isValidPasscodeInput parameterised test`(
-        passcode: String = "",
-        expected: Boolean,
-    ) = runCancellingTest {
-        // Arrange
-        val viewModel = provideViewModel()
-
-        // Act
-        val result = isValidPasscodeInput(passcode)
-
-        // Assert
-        assertEquals(expected, result)
-    }
-
-    @Test
-    fun `GIVEN state hidden WHEN showDialog invoked THEN change state to visible`() =
-        runCancellingTest {
-            // Arrange
-            val viewModel = provideViewModel()
-
-            // Act
-            viewModel.showDialog()
-
-            // Assert
-            viewModel.stateFlow.test {
-                assertEquals(ForgotPasscodeState.Visible(), awaitItem())
-            }
-        }
-
-    @Test
-    fun `GIVEN state visible WHEN dismissDialog invoked THEN change state to hidden`() =
-        runCancellingTest {
-            // Arrange
-            val viewModel = provideViewModel()
-            viewModel.showDialog()
-            assertEquals(ForgotPasscodeState.Visible(), viewModel.stateFlow.first())
-
-            // Act
-            viewModel.dismissDialog()
-
-            // Assert
-            viewModel.stateFlow.test {
-                assertEquals(ForgotPasscodeState.Hidden, awaitItem())
             }
         }
 
