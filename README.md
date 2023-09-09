@@ -54,7 +54,6 @@ completed.
 ### Features that I might add in the future (No timeline)
 
 - Allow user to create Groups for their accounts for better organisation.
-- Potentially integrate with user's Google Drive.
 - Adding animations and gestures.
 - Customisable font and font size
 - Customisable application colour theme
@@ -89,7 +88,7 @@ structure during the Compose Migration and will update this section once I finis
   Android API.
 - **Instrumentation Tests** — Uses Espresso with Hamcrest. Tested all the UI related classes such as
   Activities and Fragments. This is not as important anymore as the ViewModel unit tests should
-  cover most cases once the migration is over.
+  cover most cases once the migration is over. (In-Progress)
 - **Hilt** — Dependency injection framework. In our tests specifically, we use this to swap the
   Database with a Fake using Room's in-memory database builder as we do not want our production
   database to be affected during tests.
