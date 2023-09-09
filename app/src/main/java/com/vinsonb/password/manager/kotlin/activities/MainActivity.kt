@@ -46,6 +46,7 @@ import com.vinsonb.password.manager.kotlin.utilities.Constants.Password.SharedPr
 import com.vinsonb.password.manager.kotlin.viewmodels.AccountViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
+import java.time.LocalDate
 import java.time.LocalTime
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -423,7 +424,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun exportCsv() {
         if (::createCsvLauncher.isInitialized) {
-            createCsvLauncher.launch(Constants.FileName.DEFAULT_FILENAME)
+            createCsvLauncher.launch(LocalDate.now().toString())
         }
     }
 
